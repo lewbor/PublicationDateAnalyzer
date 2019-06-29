@@ -78,6 +78,15 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "guzzlehttp/guzzle": {
+        "version": "6.3.3"
+    },
+    "guzzlehttp/promises": {
+        "version": "v1.3.1"
+    },
+    "guzzlehttp/psr7": {
+        "version": "1.5.2"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -93,8 +102,14 @@
     "psr/container": {
         "version": "1.0.0"
     },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/log": {
         "version": "1.1.0"
+    },
+    "ralouphie/getallheaders": {
+        "version": "2.0.5"
     },
     "symfony/cache": {
         "version": "v4.3.1"
@@ -118,6 +133,9 @@
             "config/bootstrap.php"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v4.3.1"
+    },
     "symfony/debug": {
         "version": "v4.3.1"
     },
@@ -125,6 +143,9 @@
         "version": "v4.3.1"
     },
     "symfony/doctrine-bridge": {
+        "version": "v4.3.1"
+    },
+    "symfony/dom-crawler": {
         "version": "v4.3.1"
     },
     "symfony/dotenv": {
@@ -193,6 +214,9 @@
     },
     "symfony/polyfill-php73": {
         "version": "v1.11.0"
+    },
+    "symfony/process": {
+        "version": "v4.3.1"
     },
     "symfony/routing": {
         "version": "4.2",

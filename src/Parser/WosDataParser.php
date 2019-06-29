@@ -4,9 +4,12 @@
 namespace App\Parser;
 
 
+use App\Entity\Article;
+use App\Entity\Journal;
 use App\Lib\CsvIterator;
 use App\Lib\FileIterator;
 use App\Lib\RecordIterator;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use SplFileInfo;
@@ -14,11 +17,14 @@ use Symfony\Component\Finder\Finder;
 
 class WosDataParser
 {
-
+    protected $em;
     protected $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(
+        EntityManagerInterface $em,
+        LoggerInterface $logger)
     {
+        $this->em = $em;
         $this->logger = $logger;
     }
 
@@ -48,16 +54,67 @@ class WosDataParser
             }
 
             $this->processRecord($record);
+            $this->em->clear();
         }
     }
 
     private function processRecord(array $record)
     {
-        if(empty(record['DI'])) {
+        if (empty($record['DI'])) {
             $this->logger->info(sprintf('%s - doi is empty', $record['UT']));
             return;
         }
-        echo 1;
+
+        $existingArticle = $this->em->createQueryBuilder()
+            ->select('entity')
+            ->from(Article::class, 'entity')
+            ->andWhere('entity.doi = :doi')
+            ->setParameter('doi', $record['DI'])
+            ->getQuery()
+            ->getOneOrNullResult();
+        if ($existingArticle !== null) {
+            $this->logger->info(sprintf('Article with doi exist, doi=%s', $record['DI']));
+            return;
+        }
+
+        $journalQb = $this->em->createQueryBuilder()
+            ->select('entity')
+            ->from(Journal::class, 'entity');
+        if (!empty($record['SN'])) {
+            $journalQb->orWhere('entity.issn = :issn')
+                ->setParameter('issn', $record['SN']);
+        }
+        if (!empty($record['EI'])) {
+            $journalQb->andWhere('entity.eissn = :eissn')
+                ->setParameter('eissn', $record['EI']);
+        }
+        $journal = $journalQb
+            ->getQuery()
+            ->getOneOrNullResult();
+        if ($journal === null) {
+            $journal = (new Journal())
+                ->setName($record['SO']);
+            if (!empty($record['SN'])) {
+                $journal->setIssn($record['SN']);
+            }
+            if (!empty($record['EI'])) {
+                $journal->setEissn($record['EI']);
+            }
+            $this->em->persist($journal);
+            $this->em->flush();
+        }
+
+        $article = (new Article())
+            ->setName($record['TI'])
+            ->setAuthors($record['AF'])
+            ->setDoi($record['DI'])
+            ->setJournal($journal)
+            ->setYear((int)$record['PY'])
+            ->setWosId($record['UT']);
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $this->logger->info(sprintf('Inserted article id=%d', $article->getId()));
     }
 
     private function abstractsCsvIterator($iterator)

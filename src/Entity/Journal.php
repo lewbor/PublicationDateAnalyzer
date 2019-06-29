@@ -37,6 +37,12 @@ class Journal
      */
     protected $eissn;
 
+    /**
+     * @var array
+     * @ORM\Column(type="json", nullable=true)
+     */
+    protected $crossrefData;
+
     public function getId()
     {
         return $this->id;
@@ -76,5 +82,15 @@ class Journal
     }
 
 
+    public function getCrossrefData(): ?array
+    {
+        return $this->crossrefData;
+    }
+
+    public function setCrossrefData(?array $crossrefData): self
+    {
+        $this->crossrefData = $crossrefData;
+        return $this;
+    }
 
 }
