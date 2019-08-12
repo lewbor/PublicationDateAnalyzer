@@ -27,10 +27,16 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
         $this->logger = $logger;
     }
 
-
-    public function publisherName(): string
+    public function name(): string
     {
-        return 'elsevier';
+        return 'science direct';
+    }
+
+    public function publisherNames(): array
+    {
+        return [
+            'elsevier'
+        ];
     }
 
     public function process(Article $article): int
@@ -47,39 +53,14 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
 
             $url = sprintf('https://doi.org/%s', $article->getDoi());
 
-            $response = $client->request('GET', $url, [
-                RequestOptions::HTTP_ERRORS => false,
-            ]);
-            if($response->getStatusCode() !== 200) {
-                $article->setPublisherData([
-                    'success' => false,
-                    'url' => $url,
-                    'httpCode' => $response->getStatusCode(),
-                ]);
-                $this->em->persist($article);
-                $this->em->flush();
-                return 0;
-
-            }
+            $response = $client->request('GET', $url);
             $body = $response->getBody()->getContents();
 
             $crawler = new Crawler($body);
             $redirectUrl = $crawler->filter('input[name=redirectURL]')->attr('value');
             $redirectUrl = urldecode($redirectUrl);
 
-            $response = $client->request('GET', $redirectUrl, [
-                RequestOptions::HTTP_ERRORS => false,
-            ]);
-            if($response->getStatusCode() !== 200) {
-                $article->setPublisherData([
-                    'success' => false,
-                    'url' => $redirectUrl,
-                    'httpCode' => $response->getStatusCode(),
-                ]);
-                $this->em->persist($article);
-                $this->em->flush();
-                return 0;
-            }
+            $response = $client->request('GET', $redirectUrl);
             $body = $response->getBody()->getContents();
 
             $crawler = new Crawler($body);
@@ -112,7 +93,13 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
 
             return $datesProcessed;
         } catch (RequestException $e) {
-            $this->logger->error($e->getMessage());
+            $data = [
+                'success' => false,
+                'httpCode' => $e->getResponse()->getStatusCode(),
+            ];
+            $article->setPublisherData($data);
+            $this->em->persist($article);
+            $this->em->flush();
             return 0;
         }
     }

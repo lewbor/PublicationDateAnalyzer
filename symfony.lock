@@ -90,6 +90,9 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "monolog/monolog": {
+        "version": "1.24.0"
+    },
     "ocramius/package-versions": {
         "version": "1.4.0"
     },
@@ -110,6 +113,9 @@
     },
     "ralouphie/getallheaders": {
         "version": "2.0.5"
+    },
+    "salsify/json-streaming-parser": {
+        "version": "v8.0.1"
     },
     "symfony/cache": {
         "version": "v4.3.1"
@@ -202,6 +208,23 @@
     },
     "symfony/mime": {
         "version": "v4.3.1"
+    },
+    "symfony/monolog-bridge": {
+        "version": "v4.3.3"
+    },
+    "symfony/monolog-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "6240c6d43e8237a32452f057f81816820fd56ab6"
+        },
+        "files": [
+            "config/packages/dev/monolog.yaml",
+            "config/packages/prod/monolog.yaml",
+            "config/packages/test/monolog.yaml"
+        ]
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.11.0"

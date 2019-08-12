@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Command\Publisher;
+namespace App\Command\Unpaywall;
 
 
 use Symfony\Component\Console\Command\Command;
@@ -9,20 +9,20 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-class PublisherMultiProcessScrapCommand extends Command
+class UnpaywalMultiProcessScrapCommand extends Command
 {
 
     protected function configure()
     {
-        $this->setName('publisher.multi_process_scrap');
+        $this->setName('unpaywall.multi_process_scrap');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $processes = [];
 
-        foreach (range(1, 10) as $procNumber) {
-            $process = new Process(['bin/console', 'publisher.scrap', '-vv']);
+        foreach (range(1, 5) as $procNumber) {
+            $process = new Process(['bin/console', 'unpaywall.scrap', '-vv']);
             $process->start(function ($type, $buffer) use ($output) {
                 echo $buffer;
             });

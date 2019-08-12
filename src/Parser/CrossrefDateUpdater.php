@@ -25,11 +25,15 @@ class CrossrefDateUpdater
 
     public function run()
     {
-        /** @var Article $article */
+        $recordsProcessed = 0;
         foreach ($this->articleIterator() as $article) {
             $this->processArticle($article);
             $this->em->clear();
-            $this->logger->info(sprintf('Update article id=%d', $article->getId()));
+
+            $recordsProcessed++;
+            if($recordsProcessed % 50 === 0) {
+                $this->logger->info(sprintf('Processed %d records', $recordsProcessed));
+            }
         }
     }
 

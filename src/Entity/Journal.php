@@ -59,7 +59,7 @@ class Journal
         return $this;
     }
 
-    public function getIssn(): string
+    public function getIssn(): ?string
     {
         return $this->issn;
     }
@@ -70,7 +70,7 @@ class Journal
         return $this;
     }
 
-    public function getEissn(): string
+    public function getEissn(): ?string
     {
         return $this->eissn;
     }

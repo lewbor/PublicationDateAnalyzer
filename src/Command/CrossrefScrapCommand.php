@@ -15,25 +15,19 @@ class CrossrefScrapCommand extends Command
 
     protected $scraper;
 
-    public function __construct(CrossrefScrapper $queer)
+    public function __construct(CrossrefScrapper $scraper)
     {
         parent::__construct();
-        $this->scraper = $queer;
+        $this->scraper = $scraper;
     }
 
     protected function configure()
     {
-        $this->setName('crossref.scrap')
-            ->addArgument('journalIds', InputArgument::REQUIRED);
+        $this->setName('crossref.scrap');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $journalIds = $input->getArgument('journalIds');
-        if(empty($journalIds)) {
-            throw new \Exception('Journals ids is empty');
-        }
-        $ids = explode(',', $journalIds);
-        $this->scraper->scrap($ids);
+        $this->scraper->scrap();
     }
 }

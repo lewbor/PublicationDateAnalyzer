@@ -26,9 +26,17 @@ class SpringerPublisherProcessor implements PublisherProcessor
         $this->logger = $logger;
     }
 
-    public function publisherName(): string
+    public function name(): string
     {
         return 'springer';
+    }
+
+    public function publisherNames(): array
+    {
+        return [
+            'springer',
+            'pleiades'
+        ];
     }
 
     public function process(Article $article): int
@@ -74,6 +82,13 @@ class SpringerPublisherProcessor implements PublisherProcessor
             return $datesProcessed;
         } catch (RequestException $e) {
             $this->logger->error($e->getMessage());
+            $data = [
+                'success' => false,
+                'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
+            ];
+            $article->setPublisherData($data);
+            $this->em->persist($article);
+            $this->em->flush();
             return 0;
         }
     }

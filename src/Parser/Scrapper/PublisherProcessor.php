@@ -9,6 +9,9 @@ use App\Entity\Article;
 interface PublisherProcessor
 {
 
-    public function publisherName(): string;
+    public function name(): string;
+
+    public function publisherNames(): array;
+
     public function process(Article $article): int;
 }

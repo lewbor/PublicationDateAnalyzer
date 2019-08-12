@@ -60,7 +60,7 @@ class PublisherScrapper
         }
         $datesUpdate = $processor->process($article);
         $this->logger->info(sprintf("Processed article=%d, publisher=%s, year=%d, update %d dates, reminding %d tasks",
-            $article->getId(), $processor->publisherName(),
+            $article->getId(), $processor->name(),
             $article->getYear(), $datesUpdate,
             $this->queueManager->remindingTasks(PublisherQueer::QUEUE_NAME)));
     }
@@ -73,10 +73,13 @@ class PublisherScrapper
 
         /** @var PublisherProcessor $processor */
         foreach ($this->processors as $processor) {
-            if (strpos($publisher, $processor->publisherName()) !== false) {
-                return $processor;
+            foreach ($processor->publisherNames() as $publisherName) {
+                if (strpos($publisher, $publisherName) !== false) {
+                    return $processor;
+                }
             }
         }
         $this->logger->error(sprintf("No processor for publisher %s", $publisher));
+        return null;
     }
 }

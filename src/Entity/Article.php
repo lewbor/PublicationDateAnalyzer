@@ -38,7 +38,6 @@ class Article
      */
     protected $year;
 
-
     /**
      * @var Journal
      * @ORM\ManyToOne(targetEntity="Journal")
@@ -53,6 +52,18 @@ class Article
     protected $crossrefData;
 
     /**
+     * @var array
+     * @ORM\Column(name="publisher_data", type="json", nullable=true)
+     */
+    protected $publisherData;
+
+    /**
+     * @var array
+     * @ORM\Column(name="unpaywall_data", type="json", nullable=true)
+     */
+    protected $unpaywallData;
+
+    /**
      * @var DateTime
      * @ORM\Column(name="published_print", type="date", nullable=true)
      */
@@ -63,12 +74,6 @@ class Article
      * @ORM\Column(name="published_online", type="date", nullable=true)
      */
     protected $publishedOnline;
-
-    /**
-     * @var array
-     * @ORM\Column(name="publisher_data", type="json", nullable=true)
-     */
-    protected $publisherData;
 
     /**
      * @var DateTime
@@ -93,6 +98,12 @@ class Article
      * @ORM\Column(name="publisher_available_online", type="date", nullable=true)
      */
     protected $publisherAvailableOnline;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="open_access", type="boolean", nullable=true)
+     */
+    protected $openAccess;
 
 
     public function getId()
@@ -233,6 +244,28 @@ class Article
     public function setPublisherAvailablePrint(?DateTime $publisherAvailablePrint): self
     {
         $this->publisherAvailablePrint = $publisherAvailablePrint;
+        return $this;
+    }
+
+    public function getUnpaywallData(): ?array
+    {
+        return $this->unpaywallData;
+    }
+
+    public function setUnpaywallData(?array $unpaywallData): self
+    {
+        $this->unpaywallData = $unpaywallData;
+        return $this;
+    }
+
+    public function isOpenAccess(): ?bool
+    {
+        return $this->openAccess;
+    }
+
+    public function setOpenAccess(?bool $openAccess): self
+    {
+        $this->openAccess = $openAccess;
         return $this;
     }
 

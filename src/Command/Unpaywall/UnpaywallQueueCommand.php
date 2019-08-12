@@ -1,19 +1,20 @@
 <?php
 
 
-namespace App\Command\Publisher;
+namespace App\Command\Unpaywall;
 
 
 use App\Parser\Scrapper\PublisherQueer;
+use App\Parser\Unpaywall\UnpaywallQueer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PublisherQueueCommand extends Command
+class UnpaywallQueueCommand extends Command
 {
     protected $queer;
 
-    public function __construct(PublisherQueer $scraper)
+    public function __construct(UnpaywallQueer $scraper)
     {
         parent::__construct();
         $this->queer = $scraper;
@@ -21,7 +22,7 @@ class PublisherQueueCommand extends Command
 
     protected function configure()
     {
-        $this->setName('publisher.queue');
+        $this->setName('unpaywall.queue');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

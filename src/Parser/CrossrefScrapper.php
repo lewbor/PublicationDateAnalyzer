@@ -25,23 +25,29 @@ class CrossrefScrapper
         $this->logger = $logger;
     }
 
-    public function scrap(array $ids)
+    public function scrap()
     {
 
-        foreach ($this->journalIterator($ids) as $journal) {
+        foreach ($this->journalIterator() as $journal) {
             $this->processJournal($journal);
             $this->em->clear();
         }
     }
 
-    private function journalIterator(array $ids)
+    private function journalIterator()
     {
         $iterator = $this->em->createQueryBuilder()
             ->select('entity')
             ->from(Journal::class, 'entity')
             ->andWhere('entity.crossrefData IS NOT NULL')
-            ->andWhere('entity.id IN (:ids)')
-            ->setParameter('ids', $ids)
+            ->andWhere(sprintf('(%s) <= 500',
+                $this->em->createQueryBuilder()
+                    ->select('COUNT(article.id)')
+                    ->from(Article::class, 'article')
+                    ->andWhere('article.journal = entity')
+                    ->getQuery()
+                    ->getDQL()
+            ))
             ->getQuery()
             ->iterate();
         foreach ($iterator as $item) {
@@ -55,7 +61,7 @@ class CrossrefScrapper
         if (!empty($journal->getIssn())) {
             $issn = $journal->getIssn();
         } elseif (!empty($journal->getEissn())) {
-            $issn = $journal->getIssn();
+            $issn = $journal->getEissn();
         } else {
             return;
         }

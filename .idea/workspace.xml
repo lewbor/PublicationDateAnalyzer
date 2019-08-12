@@ -1,14 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f430a078-66ed-4ac7-b799-5f96fbe32122" name="Default Changelist" comment="" />
+    <list default="true" id="f430a078-66ed-4ac7-b799-5f96fbe32122" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/lewbor.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/packages/dev/monolog.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/run_all.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/AnalyticsSaver.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/AcceptedPublishedAnalyzer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/AnalyzerInterface.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/AnalyzerTrait.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/ReceivedAcceptedAnalyzer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/ReceivedPublishedAnalyzer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/AscJournalLoaderCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/JournalAnalyticsMaker.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/JournalCommonStatCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Analytics/YearPeriod.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywalMultiProcessScrapCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallQueueCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallScrapCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/UnpaywallOpenAccessUpdateCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Lib/CsvWriter.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Unpaywall/UnpaywallQueer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/UnpaywallOpenAccessUpdater.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/UnpaywallScraper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/DateAnalyzer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DateAnalyzer.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/a6e2ed46-785e-4a83-bc19-705c0bb504b0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a6e2ed46-785e-4a83-bc19-705c0bb504b0.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/wos/APPLIED CATALYSIS B-ENVIRONMENTAL/001_500.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/CrossrefScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/CrossrefScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherQueueCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherQueueCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/WosDataParserCommand.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Article.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Article.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Journal.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Journal.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/CrossrefDateUpdater.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/CrossrefDateUpdater.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/CrossrefScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/CrossrefScrapper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution>
       <executable />
@@ -25,81 +72,30 @@
     <option name="HIDDEN_KINDS">
       <set />
     </option>
-    <expand />
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="publication_dates@localhost" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="publication_dates@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="publication_dates@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="publication_dates: schema" type="ebfa3cd1:MariaImplModel$Schema" />
+      </path>
+    </expand>
     <select />
   </component>
-  <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Lib/RecordIterator.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Parser/WosDataParser.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="57" column="19" selection-start-line="57" selection-start-column="19" selection-end-line="57" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Entity/Article.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="487">
-              <caret line="54" column="76" selection-start-line="54" selection-start-column="76" selection-end-line="54" selection-end-column="76" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Entity/Journal.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" selection-start-line="7" selection-end-line="10" selection-end-column="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+  <component name="FavoritesManager">
+    <favorites_list name="DateAnalyzer" />
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>Controller</find>
-    </findStrings>
-    <dirStrings>
-      <dir>$PROJECT_DIR$</dir>
-      <dir>$PROJECT_DIR$/config</dir>
-    </dirStrings>
-  </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/src/Command/WosDataParser.php" />
-        <option value="$PROJECT_DIR$/config/services.yaml" />
-        <option value="$PROJECT_DIR$/config/routes/annotations.yaml" />
-        <option value="$PROJECT_DIR$/config/routes.yaml" />
-        <option value="$PROJECT_DIR$/.env" />
-        <option value="$PROJECT_DIR$/src/Parser/FileIterator.php" />
-        <option value="$PROJECT_DIR$/src/Parser/CsvIterator.php" />
-        <option value="$PROJECT_DIR$/src/Parser/Utils.php" />
-        <option value="$PROJECT_DIR$/src/Parser/RecordIterator.php" />
-        <option value="$PROJECT_DIR$/src/Command/WosDataParserCommand.php" />
-        <option value="$PROJECT_DIR$/src/Lib/CsvIterator.php" />
-        <option value="$PROJECT_DIR$/src/Lib/FileIterator.php" />
-        <option value="$PROJECT_DIR$/src/Lib/RecordIterator.php" />
-        <option value="$PROJECT_DIR$/src/Lib/Utils.php" />
-        <option value="$PROJECT_DIR$/src/Parser/WosDataParser.php" />
-        <option value="$PROJECT_DIR$/src/Entity/Journal.php" />
-        <option value="$PROJECT_DIR$/src/Entity/Publication.php" />
-        <option value="$PROJECT_DIR$/src/Entity/Article.php" />
-      </list>
-    </option>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="PhpServers">
     <servers>
@@ -159,82 +155,38 @@
       <path value="$PROJECT_DIR$/vendor/zendframework/zend-eventmanager" />
       <path value="$PROJECT_DIR$/vendor/ocramius/package-versions" />
       <path value="$PROJECT_DIR$/vendor/ocramius/proxy-manager" />
+      <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/vendor/symfony/dom-crawler" />
+      <path value="$PROJECT_DIR$/vendor/symfony/css-selector" />
+      <path value="$PROJECT_DIR$/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/vendor/symfony/monolog-bundle" />
+      <path value="$PROJECT_DIR$/vendor/symfony/monolog-bridge" />
+      <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/vendor/salsify/json-streaming-parser" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1920" />
-    <option name="y" value="150" />
-    <option name="width" value="1920" />
-    <option name="height" value="1082" />
-  </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="DateAnalyzer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DateAnalyzer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DateAnalyzer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DateAnalyzer" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DateAnalyzer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DateAnalyzer" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-              <item name="packages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DateAnalyzer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DateAnalyzer" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DateAnalyzer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DateAnalyzer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DateAnalyzer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DateAnalyzer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Command" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DateAnalyzer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DateAnalyzer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Entity" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="DateAnalyzer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="DateAnalyzer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Parser" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
-  </component>
+  <component name="ProjectId" id="1OfZSsbHjFhLr14K7Tcs3laZ3yC" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="DatabaseDriversLRU" value="mysql&#10;mariadb" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="database.console.LAST_STATE" value="false" />
+    <property name="database.data.extractors.current.id" value="Comma-separated (CSV)_id" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../alpenbot/alpenbot_app" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data/wos/CHEMCATCHEM" />
       <recent name="$PROJECT_DIR$/data/wos/APPLIED CATALYSIS B-ENVIRONMENTAL" />
     </key>
   </component>
@@ -255,6 +207,17 @@
       <method v="2" />
     </configuration>
   </component>
+  <component name="ServiceViewManager">
+    <option name="allServicesViewState">
+      <serviceView>
+        <option name="contentProportion" value="0.06972973" />
+        <treeState>
+          <expand />
+          <select />
+        </treeState>
+      </serviceView>
+    </option>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -265,142 +228,88 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1561006750221</updated>
-      <workItem from="1561006751403" duration="1848000" />
+      <workItem from="1561006751403" duration="13166000" />
+      <workItem from="1561124485745" duration="3753000" />
+      <workItem from="1561343007316" duration="30000" />
+      <workItem from="1561343073622" duration="41790000" />
+      <workItem from="1561512234492" duration="15897000" />
+      <workItem from="1561555608165" duration="1003000" />
+      <workItem from="1561557109263" duration="13941000" />
+      <workItem from="1561782684139" duration="12259000" />
+      <workItem from="1561867450889" duration="2772000" />
+      <workItem from="1561871593161" duration="1837000" />
+      <workItem from="1561943048309" duration="612000" />
+      <workItem from="1562907688494" duration="74000" />
+      <workItem from="1564051717619" duration="3131000" />
+      <workItem from="1564105020320" duration="6403000" />
+      <workItem from="1564370545359" duration="42000" />
+      <workItem from="1564370621605" duration="10335000" />
+      <workItem from="1564449974677" duration="10038000" />
+      <workItem from="1564536683801" duration="7603000" />
+      <workItem from="1564636292864" duration="8058000" />
+      <workItem from="1564726751708" duration="1267000" />
+      <workItem from="1564883118916" duration="5706000" />
+      <workItem from="1564968701229" duration="675000" />
+      <workItem from="1564976305832" duration="2440000" />
+      <workItem from="1565056353777" duration="3363000" />
+      <workItem from="1565059729824" duration="11891000" />
+      <workItem from="1565321608100" duration="2279000" />
+      <workItem from="1565340800495" duration="4729000" />
     </task>
+    <task id="LOCAL-00001" summary="Improvements">
+      <created>1561784813183</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1561784813183</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1848000" />
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="1920" y="150" width="1920" height="1082" extended-state="6" />
-    <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49947533" visible="true" weight="0.1782284" />
-      <window_info id="Structure" order="1" sideWeight="0.50052464" side_tool="true" weight="0.15314835" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.23333333" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4994664" visible="true" weight="0.2924731" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32900432" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="9" sideWeight="0.49946696" weight="0.23609653" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32473117" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50053364" side_tool="true" weight="0.34102833" />
-      <window_info anchor="bottom" id="Database Console" order="12" weight="0.32948583" />
-      <window_info anchor="bottom" id="Messages" order="13" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Database" order="3" visible="true" weight="0.1664888" />
-    </layout>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improvements" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/src/Parser/WosDataParser.php</url>
-          <line>31</line>
-          <option name="timeStamp" value="1" />
+          <url>file://$PROJECT_DIR$/src/Analytics/Analyzer/AcceptedPublishedAnalyzer.php</url>
+          <line>28</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Analytics/Analyzer/ReceivedAcceptedAnalyzer.php</url>
+          <line>27</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/config/services.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/routes/annotations.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/routes.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.env">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="73" selection-start-line="3" selection-start-column="73" selection-end-line="3" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/packages/doctrine_migrations.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config/packages/doctrine.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Lib/CsvIterator.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
-          <folding>
-            <element signature="e#29#57#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Lib/FileIterator.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="6" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Lib/RecordIterator.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Lib/Utils.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="6" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Parser/WosDataParser.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="57" column="19" selection-start-line="57" selection-start-column="19" selection-end-line="57" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Command/WosDataParserCommand.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="33" selection-start-line="23" selection-start-column="24" selection-end-line="23" selection-end-column="33" />
-          <folding>
-            <element signature="e#33#62#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Entity/Journal.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" selection-start-line="7" selection-end-line="10" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Entity/Article.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="487">
-          <caret line="54" column="76" selection-start-line="54" selection-start-column="76" selection-end-line="54" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
   </component>
   <component name="masterDetails">
     <states>

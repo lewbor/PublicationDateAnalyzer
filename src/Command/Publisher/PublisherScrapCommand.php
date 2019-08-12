@@ -13,10 +13,10 @@ class PublisherScrapCommand  extends Command
 {
     protected $scraper;
 
-    public function __construct(PublisherScrapper $queer)
+    public function __construct(PublisherScrapper $scraper)
     {
         parent::__construct();
-        $this->scraper = $queer;
+        $this->scraper = $scraper;
     }
 
     protected function configure()

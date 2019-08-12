@@ -4,29 +4,29 @@
 namespace App\Command;
 
 
-use App\Parser\WosDataParser;
+use App\Parser\CrossrefDateUpdater;
+use App\Parser\UnpaywallOpenAccessUpdater;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class WosDataParserCommand extends Command
+class UnpaywallOpenAccessUpdateCommand extends Command
 {
-    protected $dataParser;
+    protected $updater;
 
-    public function __construct(WosDataParser $dataParser)
+    public function __construct(UnpaywallOpenAccessUpdater $updater)
     {
         parent::__construct();
-        $this->dataParser = $dataParser;
+        $this->updater = $updater;
     }
 
     protected function configure()
     {
-        $this->setName('parse.wos');
+        $this->setName('unpaywall.open_access_update');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->dataParser->parse(__DIR__ . '/../../data/wos');
+        $this->updater->run();
     }
-
 }
