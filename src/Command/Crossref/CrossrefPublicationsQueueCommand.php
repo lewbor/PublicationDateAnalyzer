@@ -1,28 +1,27 @@
 <?php
 
 
-namespace App\Command\Unpaywall;
+namespace App\Command\Crossref;
 
 
-use App\Parser\Scrapper\PublisherQueer;
-use App\Parser\Unpaywall\UnpaywallQueer;
+use App\Parser\Crossref\CrossrefPublicationsQueer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UnpaywallQueueCommand extends Command
+class CrossrefPublicationsQueueCommand extends Command
 {
     protected $queer;
 
-    public function __construct(UnpaywallQueer $scraper)
+    public function __construct(CrossrefPublicationsQueer $queer)
     {
         parent::__construct();
-        $this->queer = $scraper;
+        $this->queer = $queer;
     }
 
     protected function configure()
     {
-        $this->setName('unpaywall.queue');
+        $this->setName('crossref.publications.queue');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

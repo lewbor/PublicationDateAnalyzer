@@ -1,10 +1,11 @@
 <?php
 
 
-namespace App\Parser;
+namespace App\Parser\Unpaywall;
 
 
 use App\Entity\Article;
+use App\Entity\QueueItem;
 use App\Lib\QueueManager;
 use App\Parser\Unpaywall\UnpaywallQueer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,7 +47,7 @@ class UnpaywallScraper
         }
     }
 
-    private function processItem(\App\Entity\QueueItem $queueItem)
+    private function processItem(QueueItem $queueItem)
     {
         $data = $queueItem->getData();
         $article = $this->em->getRepository(Article::class)->find($data['id']);

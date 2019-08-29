@@ -1,20 +1,29 @@
 <?php
 
 
-namespace App\Command\Unpaywall;
+namespace App\Command\Crossref;
 
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-class UnpaywalMultiProcessScrapCommand extends Command
+class CrossrefPublicationsMultiProcessScrapCommand extends Command
 {
+
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        parent::__construct();
+        $this->logger = $logger;
+    }
 
     protected function configure()
     {
-        $this->setName('unpaywall.multi_process_scrap');
+        $this->setName('crossref.publications.multi_scrap');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -22,7 +31,7 @@ class UnpaywalMultiProcessScrapCommand extends Command
         $processes = [];
 
         foreach (range(1, 5) as $procNumber) {
-            $process = new Process(['bin/console', 'unpaywall.scrap', '-vv']);
+            $process = new Process(['bin/console', CrossrefPublicationsScrapCommand::CMD_NAME], null, $_ENV);
             $process->start(function ($type, $buffer) use ($output) {
                 echo $buffer;
             });

@@ -19,19 +19,62 @@ class JournalAnalyticsMaker
         $this->em = $em;
     }
 
-    public function analyticsForJournal(Journal $journal, array $yearPeriods, array $dateAnalyzers)
+    public function analyticsForJournal(Journal $journal, array $yearPeriods, array $dateAnalyzers): array
     {
-        $stat = [
-            'Name' => trim($journal->getName()),
-            'Issn' => trim($journal->getIssn()),
-            'Publisher' => isset($journal->getCrossrefData()['publisher']) ?
-                trim($journal->getCrossrefData()['publisher']) : '',
-        ];
+        $stat = [];
+
+        $stat['common'] = $this->makeCommonStat($journal);
+        $stat['periods'] = $this->makePeriodStat($journal, $yearPeriods, $dateAnalyzers);
+
+        return $stat;
+    }
+
+    private function makeCommonStat(Journal $journal): array {
+        $stat = [];
+
+        $articlesCount = (int) $this->em->createQueryBuilder()
+            ->select('COUNT(entity.id)')
+            ->from(Article::class, 'entity')
+            ->andWhere('entity.journal = :journal')
+            ->setParameter('journal', $journal)
+            ->getQuery()
+            ->getSingleScalarResult();
+        $stat['count'] = $articlesCount;
+
+        $minYear = (int) $this->em->createQueryBuilder()
+            ->select('MIN(entity.year)')
+            ->from(Article::class, 'entity')
+            ->andWhere('entity.journal = :journal')
+            ->setParameter('journal', $journal)
+            ->getQuery()
+            ->getSingleScalarResult();
+        $stat['min'] = $minYear;
+
+        $maxYear = (int) $this->em->createQueryBuilder()
+            ->select('MAX(entity.year)')
+            ->from(Article::class, 'entity')
+            ->andWhere('entity.journal = :journal')
+            ->setParameter('journal', $journal)
+            ->getQuery()
+            ->getSingleScalarResult();
+        $stat['max'] = $maxYear;
+
+        return $stat;
+    }
+
+    private function makePeriodStat(Journal $journal, array $yearPeriods, array $dateAnalyzers): array {
+        $stat = [];
 
         /** @var YearPeriod $yearPeriod */
         foreach ($yearPeriods as $yearPeriod) {
             $yearPeriodKey = sprintf('%d_%d%s',
                 $yearPeriod->getStart(), $yearPeriod->getEnd(), $yearPeriod->isOpenAccess() === true ? '_OA' : '');
+
+            $stat[$yearPeriodKey] = [
+                'start' => $yearPeriod->getStart(),
+                'end' => $yearPeriod->getEnd(),
+                'openAccess' => $yearPeriod->isOpenAccess()
+            ];
 
             $totalArticles = (int)$this->em->createQueryBuilder()
                 ->select('COUNT(entity.id)')
@@ -45,7 +88,7 @@ class JournalAnalyticsMaker
                 ->setParameter('endYear', $yearPeriod->getEnd())
                 ->getQuery()
                 ->getSingleScalarResult();
-            $stat['byPeriods'][$yearPeriodKey]['Articles'] = $totalArticles;
+            $stat[$yearPeriodKey]['articles'] = $totalArticles;
 
             /** @var AnalyzerInterface $analyzer */
             foreach ($dateAnalyzers as $analyzer) {
@@ -64,78 +107,122 @@ class JournalAnalyticsMaker
                 $articlesIterator = $articlesIteratorQb->getQuery()
                     ->iterate();
 
-                $dateDiffs = [];
-                $articlesCount = 0;
-                foreach ($articlesIterator as $idx => $item) {
-                    /** @var Article $article */
-                    $article = $item[0];
-                    $dayDiff = $analyzer->datesDiff($article);
-                    if ($dayDiff < 0) {
-                        continue;
-                    }
+                $dateSeries = $this->buildDateSeries($articlesIterator, $analyzer);
+                $dateSeriesHistogram = $this->buildHistogram($dateSeries);
 
-                    if (isset($dateDiffs[$dayDiff])) {
-                        $dateDiffs[$dayDiff]++;
-                    } else {
-                        $dateDiffs[$dayDiff] = 1;
-                    }
+                if (count($dateSeries) > 0) {
+                    $medianIdx = $this->median($dateSeries);
 
-                    $articlesCount++;
-                    if ($idx % 50 === 0) {
-                        $this->em->clear();
-                    }
-                }
-                ksort($dateDiffs);
-                $dateDiffsKeys = array_keys($dateDiffs);
-
-                $analyzerResult = [];
-                if ($articlesCount > 0) {
-                    $analyzerResult['count'] = $articlesCount;
-                    $analyzerResult['min'] = sprintf('%d (%d)', $dateDiffsKeys[0], $dateDiffs[$dateDiffsKeys[0]]);
-                    $analyzerResult['max'] = sprintf('%d (%d)', $dateDiffsKeys[count($dateDiffsKeys) - 1], $dateDiffs[$dateDiffsKeys[count($dateDiffsKeys) - 1]]);
-                    $analyzerResult['avg'] = $this->avg($dateDiffs);
-                    [$medianPartSum, $medianDay] = $this->median($dateDiffs);
-                    $analyzerResult['median'] = sprintf('%d (%d)', $medianDay, $medianPartSum);
+                    $analyzerResult = [
+                        'count' => count($dateSeries),
+                        'min' => $dateSeries[0],
+                        'min_count' => $dateSeriesHistogram[$dateSeries[0]],
+                        'max' => $dateSeries[count($dateSeries) - 1],
+                        'max_count' => $dateSeriesHistogram[$dateSeries[count($dateSeries) - 1]],
+                        'avg' => $this->avg($dateSeries),
+                        'median' => $dateSeries[$medianIdx],
+                        'median_count' => $medianIdx + 1,
+                        'histogram' => $dateSeriesHistogram,
+                        'quartiles' => $this->quartiles($dateSeries)
+                    ];
                 } else {
                     $analyzerResult = [
                         'count' => 0,
                         'min' => null,
+                        'min_count' => null,
                         'max' => null,
+                        'max_count' => null,
                         'avg' => null,
-                        'median' => null
+                        'median' => null,
+                        'median_count' => null,
+                        'histogram' => [],
+                        'quartiles' => []
                     ];
                 }
 
-                $stat['byPeriods'][$yearPeriodKey]['analyzers'][$analyzer->getName()] = $analyzerResult;
+                $stat[$yearPeriodKey]['analyzers'][$analyzer->getName()] = $analyzerResult;
 
             }
-
         }
+
         return $stat;
     }
 
-    private function avg(array $data): int
+   private function avg(array $data): int
     {
-        $sum = 0;
-        foreach ($data as $value => $weight) {
-            $sum += $value * $weight;
+        if(count($data) === 0) {
+            return 0;
         }
 
-        $sum = $sum / array_sum(array_values($data));
-        return (int)$sum;
+        $sum = 0;
+        foreach ($data as $value) {
+            $sum += $value;
+        }
+
+        return (int) ($sum / count($data));
     }
 
-    private function median(array $data): array
+    private function median(array $data): int
     {
-        $total = array_sum($data) / 2;
+        if(count($data) === 0) {
+            return 0;
+        }
+        return floor(count($data) / 2);
+    }
 
-        $partSum = 0;
-        foreach ($data as $day => $articlesCount) {
-            $partSum += $articlesCount;
-            if ($partSum >= $total) {
-                return [$partSum, $day];
+    private function buildHistogram(array $dateSeries): array
+    {
+        $result = [];
+        foreach($dateSeries as $value){
+            if(!isset($result[$value])) {
+                $result[$value] = 1;
+            } else {
+                $result[$value]++;
             }
         }
-        return null;
+        ksort($result);
+        return $result;
     }
+
+    private function buildDateSeries(iterable $articlesIterator, AnalyzerInterface $analyzer): array
+    {
+        $dateSeries = [];
+
+        foreach ($articlesIterator as $idx => $item) {
+            /** @var Article $article */
+            $article = $item[0];
+            $dayDiff = $analyzer->datesDiff($article);
+            if ($dayDiff < 0) {
+                continue;
+            }
+
+            $dateSeries[] = $dayDiff;
+
+            if ($idx % 50 === 0) {
+                $this->em->clear();
+            }
+        }
+        sort($dateSeries);
+        return $dateSeries;
+    }
+    private function quartiles(array $dateSeries): array
+    {
+        if(count($dateSeries) < 4) {
+            return [];
+        }
+
+        $quartiles = [];
+
+        for($quartile = 1; $quartile <= 4; $quartile++) {
+            $endIdx = (int) floor((count($dateSeries) / 4) * $quartile - 1);
+            $quartiles[] = [
+                'quartile' => $quartile,
+                'idx' => $endIdx,
+                'value' => $dateSeries[$endIdx],
+            ];
+        }
+
+        return $quartiles;
+    }
+
 }

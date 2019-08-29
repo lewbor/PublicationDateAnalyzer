@@ -23,7 +23,8 @@ class PublisherScrapper
         QueueManager $queueManager,
         ScienceDirectPublisherProcessor $scienceDirectPublisherProcessor,
         SpringerPublisherProcessor $springerPublisherProcessor,
-        AscPublisherProcessor $ascPublisherProcessor)
+        AscPublisherProcessor $ascPublisherProcessor,
+        RscPublisherProcessor $rscPublisherProcessor)
     {
         $this->em = $em;
         $this->logger = $logger;
@@ -33,6 +34,7 @@ class PublisherScrapper
             $scienceDirectPublisherProcessor,
             $springerPublisherProcessor,
             $ascPublisherProcessor,
+            $rscPublisherProcessor
         ];
     }
 

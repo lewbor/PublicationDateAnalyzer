@@ -1,13 +1,17 @@
 <?php
 
 
-namespace App\Analytics;
+namespace App\Command\Analytics;
 
 
+use App\Analytics\AnalyticsSaver;
 use App\Analytics\Analyzer\AcceptedPublishedAnalyzer;
 use App\Analytics\Analyzer\ReceivedAcceptedAnalyzer;
 use App\Analytics\Analyzer\ReceivedPublishedAnalyzer;
+use App\Analytics\JournalAnalyticsMaker;
+use App\Analytics\YearPeriod;
 use App\Entity\Journal;
+use App\Entity\JournalAnalytics;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -19,34 +23,30 @@ class JournalCommonStatCommand extends Command
     protected $em;
     protected $logger;
     protected $analyticsMaker;
-    protected $analyticsSaver;
 
     public function __construct(
         EntityManagerInterface $em,
         LoggerInterface $logger,
-        JournalAnalyticsMaker $analyticsMaker,
-        AnalyticsSaver $analyticsSaver)
+        JournalAnalyticsMaker $analyticsMaker)
     {
         parent::__construct();
         $this->em = $em;
         $this->logger = $logger;
         $this->analyticsMaker = $analyticsMaker;
-        $this->analyticsSaver = $analyticsSaver;
     }
 
     protected function configure()
     {
-        $this->setName('common_stat');
+        $this->setName('journal.stat');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $yearPeriods = [
-            new YearPeriod(1800, 2019),
-            new YearPeriod(1800, 2019),
-            new YearPeriod(2011, 2019, true),
-            new YearPeriod(2011, 2011),
-            new YearPeriod(2019, 2019),
+            new YearPeriod(2000, 2009),
+            new YearPeriod(2000, 2009, true),
+            new YearPeriod(2010, 2019),
+            new YearPeriod(2010, 2019, true),
         ];
         $dateAnalyzers = [
             new ReceivedAcceptedAnalyzer(),
@@ -54,16 +54,17 @@ class JournalCommonStatCommand extends Command
             new ReceivedPublishedAnalyzer(),
         ];
 
-        $journalStat = [];
+        $this->clearStat();
 
         /** @var Journal $journal */
         foreach ($this->journalIterator() as $journal) {
-            $journalStat[$journal->getId()] = $this->analyticsMaker->analyticsForJournal($journal, $yearPeriods, $dateAnalyzers);
+            $stat = $this->analyticsMaker->analyticsForJournal($journal, $yearPeriods, $dateAnalyzers);
+            $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
+            $this->saveStat($journal, $stat);
+
             $this->em->clear();
             $this->logger->info(sprintf('Processed journal %s', $journal->getName()));
         }
-
-        $this->analyticsSaver->save($journalStat);
     }
 
     private function journalIterator(): iterable
@@ -73,21 +74,28 @@ class JournalCommonStatCommand extends Command
             ->from(Journal::class, 'entity')
             ->getQuery()
             ->getResult();
-        usort($journals, function (Journal $a, Journal $b) {
-            if(!isset($a->getCrossrefData()['publisher'])) {
-                return 0;
-            }
-            if(!isset($b->getCrossrefData()['publisher'])) {
-                return 0;
-            }
-            $aPublisher = trim($a->getCrossrefData()['publisher']);
-            $bPublisher = trim($b->getCrossrefData()['publisher']);
-            return strcmp($aPublisher, $bPublisher);
-        });
         foreach ($journals as $journal) {
             yield $journal;
         }
 
+    }
+
+    private function clearStat()
+    {
+        $this->em->createQueryBuilder()
+            ->delete(JournalAnalytics::class, 'entity')
+            ->getQuery()
+            ->execute();
+    }
+
+    private function saveStat(?Journal $journal, array $stat)
+    {
+        $entity = (new JournalAnalytics())
+            ->setJournal($journal)
+            ->setAnalytics($stat);
+
+        $this->em->persist($entity);
+        $this->em->flush();
     }
 
 

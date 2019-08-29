@@ -50,7 +50,7 @@ class CrossrefJournalScrapper
         if (!empty($journal->getIssn())) {
             $issn = $journal->getIssn();
         } elseif (!empty($journal->getEissn())) {
-            $issn = $journal->getIssn();
+            $issn = $journal->getEissn();
         } else {
             return;
         }

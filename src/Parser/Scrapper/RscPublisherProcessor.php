@@ -12,8 +12,9 @@ use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
-class AscPublisherProcessor implements PublisherProcessor
+class RscPublisherProcessor implements PublisherProcessor
 {
+
     protected $em;
     protected $logger;
 
@@ -27,13 +28,13 @@ class AscPublisherProcessor implements PublisherProcessor
 
     public function name(): string
     {
-        return 'asc';
+        return 'rsc';
     }
 
     public function publisherNames(): array
     {
         return [
-            'american chemical society'
+            'rsc'
         ];
     }
 
@@ -56,8 +57,6 @@ class AscPublisherProcessor implements PublisherProcessor
 
             $data = $this->parseData($body);
 
-            $article->setPublisherData($data);
-
             $datesProcessed = 0;
             if (isset($data['Received'])) {
                 $article->setPublisherReceived(new DateTime($data['Received']));
@@ -71,16 +70,11 @@ class AscPublisherProcessor implements PublisherProcessor
                 $article->setPublisherAvailableOnline(new DateTime($data['Published online']));
                 $datesProcessed++;
             }
-            if (isset($data['Published in issue'])) {
-                $article->setPublisherAvailablePrint(new DateTime($data['Published in issue']));
-                $datesProcessed++;
-            }
 
             $this->em->persist($article);
             $this->em->flush();
 
             return $datesProcessed;
-
         } catch (RequestException $e) {
             $data = [
                 'success' => false,
@@ -92,29 +86,44 @@ class AscPublisherProcessor implements PublisherProcessor
             $this->em->flush();
             return 0;
         }
+
     }
 
     private function parseData(string $body): array
     {
-        $data = [];
-
         $crawler = new Crawler($body);
-        $crawler->filter('div.article_header-history ul.article-chapter-history-list li')
-            ->each(function (Crawler $elem) use (&$data) {
-                $attrName = $elem->filter('span.item_label')->text(null);
-                $attrValue = $elem->text();
-                if (!empty($attrName) && !empty($attrValue)) {
-                    $attrName = trim($attrName);
-                    $attrValue = trim(substr($attrValue, strlen($attrName)));
-                    if (strpos($attrValue, 'issue') === 0) {
-                        $attrName .= ' issue';
-                        $attrValue = trim(substr($attrValue, strlen('issue')));
-                    }
-                    $data[$attrName] = $attrValue;
+
+        try {
+            $publicationDetailText = $crawler->filter('#divAbout div[class="autopad--h"] p')->text();
+        } catch (\InvalidArgumentException $e) {
+            return [];
+        }
+
+        $publicationDetailText = trim($publicationDetailText);
+        $publicationDetailText = strtolower($publicationDetailText);
+        $publicationDetailText = str_replace("\r\n", '', $publicationDetailText);
+        $publicationDetailText = preg_replace('!\s+!', ' ', $publicationDetailText);
+
+        $publicationDetailText = str_replace('and', ',', $publicationDetailText);
+        $publicationDetailText = str_replace('the article was', '', $publicationDetailText);
+
+        $parts = explode(',', $publicationDetailText);
+        $parts = array_map('trim', $parts);
+
+        $prefixMap = [
+            'received on' => 'Received',
+            'accepted on' => 'Accepted',
+            'first published on' => 'Published online'
+        ];
+
+        $result = [];
+        foreach ($parts as $part) {
+            foreach ($prefixMap as $prefix => $key) {
+                if (strpos($part, $prefix) === 0) {
+                    $result[$key] = substr($part, strlen($prefix) + 1);
                 }
-            });
-
-        return $data;
-
+            }
+        }
+        return $result;
     }
 }

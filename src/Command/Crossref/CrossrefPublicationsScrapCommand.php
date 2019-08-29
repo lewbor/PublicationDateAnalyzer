@@ -1,21 +1,22 @@
 <?php
 
 
-namespace App\Command;
+namespace App\Command\Crossref;
 
 
-use App\Parser\CrossrefScrapper;
+use App\Parser\Crossref\CrossrefPublicationsScrapper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CrossrefScrapCommand extends Command
+class CrossrefPublicationsScrapCommand extends Command
 {
+    const CMD_NAME = 'crossref.publications.scrap';
 
     protected $scraper;
 
-    public function __construct(CrossrefScrapper $scraper)
+    public function __construct(CrossrefPublicationsScrapper $scraper)
     {
         parent::__construct();
         $this->scraper = $scraper;
@@ -23,7 +24,7 @@ class CrossrefScrapCommand extends Command
 
     protected function configure()
     {
-        $this->setName('crossref.scrap');
+        $this->setName(self::CMD_NAME);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

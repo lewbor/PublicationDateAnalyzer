@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Analytics;
+namespace App\Command;
 
 
 use App\Entity\Journal;

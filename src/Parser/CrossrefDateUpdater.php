@@ -7,6 +7,7 @@ namespace App\Parser;
 use App\Entity\Article;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
 class CrossrefDateUpdater
@@ -37,16 +38,40 @@ class CrossrefDateUpdater
         }
     }
 
-    private function articleIterator()
+    private function articleIterator(): iterable
     {
-        $iterator = $this->em->createQueryBuilder()
+        yield from $this->idIterator($this->em->createQueryBuilder()
             ->select('entity')
             ->from(Article::class, 'entity')
             ->andWhere('entity.crossrefData IS NOT NULL')
-            ->getQuery()
-            ->iterate();
-        foreach ($iterator as $item) {
-            yield $item[0];
+        );
+    }
+
+    private function idIterator(QueryBuilder $qb): iterable {
+        $lastId = 0;
+
+        while(true) {
+            $currentQb = clone $qb;
+            $iterator = $currentQb
+                ->andWhere('entity.id > :id')
+                ->setMaxResults(10000)
+                ->orderBy('entity.id', 'asc')
+                ->setParameter('id', $lastId)
+                ->getQuery()
+                ->iterate();
+
+            $hasItems = false;
+            foreach ($iterator as $item) {
+                $hasItems = true;
+                $obj = $item[0];
+                yield $obj;
+                $lastId = $obj->getId();
+                $this->em->detach($obj);
+            }
+
+            if(!$hasItems) {
+                break;
+            }
         }
     }
 

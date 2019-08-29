@@ -1,58 +1,65 @@
 <?php
 
 
-namespace App\Parser;
+namespace App\Parser\Crossref;
 
 
 use App\Entity\Article;
 use App\Entity\Journal;
+use App\Entity\QueueItem;
+use App\Lib\QueueManager;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 
-class CrossrefScrapper
+class CrossrefPublicationsScrapper
 {
+    private const TRY_COUNT = 10;
+    private const INVALID_RESPONSE_DELAY = 5;
 
     protected $em;
     protected $logger;
+    protected $queueManager;
 
     public function __construct(
         EntityManagerInterface $em,
-        LoggerInterface $logger)
+        LoggerInterface $logger,
+        QueueManager $queueManager)
     {
         $this->em = $em;
         $this->logger = $logger;
+        $this->queueManager = $queueManager;
     }
 
     public function scrap()
     {
 
-        foreach ($this->journalIterator() as $journal) {
-            $this->processJournal($journal);
+        foreach ($this->queueManager->singleIterator(CrossrefPublicationsQueer::QUEUE_NAME) as $idx => $queueItem) {
+            $this->processItem($queueItem);
+
+            $queueItem = $this->em->getRepository(QueueItem::class)->find($queueItem->getId());
+            $this->queueManager->acknowledge($queueItem);
+
             $this->em->clear();
+            $this->logger->info(sprintf("reminding %d records",
+                $this->queueManager->remindingTasks(CrossrefPublicationsQueer::QUEUE_NAME)));
         }
+
     }
 
-    private function journalIterator()
+    private function processItem(QueueItem $queueItem)
     {
-        $iterator = $this->em->createQueryBuilder()
-            ->select('entity')
-            ->from(Journal::class, 'entity')
-            ->andWhere('entity.crossrefData IS NOT NULL')
-            ->andWhere(sprintf('(%s) <= 500',
-                $this->em->createQueryBuilder()
-                    ->select('COUNT(article.id)')
-                    ->from(Article::class, 'article')
-                    ->andWhere('article.journal = entity')
-                    ->getQuery()
-                    ->getDQL()
-            ))
-            ->getQuery()
-            ->iterate();
-        foreach ($iterator as $item) {
-            yield $item[0];
+        $data = $queueItem->getData();
+        $journal = $this->em->getRepository(Journal::class)->find($data['id']);
+        if ($journal === null) {
+            $this->logger->info("Journal is not exist");
+            return;
         }
+
+        $this->processJournal($journal);
     }
 
     private function processJournal(Journal $journal)
@@ -63,15 +70,16 @@ class CrossrefScrapper
         } elseif (!empty($journal->getEissn())) {
             $issn = $journal->getEissn();
         } else {
+            $this->logger->error(sprintf('Journal %s - no valid issn', $journal->getName()));
             return;
         }
 
         $this->logger->info(sprintf('Start process journal %d', $journal->getId()));
 
         $scrappedArticles = 0;
+        $insertedArticles = 0;
         $nextCursor = '*';
         while (true) {
-
             $this->em->clear();
             $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
 
@@ -88,7 +96,11 @@ class CrossrefScrapper
             }
 
             foreach ($result['message']['items'] as $item) {
-                $this->processItem($item, $journal);
+                $wasInsertion = $this->processPublication($item, $journal);
+                if($wasInsertion) {
+                    $insertedArticles++;
+                }
+                $this->em->clear();
             }
 
             $nextCursor = $result['message']['next-cursor'];
@@ -97,13 +109,14 @@ class CrossrefScrapper
             }
 
             $scrappedArticles += count($result['message']['items']);
-            $this->logger->info(sprintf('Journal %d - processed %d items', $journal->getId(), $scrappedArticles));
+            $this->logger->info(sprintf('Journal %d - processed %d items, inserted %d',
+                $journal->getId(), $scrappedArticles, $insertedArticles));
         }
 
-        $this->logger->info(sprintf('End process journal %d', $journal->getId()));
+        $this->logger->info(sprintf('End process journal %d, scrapped %d articles', $journal->getId(), $scrappedArticles));
     }
 
-    private function processItem(array $item, Journal $journal)
+    private function processPublication(array $item, Journal $journal): bool
     {
         $doi = $item['DOI'];
 
@@ -115,8 +128,10 @@ class CrossrefScrapper
             ->getQuery()
             ->getOneOrNullResult();
         if ($existingArticle !== null) {
-            return;
+            return false;
         }
+
+        $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
 
         $article = (new Article())
             ->setDoi($doi)
@@ -124,15 +139,17 @@ class CrossrefScrapper
             ->setYear($item['issued']['date-parts'][0][0] ?? 0)
             ->setJournal($journal)
             ->setCrossrefData($item);
+        $this->updateCrossrefDates($article, $item);
         $this->em->persist($article);
         $this->em->flush();
+        return true;
     }
 
     private function fetchCrossrefData(string $issn, string $nextCursor): array
     {
         $lastException = null;
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < self::TRY_COUNT; $i++) {
             try {
                 $url = sprintf('https://api.crossref.org/journals/%s/works', $issn);
                 $urlParams = [
@@ -152,14 +169,43 @@ class CrossrefScrapper
                 $body = $response->getBody()->getContents();
                 $result = \GuzzleHttp\json_decode($body, true);
                 return $result;
-            } catch (\InvalidArgumentException $e) {
+            } catch (Exception $e) {
                 $this->logger->error($e->getMessage());
-                $this->logger->error($body);
+                $this->logger->info(sprintf('Will sleep %d seconds', self::INVALID_RESPONSE_DELAY));
                 $lastException = $e;
-                sleep(5);
+                sleep(self::INVALID_RESPONSE_DELAY);
             }
         }
         throw $lastException;
+    }
+
+    private function updateCrossrefDates(Article $article, array $item): void
+    {
+        if (isset($item['published-print'])) {
+            $parts = $item['published-print']['date-parts'][0];
+            if (count($parts) > 1) {
+                $publishedDate = $this->formatDate($parts);
+                $article->setPublishedPrint($publishedDate);
+            }
+        }
+        if (isset($response['published-online'])) {
+            $parts = $item['published-online']['date-parts'][0];
+
+            if (count($parts) == 3) {
+                $publishedDate = $this->formatDate($parts);
+                $article->setPublishedOnline($publishedDate);
+            }
+        }
+    }
+
+    private function formatDate(array $parts): DateTime
+    {
+        $dateStr = sprintf('%04d-%02d-%02d',
+            (int)$parts[0],
+            (int)$parts[1],
+            isset($parts[2]) ? (int)$parts[2] : 1
+        );
+        return new DateTime($dateStr);
     }
 
 

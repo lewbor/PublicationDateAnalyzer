@@ -58,12 +58,6 @@ class Article
     protected $publisherData;
 
     /**
-     * @var array
-     * @ORM\Column(name="unpaywall_data", type="json", nullable=true)
-     */
-    protected $unpaywallData;
-
-    /**
      * @var DateTime
      * @ORM\Column(name="published_print", type="date", nullable=true)
      */
@@ -244,17 +238,6 @@ class Article
     public function setPublisherAvailablePrint(?DateTime $publisherAvailablePrint): self
     {
         $this->publisherAvailablePrint = $publisherAvailablePrint;
-        return $this;
-    }
-
-    public function getUnpaywallData(): ?array
-    {
-        return $this->unpaywallData;
-    }
-
-    public function setUnpaywallData(?array $unpaywallData): self
-    {
-        $this->unpaywallData = $unpaywallData;
         return $this;
     }
 
