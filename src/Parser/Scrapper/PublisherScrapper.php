@@ -24,7 +24,8 @@ class PublisherScrapper
         ScienceDirectPublisherProcessor $scienceDirectPublisherProcessor,
         SpringerPublisherProcessor $springerPublisherProcessor,
         AscPublisherProcessor $ascPublisherProcessor,
-        RscPublisherProcessor $rscPublisherProcessor)
+        RscPublisherProcessor $rscPublisherProcessor,
+        WileyPublisherProcessor $wileyPublisherProcessor)
     {
         $this->em = $em;
         $this->logger = $logger;
@@ -34,7 +35,8 @@ class PublisherScrapper
             $scienceDirectPublisherProcessor,
             $springerPublisherProcessor,
             $ascPublisherProcessor,
-            $rscPublisherProcessor
+            $rscPublisherProcessor,
+            $wileyPublisherProcessor
         ];
     }
 

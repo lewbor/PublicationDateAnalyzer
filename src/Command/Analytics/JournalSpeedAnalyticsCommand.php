@@ -47,21 +47,11 @@ class JournalSpeedAnalyticsCommand extends Command
                         'column' => '2010-2019',
                         'analyticsKey' => '2010_2019',
                         'analyzerKey' => 'Received_Accepted'
-                    ]
-                ]
-            ],
-            [
-                'path' => 'Received_Published.csv',
-                'columns' => [
-                    [
-                        'column' => '2000-2009',
-                        'analyticsKey' => '2000_2009',
-                        'analyzerKey' => 'Received_Published'
                     ],
                     [
-                        'column' => '2010-2019',
-                        'analyticsKey' => '2010_2019',
-                        'analyzerKey' => 'Received_Published'
+                        'column' => '2018-2019',
+                        'analyticsKey' => '2018_2019',
+                        'analyzerKey' => 'Received_Accepted'
                     ]
                 ]
             ],
@@ -77,6 +67,31 @@ class JournalSpeedAnalyticsCommand extends Command
                         'column' => '2010-2019',
                         'analyticsKey' => '2010_2019_OA',
                         'analyzerKey' => 'Received_Accepted'
+                    ],
+                    [
+                        'column' => '2018-2019',
+                        'analyticsKey' => '2018_2019_OA',
+                        'analyzerKey' => 'Received_Accepted'
+                    ]
+                ]
+            ],
+            [
+                'path' => 'Received_Published.csv',
+                'columns' => [
+                    [
+                        'column' => '2000-2009',
+                        'analyticsKey' => '2000_2009',
+                        'analyzerKey' => 'Received_Published'
+                    ],
+                    [
+                        'column' => '2010-2019',
+                        'analyticsKey' => '2010_2019',
+                        'analyzerKey' => 'Received_Published'
+                    ],
+                    [
+                        'column' => '2018-2019',
+                        'analyticsKey' => '2018_2019',
+                        'analyzerKey' => 'Received_Published'
                     ]
                 ]
             ],
@@ -92,12 +107,57 @@ class JournalSpeedAnalyticsCommand extends Command
                         'column' => '2010-2019',
                         'analyticsKey' => '2010_2019_OA',
                         'analyzerKey' => 'Received_Published'
+                    ],
+                    [
+                        'column' => '2018-2019',
+                        'analyticsKey' => '2018_2019_OA',
+                        'analyzerKey' => 'Received_Published'
+                    ]
+                ]
+            ],
+            [
+                'path' => 'Accepted_Published.csv',
+                'columns' => [
+                    [
+                        'column' => '2000-2009',
+                        'analyticsKey' => '2000_2009',
+                        'analyzerKey' => 'Accepted_Published'
+                    ],
+                    [
+                        'column' => '2010-2019',
+                        'analyticsKey' => '2010_2019',
+                        'analyzerKey' => 'Accepted_Published'
+                    ],
+                    [
+                        'column' => '2018-2019',
+                        'analyticsKey' => '2018_2019',
+                        'analyzerKey' => 'Accepted_Published'
+                    ]
+                ]
+            ],
+            [
+                'path' => 'Accepted_Published_OA.csv',
+                'columns' => [
+                    [
+                        'column' => '2000-2009',
+                        'analyticsKey' => '2000_2009_OA',
+                        'analyzerKey' => 'Accepted_Published'
+                    ],
+                    [
+                        'column' => '2010-2019',
+                        'analyticsKey' => '2010_2019_OA',
+                        'analyzerKey' => 'Accepted_Published'
+                    ],
+                    [
+                        'column' => '2018-2019',
+                        'analyticsKey' => '2018_2019_OA',
+                        'analyzerKey' => 'Accepted_Published'
                     ]
                 ]
             ],
         ];
 
-        $basePath = __DIR__ . '/../../data/stat/speed';
+        $basePath = __DIR__ . '/../../../data/speed';
         foreach ($comparePeriods as $comparePeriod) {
             $this->saveData($this->analyzePeriod($comparePeriod), $basePath . '/' . $comparePeriod['path']);
         }
@@ -108,6 +168,7 @@ class JournalSpeedAnalyticsCommand extends Command
         $journalAnalytics = $this->em->createQueryBuilder()
             ->select('entity')
             ->from(JournalAnalytics::class, 'entity')
+            ->orderBy('entity.id', 'asc')
             ->getQuery()
             ->getResult();
 
@@ -118,34 +179,19 @@ class JournalSpeedAnalyticsCommand extends Command
             $journal = $journalAnalytic->getJournal();
             $analyticsData = $journalAnalytic->getAnalytics();
 
-            $minYear = (int)$this->em->createQueryBuilder()
-                ->select('MIN(entity.year)')
-                ->from(Article::class, 'entity')
-                ->andWhere('entity.journal = :journal')
-                ->setParameter('journal', $journal)
-                ->getQuery()
-                ->getSingleScalarResult();
-            $maxYear = (int)$this->em->createQueryBuilder()
-                ->select('MAX(entity.year)')
-                ->from(Article::class, 'entity')
-                ->andWhere('entity.journal = :journal')
-                ->setParameter('journal', $journal)
-                ->getQuery()
-                ->getSingleScalarResult();
-
             $row = [
                 'Journal' => trim($journal->getName()),
                 'Publisher' => trim($journal->getCrossrefData()['publisher']) ?? '',
-                'Period' => sprintf('%d-%d', $minYear, $maxYear),
+                'Period' => sprintf('%d-%d', $analyticsData['common']['min'], $analyticsData['common']['max']),
             ];
 
             foreach ($period['columns'] as $column) {
                 $columnName = $column['column'] . '-Total';
-                $row[$columnName] = $analyticsData[$column['analyticsKey']]['analyzers'][$column['analyzerKey']]['count'];
+                $row[$columnName] = $analyticsData['periods'][$column['analyticsKey']]['analyzers'][$column['analyzerKey']]['count'];
             }
             foreach ($period['columns'] as $column) {
                 $columnName = $column['column'] . '-Median';
-                $row[$columnName] = $analyticsData[$column['analyticsKey']]['analyzers'][$column['analyzerKey']]['median'];
+                $row[$columnName] = $analyticsData['periods'][$column['analyticsKey']]['analyzers'][$column['analyzerKey']]['median'];
             }
 
             $rows[] = $row;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Command;
+namespace App\Command\Unpaywall;
 
 
 use App\Entity\Article;

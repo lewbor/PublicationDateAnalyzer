@@ -4,48 +4,23 @@
 namespace App\Command\Crossref;
 
 
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
+use App\Lib\AbstractMultiProcessCommand;
 
-class CrossrefPublicationsMultiProcessScrapCommand extends Command
+class CrossrefPublicationsMultiProcessScrapCommand extends AbstractMultiProcessCommand
 {
-
-    protected $logger;
-
-    public function __construct(LoggerInterface $logger)
-    {
-        parent::__construct();
-        $this->logger = $logger;
-    }
 
     protected function configure()
     {
         $this->setName('crossref.publications.multi_scrap');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function processCount(): int
     {
-        $processes = [];
+        return 10;
+    }
 
-        foreach (range(1, 5) as $procNumber) {
-            $process = new Process(['bin/console', CrossrefPublicationsScrapCommand::CMD_NAME], null, $_ENV);
-            $process->start(function ($type, $buffer) use ($output) {
-                echo $buffer;
-            });
-            $processes[] = $process;
-        }
-
-        while (count($processes) > 0) {
-            foreach ($processes as $i => $runningProcess) {
-                if (!$runningProcess->isRunning()) {
-                    unset($processes[$i]);
-                }
-
-                sleep(1);
-            }
-        }
+    protected function commandName(): string
+    {
+        return CrossrefPublicationsScrapCommand::CMD_NAME;
     }
 }

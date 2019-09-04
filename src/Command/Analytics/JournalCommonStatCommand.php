@@ -47,6 +47,8 @@ class JournalCommonStatCommand extends Command
             new YearPeriod(2000, 2009, true),
             new YearPeriod(2010, 2019),
             new YearPeriod(2010, 2019, true),
+            new YearPeriod(2018, 2019),
+            new YearPeriod(2018, 2019, true),
         ];
         $dateAnalyzers = [
             new ReceivedAcceptedAnalyzer(),

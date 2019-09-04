@@ -26,7 +26,7 @@ class Unpaywall
 
     /**
      * @var bool
-     * @ORM\Column(name="open_access", type="boolean", nullable=false)
+     * @ORM\Column(name="open_access", type="boolean", nullable=true)
      */
     protected $openAccess;
 
@@ -47,12 +47,12 @@ class Unpaywall
         return $this;
     }
 
-    public function isOpenAccess(): bool
+    public function isOpenAccess(): ?bool
     {
         return $this->openAccess;
     }
 
-    public function setOpenAccess(bool $openAccess): self
+    public function setOpenAccess(?bool $openAccess): self
     {
         $this->openAccess = $openAccess;
         return $this;

@@ -36,9 +36,7 @@ class JournalAnalyzerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $basePath = __DIR__ . '/../../data/dates';
-
-        $this->saveData($this->analyzeArticlesCount(), $basePath . '/articles_count.csv');
+        $basePath = __DIR__ . '/../../../data/dates';
 
         $hasDatePeriods = [
             [
@@ -65,17 +63,54 @@ class JournalAnalyzerCommand extends Command
                 'openAccess' => true,
                 'path' => 'articles_has_dates_2010_2019_OA.csv'
             ],
+            [
+                'start' => 2018,
+                'end' => 2019,
+                'openAccess' => null,
+                'path' => 'articles_has_dates_2018_2019.csv'
+            ],
         ];
-        foreach ($hasDatePeriods as $period) {
-            $this->saveData($this->analyzeArticleHasDates($period), $basePath . '/' . $period['path']);
-        }
-    }
 
-    private function analyzeArticleHasDates(array $period): array
-    {
-        $rows = [];
+        $articleCountPeriods = [
+            [
+                'name' => 'Total',
+                'start' => null,
+                'end' => null,
+                'openAccess' => null
+            ],
+            [
+                'name' => 'Total OA',
+                'start' => null,
+                'end' => null,
+                'openAccess' => true
+            ],
+            [
+                'name' => '2000-2009',
+                'start' => 2000,
+                'end' => 2009,
+                'openAccess' => null
+            ],
+            [
+                'name' => '2010-2019',
+                'start' => 2010,
+                'end' => 2019,
+                'openAccess' => null
+            ],
+            [
+                'name' => '2000-2009-OA',
+                'start' => 2000,
+                'end' => 2009,
+                'openAccess' => true
+            ],
+            [
+                'name' => '2010-2019-OA',
+                'start' => 2010,
+                'end' => 2019,
+                'openAccess' => true
+            ],
+        ];
 
-        $filters = [
+        $hasDatesFilters = [
             [
                 'name' => 'Crossref print',
                 'qbFilter' => function (QueryBuilder $qb) {
@@ -110,6 +145,123 @@ class JournalAnalyzerCommand extends Command
                 },
             ]
         ];
+
+        $this->saveData($this->analyzeArticlesCount($articleCountPeriods), $basePath . '/articles_count.csv');
+        foreach ($hasDatePeriods as $period) {
+            $this->saveData($this->analyzeArticleHasDates($period, $hasDatesFilters), $basePath . '/' . $period['path']);
+        }
+
+        $publisherPath = __DIR__ . '/../../../data/publisher';
+        $publisherJournals = $this->buildPublisherJournals();
+        $this->saveData($this->analyzePublisherArticlesCount($publisherJournals, $articleCountPeriods), $publisherPath . '/publisher_articles_count.csv');
+        foreach ($hasDatePeriods as $period) {
+            $this->saveData($this->analyzePublisherHasDates($period, $hasDatesFilters, $publisherJournals), $publisherPath . '/publisher_' . $period['path']);
+        }
+    }
+
+    private function analyzePublisherArticlesCount(array $publisherJournals, array $periods): array
+    {
+        $rows = [];
+
+        foreach ($publisherJournals as $publisher => $journalIds) {
+            $row = [
+                'Publisher' => $publisher,
+                'Journals' => count($journalIds)
+            ];
+
+            $articlesCount = (int)$this->em->createQueryBuilder()
+                ->select('COUNT(entity.id)')
+                ->from(Article::class, 'entity')
+                ->andWhere('entity.journal IN (:journals)')
+                ->setParameter('journals', $journalIds)
+                ->getQuery()
+                ->getSingleScalarResult();
+
+            foreach ($periods as $period) {
+                $articlesPeriodCount = (int)$this->applyPeriodFilter(
+                    $this->em->createQueryBuilder()
+                        ->select('COUNT(entity.id)')
+                        ->from(Article::class, 'entity')
+                        ->andWhere('entity.journal IN (:journals)')
+                        ->setParameter('journals', $journalIds),
+                    $period)
+                    ->getQuery()
+                    ->getSingleScalarResult();
+                $row[$period['name']] = $this->percentage($articlesCount, $articlesPeriodCount);
+            }
+
+            $rows[] = $row;
+        }
+
+        return $rows;
+    }
+
+    private function buildPublisherJournals(): array
+    {
+        /** @var Journal[] $journals */
+        $journals = $this->em->createQueryBuilder()
+            ->select('entity')
+            ->from(Journal::class, 'entity')
+            ->getQuery()
+            ->getResult();
+
+        $publisherToJournal = [];
+        foreach ($journals as $journal) {
+            $publisher = strtolower(trim($journal->getCrossrefData()['publisher']));
+            $publisherToJournal[$publisher][] = $journal->getId();
+        }
+        return $publisherToJournal;
+    }
+
+    private function analyzePublisherHasDates(array $period, array $filters, array $publisherJournals ): array {
+        $rows = [];
+
+        foreach ($publisherJournals as $publisher => $journalIds) {
+            $totalArticlesCount = (int)$this->applyPeriodFilter(
+                $this->em->createQueryBuilder()
+                    ->select('COUNT(entity.id)')
+                    ->from(Article::class, 'entity')
+                    ->andWhere('entity.journal IN (:journals)')
+                    ->setParameter('journals', $journalIds),
+                $period)
+                ->getQuery()
+                ->getSingleScalarResult();
+
+            $row = [
+                'Publisher' => $publisher,
+                'Journals' => count($journalIds),
+                'Total articles' => $totalArticlesCount
+            ];
+
+            foreach ($filters as $filter) {
+                $filteredArticlesQb = $this->applyPeriodFilter(
+                    $this->em->createQueryBuilder()
+                        ->select('COUNT(entity.id)')
+                        ->from(Article::class, 'entity')
+                        ->andWhere('entity.journal IN (:journals)')
+                        ->setParameter('journals', $journalIds),
+                    $period);
+                $filterApplier = $filter['qbFilter'];
+                $filterApplier($filteredArticlesQb);
+
+                $filteredArticles = (int)$filteredArticlesQb
+                    ->getQuery()
+                    ->getSingleScalarResult();
+                $row[$filter['name']] = $this->percentage($totalArticlesCount, $filteredArticles);
+            }
+
+            $rows[] = $row;
+            $this->logger->info(sprintf('%s - Processed %s', $period['path'], $publisher));
+        }
+
+        return $rows;
+    }
+
+
+    private function analyzeArticleHasDates(array $period, array $filters): array
+    {
+        $rows = [];
+
         foreach ($this->journalIterator() as $journal) {
             $totalArticlesCount = (int)$this->applyPeriodFilter(
                 $this->em->createQueryBuilder()
@@ -133,7 +285,6 @@ class JournalAnalyzerCommand extends Command
                         ->select('COUNT(entity.id)')
                         ->from(Article::class, 'entity')
                         ->andWhere('entity.journal = :journal')
-                        ->andWhere('entity.publishedPrint IS NOT NULL')
                         ->setParameter('journal', $journal),
                     $period);
                 $filterApplier = $filter['qbFilter'];
@@ -152,36 +303,9 @@ class JournalAnalyzerCommand extends Command
         return $rows;
     }
 
-    private function analyzeArticlesCount(): array
+    private function analyzeArticlesCount(array $periods): array
     {
         $rows = [];
-
-        $periods = [
-            [
-                'name' => '2000-2009',
-                'start' => 2000,
-                'end' => 2009,
-                'openAccess' => null
-            ],
-            [
-                'name' => '2010-2019',
-                'start' => 2010,
-                'end' => 2019,
-                'openAccess' => null
-            ],
-            [
-                'name' => '2000-2009-OA',
-                'start' => 2000,
-                'end' => 2009,
-                'openAccess' => true
-            ],
-            [
-                'name' => '2010-2019-OA',
-                'start' => 2010,
-                'end' => 2019,
-                'openAccess' => true
-            ],
-        ];
 
         $journalStatList = $this->em->getRepository(JournalAnalytics::class)->findAll();
 
@@ -193,7 +317,6 @@ class JournalAnalyzerCommand extends Command
                 'Journal' => $journal->getName(),
                 'Publisher' => trim($journal->getCrossrefData()['publisher']) ?? '',
                 'Period' => sprintf('%d-%d', $stat['common']['min'], $stat['common']['max']),
-                'Total articles' => $stat['common']['count']
             ];
 
             foreach ($periods as $period) {
@@ -264,7 +387,7 @@ class JournalAnalyzerCommand extends Command
 
     private function percentage(int $totalArticlesCount, int $filteredArticles): string
     {
-        if($totalArticlesCount === 0) {
+        if ($totalArticlesCount === 0) {
             return $filteredArticles;
         }
 

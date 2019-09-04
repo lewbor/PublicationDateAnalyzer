@@ -40,7 +40,22 @@ class RscPublisherProcessor implements PublisherProcessor
 
     public function process(Article $article): int
     {
+        $publisherData = $this->extractDataFromCrossref($article);
+        if (!empty($publisherData)) {
+            return $this->updateArticleByPublisherData($article, $publisherData);
+        }
+
+        //return $this->updateArticleByPublisherData($article, []);
+
+        $publisherData = $this->scrapPublisherDataFromWeb($article);
+        return $this->updateArticleByPublisherData($article, $publisherData);
+    }
+
+    private function scrapPublisherDataFromWeb(Article $article): array
+    {
         try {
+            $this->logger->info(sprintf('Article %d - go to web', $article->getId()));
+
             $client = new Client([
                 'cookies' => true,
                 'allow_redirects' => true,
@@ -55,75 +70,161 @@ class RscPublisherProcessor implements PublisherProcessor
             $response = $client->request('GET', $url);
             $body = $response->getBody()->getContents();
 
-            $data = $this->parseData($body);
-
-            $datesProcessed = 0;
-            if (isset($data['Received'])) {
-                $article->setPublisherReceived(new DateTime($data['Received']));
-                $datesProcessed++;
-            }
-            if (isset($data['Accepted'])) {
-                $article->setPublisherAccepted(new DateTime($data['Accepted']));
-                $datesProcessed++;
-            }
-            if (isset($data['Published online'])) {
-                $article->setPublisherAvailableOnline(new DateTime($data['Published online']));
-                $datesProcessed++;
-            }
-
-            $this->em->persist($article);
-            $this->em->flush();
-
-            return $datesProcessed;
+            return $this->parsePublisherWebData($article, $body);
         } catch (RequestException $e) {
-            $data = [
+            return [
                 'success' => false,
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
                 'message' => $e->getMessage(),
             ];
-            $article->setPublisherData($data);
-            $this->em->persist($article);
-            $this->em->flush();
-            return 0;
         }
-
     }
 
-    private function parseData(string $body): array
+    private function parsePublisherWebData(Article $article, string $body): array
     {
         $crawler = new Crawler($body);
 
         try {
             $publicationDetailText = $crawler->filter('#divAbout div[class="autopad--h"] p')->text();
+
+            $publicationDetailText = trim($publicationDetailText);
+            $publicationDetailText = strtolower($publicationDetailText);
+            $publicationDetailText = str_replace("\r\n", '', $publicationDetailText);
+            $publicationDetailText = preg_replace('!\s+!', ' ', $publicationDetailText);
+
+            $publicationDetailText = str_replace('and', ',', $publicationDetailText);
+            $publicationDetailText = str_replace('the article was', '', $publicationDetailText);
+
+            $parts = explode(',', $publicationDetailText);
+            $parts = array_map('trim', $parts);
+
+            $prefixMap = [
+                'received on' => 'Received',
+                'accepted on' => 'Accepted',
+                'first published on' => 'Published online'
+            ];
+
+            $publisherDates = [];
+            foreach ($parts as $part) {
+                foreach ($prefixMap as $prefix => $key) {
+                    if (strpos($part, $prefix) === 0) {
+                        $publisherDates[$key] = substr($part, strlen($prefix) + 1);
+                    }
+                }
+            }
+
+            return $publisherDates;
         } catch (\InvalidArgumentException $e) {
+            $this->logger->info(sprintf('Article(%d) - no dates', $article->getId()));
             return [];
         }
 
-        $publicationDetailText = trim($publicationDetailText);
-        $publicationDetailText = strtolower($publicationDetailText);
-        $publicationDetailText = str_replace("\r\n", '', $publicationDetailText);
-        $publicationDetailText = preg_replace('!\s+!', ' ', $publicationDetailText);
+    }
 
-        $publicationDetailText = str_replace('and', ',', $publicationDetailText);
-        $publicationDetailText = str_replace('the article was', '', $publicationDetailText);
+    private function extractDataFromCrossref(Article $article): array
+    {
+        $crossrefData = $article->getCrossrefData();
+        if (!isset($crossrefData['assertion'])) {
+            return [];
+        }
 
-        $parts = explode(',', $publicationDetailText);
+        $historyItem = null;
+        foreach ($crossrefData['assertion'] as $assertionItem) {
+            if ($assertionItem['name'] === 'history') {
+                $historyItem = $assertionItem;
+                break;
+            }
+        }
+        if ($historyItem === null) {
+            return [];
+        }
+
+        $historyText = $historyItem['value'];
+        if (empty($historyText)) {
+            return [];
+        }
+
+        $historyText = trim($historyText);
+        $historyText = strtolower($historyText);
+
+        $parts = explode(';', $historyText);
         $parts = array_map('trim', $parts);
 
+
+        $publisherDates = [];
+
+        $publisherDates = array_merge($publisherDates, $this->processReceivedAcceptedDates($parts));
+        $publisherDates = array_merge($publisherDates, $this->processPublishedDates($parts));
+
+        return $publisherDates;
+    }
+
+    private function updateArticleByPublisherData(Article $article, array $publisherData): int
+    {
+        $article->setPublisherData($publisherData);
+
+        $datesProcessed = 0;
+        if (isset($publisherData['Received'])) {
+            $article->setPublisherReceived(new DateTime($publisherData['Received']));
+            $datesProcessed++;
+        }
+        if (isset($publisherData['Accepted'])) {
+            $article->setPublisherAccepted(new DateTime($publisherData['Accepted']));
+            $datesProcessed++;
+        }
+        if (isset($publisherData['Published online'])) {
+            $article->setPublisherAvailableOnline(new DateTime($publisherData['Published online']));
+            $datesProcessed++;
+        }
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        return $datesProcessed;
+    }
+
+    private function processReceivedAcceptedDates(array $parts): array
+    {
+        $publisherDates = [];
+
         $prefixMap = [
-            'received on' => 'Received',
-            'accepted on' => 'Accepted',
-            'first published on' => 'Published online'
+            'received' => 'Received',
+            'accepted' => 'Accepted',
         ];
 
-        $result = [];
-        foreach ($parts as $part) {
+        foreach ($parts as $partIdx => $part) {
             foreach ($prefixMap as $prefix => $key) {
-                if (strpos($part, $prefix) === 0) {
-                    $result[$key] = substr($part, strlen($prefix) + 1);
+                if (strpos($part, $prefix) === 0 && count(explode(' ', $part)) === 4) {
+                    $publisherDates[$key] = $this->extractDateFromEndOfString($part);
+                    unset($parts[$partIdx]);
+                    break;
                 }
             }
         }
-        return $result;
+
+        return $publisherDates;
+    }
+
+    private function processPublishedDates(array $parts): array
+    {
+        $publishedDates = [];
+
+        foreach ($parts as $part) {
+            if (strpos($part, 'published') !== false) {
+                $publishedDates[] = $this->extractDateFromEndOfString($part);
+            }
+        }
+        if (count($publishedDates) === 0) {
+            return [];
+        }
+
+        return ['Published online' => $publishedDates[0]];
+    }
+
+    private function extractDateFromEndOfString(string $str): string
+    {
+        $parts = explode(' ', $str);
+        $lastParts = array_slice($parts, -3, 3);
+        return implode(' ', $lastParts);
     }
 }

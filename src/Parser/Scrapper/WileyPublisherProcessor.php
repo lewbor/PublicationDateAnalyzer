@@ -12,7 +12,7 @@ use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
-class AscPublisherProcessor implements PublisherProcessor
+class WileyPublisherProcessor implements PublisherProcessor
 {
     protected $em;
     protected $logger;
@@ -27,13 +27,13 @@ class AscPublisherProcessor implements PublisherProcessor
 
     public function name(): string
     {
-        return 'asc';
+        return 'wiley';
     }
 
     public function publisherNames(): array
     {
         return [
-            'american chemical society'
+            'wiley'
         ];
     }
 
@@ -49,7 +49,7 @@ class AscPublisherProcessor implements PublisherProcessor
                 ],
             ]);
 
-            $url = sprintf('https://doi.org/%s', $article->getDoi());
+            $url = sprintf('https://onlinelibrary.wiley.com/action/ajaxShowPubInfo?widgetId=5cf4c79f-0ae9-4dc5-96ce-77f62de7ada9&ajax=true&doi=%s', $article->getDoi());
 
             $response = $client->request('GET', $url);
             $body = $response->getBody()->getContents();
@@ -59,19 +59,15 @@ class AscPublisherProcessor implements PublisherProcessor
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
-                $article->setPublisherReceived(new DateTime($data['Received']));
+                $article->setPublisherReceived($data['Received']);
                 $datesProcessed++;
             }
             if (isset($data['Accepted'])) {
-                $article->setPublisherAccepted(new DateTime($data['Accepted']));
+                $article->setPublisherAccepted($data['Accepted']);
                 $datesProcessed++;
             }
-            if (isset($data['Published online'])) {
-                $article->setPublisherAvailableOnline(new DateTime($data['Published online']));
-                $datesProcessed++;
-            }
-            if (isset($data['Published in issue'])) {
-                $article->setPublisherAvailablePrint(new DateTime($data['Published in issue']));
+            if (isset($data['Online'])) {
+                $article->setPublisherAvailableOnline($data['Online']);
                 $datesProcessed++;
             }
 
@@ -98,22 +94,37 @@ class AscPublisherProcessor implements PublisherProcessor
         $data = [];
 
         $crawler = new Crawler($body);
-        $crawler->filter('div.article_header-history ul.article-chapter-history-list li')
+        $crawler->filter('section.publication-history ul.rlist li')
             ->each(function (Crawler $elem) use (&$data) {
-                $attrName = $elem->filter('span.item_label')->text(null);
-                $attrValue = $elem->text();
-                if (!empty($attrName) && !empty($attrValue)) {
-                    $attrName = trim($attrName);
-                    $attrValue = trim(substr($attrValue, strlen($attrName)));
-                    if (strpos($attrValue, 'issue') === 0) {
-                        $attrName .= ' issue';
-                        $attrValue = trim(substr($attrValue, strlen('issue')));
-                    }
-                    $data[$attrName] = $attrValue;
+                $itemText = trim($elem->text());
+                $parts = explode(':', $itemText);
+                if (count($parts) !== 2) {
+                    $this->logger->notice(sprintf('Date string format error: %s', $itemText));
+                    return;
                 }
+
+                $parts = array_map('trim', $parts);
+                $data[strtolower($parts[0])] = new DateTime($parts[1]);
             });
 
-        return $data;
+        $publisherDates = [];
+        if(isset($data['manuscript received'])) {
+            $publisherDates['Received'] = $data['manuscript received'];
+        }
+        if(isset($data['manuscript accepted'])) {
+            $publisherDates['Accepted'] = $data['manuscript accepted'];
+        }elseif(isset($data['manuscript revised'])) {
+            $publisherDates['Accepted'] = $data['manuscript revised'];
+        }
+
+        $onlineDates = array_filter($data, function(string $label){
+            return strpos($label, 'online') !== false;
+        }, ARRAY_FILTER_USE_KEY);
+        if(count($onlineDates) > 0) {
+            $publisherDates['Online'] = min($onlineDates);
+        }
+
+        return $publisherDates;
 
     }
 }

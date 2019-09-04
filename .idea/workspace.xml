@@ -2,52 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f430a078-66ed-4ac7-b799-5f96fbe32122" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/lewbor.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/packages/dev/monolog.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run_all.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/AnalyticsSaver.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/AcceptedPublishedAnalyzer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/AnalyzerInterface.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/AnalyzerTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/ReceivedAcceptedAnalyzer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/Analyzer/ReceivedPublishedAnalyzer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/AscJournalLoaderCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/JournalAnalyticsMaker.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/JournalCommonStatCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Analytics/YearPeriod.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywalMultiProcessScrapCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallQueueCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallScrapCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Command/UnpaywallOpenAccessUpdateCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/CsvWriter.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Parser/Unpaywall/UnpaywallQueer.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Parser/UnpaywallOpenAccessUpdater.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Parser/UnpaywallScraper.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/DateAnalyzer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DateAnalyzer.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseMultiScrapCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseQueueCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseScrapCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Lib/AbstractMultiProcessCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Lib/IteratorUtils.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/a6e2ed46-785e-4a83-bc19-705c0bb504b0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a6e2ed46-785e-4a83-bc19-705c0bb504b0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/wos/APPLIED CATALYSIS B-ENVIRONMENTAL/001_500.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/CrossrefScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/CrossrefScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Analytics/JournalAnalyzerCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Analytics/JournalAnalyzerCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Analytics/JournalCommonStatCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Analytics/JournalCommonStatCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Analytics/JournalSpeedAnalyticsCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Analytics/JournalSpeedAnalyticsCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsMultiProcessScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsMultiProcessScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/CrossrefDateUpdateCommand.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherQueueCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherQueueCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherScrapCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/WosDataParserCommand.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Article.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Article.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Journal.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Journal.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/CrossrefDateUpdater.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/CrossrefDateUpdater.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/CrossrefScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/CrossrefScrapper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/UnpaywallArticlesUpdateCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallArticlesUpdateCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Unpaywall.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Unpaywall.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherProcessor.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/RscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/RscPublisherProcessor.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -87,6 +61,13 @@
         <item name="publication_dates@localhost" type="feb32156:DbDataSourceImpl" />
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
         <item name="publication_dates: schema" type="ebfa3cd1:MariaImplModel$Schema" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="publication_dates@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="publication_dates: schema" type="ebfa3cd1:MariaImplModel$Schema" />
+        <item name="journal: table" type="dbc44a63:MariaImplModel$Table" />
       </path>
     </expand>
     <select />
@@ -177,12 +158,12 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="database.console.LAST_STATE" value="false" />
     <property name="database.data.extractors.current.id" value="Comma-separated (CSV)_id" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../alpenbot/alpenbot_app" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../SciactKernelBundle" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -212,7 +193,27 @@
       <serviceView>
         <option name="contentProportion" value="0.06972973" />
         <treeState>
-          <expand />
+          <expand>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@1d5e4194" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+            </path>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@1d5e4194" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@1380ee29" type="9fbbdea:ServiceModel$ServiceNode" />
+            </path>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@1d5e4194" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@c472c9c" type="9fbbdea:ServiceModel$ServiceNode" />
+            </path>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@1d5e4194" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@558ee7b0" type="9fbbdea:ServiceModel$ServiceNode" />
+            </path>
+          </expand>
           <select />
         </treeState>
       </serviceView>
@@ -254,7 +255,23 @@
       <workItem from="1565056353777" duration="3363000" />
       <workItem from="1565059729824" duration="11891000" />
       <workItem from="1565321608100" duration="2279000" />
-      <workItem from="1565340800495" duration="4729000" />
+      <workItem from="1565340800495" duration="22993000" />
+      <workItem from="1566006256674" duration="12588000" />
+      <workItem from="1566439711978" duration="18026000" />
+      <workItem from="1566527460871" duration="12540000" />
+      <workItem from="1566611992198" duration="622000" />
+      <workItem from="1566699002188" duration="1275000" />
+      <workItem from="1566787166921" duration="12153000" />
+      <workItem from="1566870770999" duration="18502000" />
+      <workItem from="1567041013503" duration="6000" />
+      <workItem from="1567041331638" duration="857000" />
+      <workItem from="1567042201763" duration="15263000" />
+      <workItem from="1567127918770" duration="9816000" />
+      <workItem from="1567215611378" duration="4489000" />
+      <workItem from="1567301953710" duration="7631000" />
+      <workItem from="1567387348996" duration="183000" />
+      <workItem from="1567389706681" duration="358000" />
+      <workItem from="1567475238412" duration="7303000" />
     </task>
     <task id="LOCAL-00001" summary="Improvements">
       <created>1561784813183</created>
@@ -263,7 +280,21 @@
       <option name="project" value="LOCAL" />
       <updated>1561784813183</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Improvements">
+      <created>1565580603138</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1565580603138</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Improvements">
+      <created>1567045263531</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1567045263531</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TodoView">
@@ -307,6 +338,21 @@
           <url>file://$PROJECT_DIR$/src/Analytics/Analyzer/ReceivedAcceptedAnalyzer.php</url>
           <line>27</line>
           <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Parser/CrossrefDateUpdater.php</url>
+          <line>42</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php</url>
+          <line>42</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php</url>
+          <line>120</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
