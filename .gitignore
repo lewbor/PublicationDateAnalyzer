@@ -2,7 +2,11 @@
 /.env.local
 /.env.local.php
 /.env.*.local
-/public/bundles/
+/web/bundles/
 /var/
 /vendor/
 /data/
+
+###> symfony/web-server-bundle ###
+/.web-server-pid
+###< symfony/web-server-bundle ###

@@ -9,4 +9,9 @@ services:
         resource: '../src/*'
         exclude: '../src/{Entity,Migrations,Kernel.php}'
 
+    App\Frontend\:
+        resource: '../src/Frontend'
+        tags: ['controller.service_arguments']
+
+
 

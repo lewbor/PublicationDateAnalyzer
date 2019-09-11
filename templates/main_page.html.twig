@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+{% block css %}
+    {{ parent() }}
+
+    <style>
+        .articles-period {
+            white-space: nowrap;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h2 style="text-align: center">
+        Журналы - список
+    </h2>
+
+    <table class="table" style="max-width: 900px">
+        <tr>
+            <td>#</td>
+            <th>Журнал</th>
+            <th>ISSN</th>
+            <th>Издателдьство</th>
+            <th class="articles-period">Период</th>
+            <th>Статей</th>
+        </tr>
+        {% for item in stat %}
+            {% set journal = item.journal %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <a href="{{ path('journal_view', {'id': item.journal.id}) }}">{{ item.journal.name }}</a></td>
+                <td>{% if journal.issn is not empty %}
+                        ISSN: {{ journal.issn }}
+                    {% endif %}
+                    {% if journal.eissn is not empty %}
+                        EISSN: {{ journal.eissn }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if journal.getCrossrefData()['publisher'] is not empty %}
+                        {{ journal.getCrossrefData()['publisher'] }}
+                    {% endif %}
+                </td>
+                <td class="articles-period">{{ item.analytics.common.min }} - {{ item.analytics.common.max }}</td>
+                <td>
+                    {{ item.analytics.common.count|number_format }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
