@@ -29,6 +29,10 @@
             <th>Период</th>
             <td>{{ analytics['common']['min'] }}-{{ analytics['common']['max'] }}</td>
         </tr>
+        <tr>
+            <th>Издательство</th>
+            <td>{{ journal.crossrefData['publisher']|default('') }}</td>
+        </tr>
     </table>
 
     {% for period in analytics['periods'] %}
@@ -41,50 +45,52 @@
         <div class="analyzer-stack">
             {% for analyzerName, analyzerLabel in  analyzers %}
                 {% set analyzerData = period['analyzers'][analyzerName] %}
-                <div class="analyzer-item">
-                    <b>{{ analyzerLabel }}</b><br/>
-                    <table class="table" style="max-width:500px;">
-                        <tr>
-                            <th>Публикаций</th>
-                            <td>{{ analyzerData['count'] }}</td>
-                        </tr>
-                        <tr>
-                            <th>Минимум дней</th>
-                            <td>{{ analyzerData['min'] }} ({{ analyzerData['min_count'] }} публикаций)</td>
-                        </tr>
-                        <tr>
-                            <th>Максимум дней</th>
-                            <td>{{ analyzerData['max'] }} ({{ analyzerData['max_count'] }} публикаций)</td>
-                        </tr>
-                        <tr>
-                            <th>Среднее дней</th>
-                            <td>{{ analyzerData['avg'] }}</td>
-                        </tr>
-                        <tr>
-                            <th>Медиана дней</th>
-                            <td>{{ analyzerData['median'] }} ({{ analyzerData['median_count'] }} публикаций)</td>
-                        </tr>
-                        <tr>
-                            <th>Квартили дней</th>
-                            <td>
-                                <table class="table">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Публикаций</th>
-                                        <th>Дней</th>
-                                    </tr>
-                                {% for quartile in analyzerData['quartiles'] %}
-                                    <tr>
-                                        <td>{{ quartile['quartile']}} ({{ quartile['quartile'] * 25}}%) </td>
-                                        <td>{{ quartile['idx'] }}</td>
-                                        <td>{{ quartile['value'] }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                {% if analyzerData['count'] > 0 %}
+                    <div class="analyzer-item">
+                        <b>{{ analyzerLabel }}</b><br/>
+                        <table class="table" style="max-width:500px;">
+                            <tr>
+                                <th>Публикаций</th>
+                                <td>{{ analyzerData['count'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Минимум дней</th>
+                                <td>{{ analyzerData['min'] }} ({{ analyzerData['min_count'] }} публикаций)</td>
+                            </tr>
+                            <tr>
+                                <th>Максимум дней</th>
+                                <td>{{ analyzerData['max'] }} ({{ analyzerData['max_count'] }} публикаций)</td>
+                            </tr>
+                            <tr>
+                                <th>Среднее дней</th>
+                                <td>{{ analyzerData['avg'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Медиана дней</th>
+                                <td>{{ analyzerData['median'] }} ({{ analyzerData['median_count'] }} публикаций)</td>
+                            </tr>
+                            <tr>
+                                <th>Квартили дней</th>
+                                <td>
+                                    <table class="table">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Публикаций</th>
+                                            <th>Дней</th>
+                                        </tr>
+                                        {% for quartile in analyzerData['quartiles'] %}
+                                            <tr>
+                                                <td>{{ quartile['quartile'] }} ({{ quartile['quartile'] * 25 }}%)</td>
+                                                <td>{{ quartile['idx'] }}</td>
+                                                <td>{{ quartile['value'] }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
 
