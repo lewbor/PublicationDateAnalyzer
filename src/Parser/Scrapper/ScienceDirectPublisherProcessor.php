@@ -15,6 +15,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class ScienceDirectPublisherProcessor implements PublisherProcessor
 {
+    use ProcessorTrait;
 
     protected $em;
     protected $logger;
@@ -67,28 +68,29 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
             $jsonDataStr = $crawler->filter('script[data-iso-key="_0"]')->text();
             $jsonData = json_decode($jsonDataStr, true);
 
-            $article->setPublisherData($jsonData);
+            $publisherDataEntity = $this->createPublisherData($article);
+            $publisherDataEntity->setPublisherData($jsonData);
 
             $datesProcessed = 0;
             $dates = $jsonData['article']['dates'];
             if (isset($dates['Received'])) {
-                $article->setPublisherReceived(new DateTime($dates['Received']));
+                $publisherDataEntity->setPublisherReceived(new DateTime($dates['Received']));
                 $datesProcessed++;
             }
             if (isset($dates['Accepted'])) {
-                $article->setPublisherAccepted(new DateTime($dates['Accepted']));
+                $publisherDataEntity->setPublisherAccepted(new DateTime($dates['Accepted']));
                 $datesProcessed++;
             }
             if (isset($dates['Publication date'])) {
-                $article->setPublisherAvailablePrint(new DateTime($dates['Publication date']));
+                $publisherDataEntity->setPublisherAvailablePrint(new DateTime($dates['Publication date']));
                 $datesProcessed++;
             }
             if (isset($dates['Available online'])) {
-                $article->setPublisherAvailableOnline(new DateTime($dates['Available online']));
+                $publisherDataEntity->setPublisherAvailableOnline(new DateTime($dates['Available online']));
                 $datesProcessed++;
             }
 
-            $this->em->persist($article);
+            $this->em->persist($publisherDataEntity);
             $this->em->flush();
 
             return $datesProcessed;
@@ -98,8 +100,10 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
                 'message' => $e->getMessage(),
             ];
-            $article->setPublisherData($data);
-            $this->em->persist($article);
+
+            $publisherDataEntity = $this->createPublisherData($article);
+            $publisherDataEntity->setPublisherData($data);
+            $this->em->persist($publisherDataEntity);
             $this->em->flush();
             return 0;
         }

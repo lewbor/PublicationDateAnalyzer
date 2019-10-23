@@ -5,6 +5,7 @@ namespace App\Parser\Scrapper;
 
 
 use App\Entity\Article;
+use App\Entity\ArticlePublisherData;
 use App\Lib\IteratorUtils;
 use App\Lib\QueueManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,10 +49,13 @@ class PublisherQueer
     {
         yield from IteratorUtils::idIterator(
             $this->em->createQueryBuilder()
-            ->select('entity')
-            ->from(Article::class, 'entity')
-            ->andWhere('entity.crossrefData IS NOT NULL')
-            ->andWhere('entity.publisherData IS NULL')
+                ->select('entity')
+                ->from(Article::class, 'entity')
+                ->andWhere(sprintf('entity.id NOT IN (%s)',
+                    $this->em->createQueryBuilder()
+                        ->select('article_publisher_data.id')
+                        ->from(ArticlePublisherData::class, 'article_publisher_data')
+                        ->getDQL()))
         );
     }
 

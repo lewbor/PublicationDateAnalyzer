@@ -14,6 +14,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class WileyPublisherProcessor implements PublisherProcessor
 {
+    use ProcessorTrait;
+
     protected $em;
     protected $logger;
 
@@ -55,23 +57,24 @@ class WileyPublisherProcessor implements PublisherProcessor
             $body = $response->getBody()->getContents();
 
             $data = $this->parseData($body);
-            $article->setPublisherData($data);
+            $publisherDataEntity = $this->createPublisherData($article);
+            $publisherDataEntity->setPublisherData($data);
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
-                $article->setPublisherReceived($data['Received']);
+                $publisherDataEntity->setPublisherReceived($data['Received']);
                 $datesProcessed++;
             }
             if (isset($data['Accepted'])) {
-                $article->setPublisherAccepted($data['Accepted']);
+                $publisherDataEntity->setPublisherAccepted($data['Accepted']);
                 $datesProcessed++;
             }
             if (isset($data['Online'])) {
-                $article->setPublisherAvailableOnline($data['Online']);
+                $publisherDataEntity->setPublisherAvailableOnline($data['Online']);
                 $datesProcessed++;
             }
 
-            $this->em->persist($article);
+            $this->em->persist($publisherDataEntity);
             $this->em->flush();
 
             return $datesProcessed;
@@ -82,7 +85,9 @@ class WileyPublisherProcessor implements PublisherProcessor
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
                 'message' => $e->getMessage(),
             ];
-            $article->setPublisherData($data);
+            $publisherDataEntity = $this->createPublisherData($article);
+            $publisherDataEntity->setPublisherData($data);
+            $this->em->persist($publisherDataEntity);
             $this->em->persist($article);
             $this->em->flush();
             return 0;

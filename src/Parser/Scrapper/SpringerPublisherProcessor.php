@@ -14,6 +14,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class SpringerPublisherProcessor implements PublisherProcessor
 {
+    use ProcessorTrait;
 
     protected $em;
     protected $logger;
@@ -57,27 +58,28 @@ class SpringerPublisherProcessor implements PublisherProcessor
             $body = $response->getBody()->getContents();
 
             $data = $this->parseData($body);
-            $article->setPublisherData($data);
+            $publisherDataEntity = $this->createPublisherData($article);
+            $publisherDataEntity->setPublisherData($data);
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
-                $article->setPublisherReceived(new DateTime($data['Received']));
+                $publisherDataEntity->setPublisherReceived(new DateTime($data['Received']));
                 $datesProcessed++;
             }
             if (isset($data['Accepted'])) {
-                $article->setPublisherAccepted(new DateTime($data['Accepted']));
+                $publisherDataEntity->setPublisherAccepted(new DateTime($data['Accepted']));
                 $datesProcessed++;
             }
             if (isset($data['First print'])) {
-                $article->setPublisherAvailablePrint(new DateTime($data['First print']));
+                $publisherDataEntity->setPublisherAvailablePrint(new DateTime($data['First print']));
                 $datesProcessed++;
             }
             if (isset($data['First Online'])) {
-                $article->setPublisherAvailableOnline(new DateTime($data['First Online']));
+                $publisherDataEntity->setPublisherAvailableOnline(new DateTime($data['First Online']));
                 $datesProcessed++;
             }
 
-            $this->em->persist($article);
+            $this->em->persist($publisherDataEntity);
             $this->em->flush();
             return $datesProcessed;
         } catch (RequestException $e) {
@@ -86,8 +88,9 @@ class SpringerPublisherProcessor implements PublisherProcessor
                 'success' => false,
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
             ];
-            $article->setPublisherData($data);
-            $this->em->persist($article);
+            $publisherDataEntity = $this->createPublisherData($article);
+            $publisherDataEntity->setPublisherData($data);
+            $this->em->persist($publisherDataEntity);
             $this->em->flush();
             return 0;
         }

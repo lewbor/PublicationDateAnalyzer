@@ -17,7 +17,7 @@ class PublisherMultiProcessScrapCommand extends AbstractMultiProcessCommand
 
     protected function defaultProcessCount(): int
     {
-        return 5;
+        return 10;
     }
 
     protected function commandName(): string

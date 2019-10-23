@@ -16,7 +16,7 @@ use PaLabs\DatagridBundle\Field\Type\Url\UrlField;
 use PaLabs\DatagridBundle\Grid\GridParameters;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class DataTable  extends AbstractConfigurableDataTable
+class DataTable extends AbstractConfigurableDataTable
 {
     protected $urlGenerator;
 
@@ -34,28 +34,29 @@ class DataTable  extends AbstractConfigurableDataTable
     protected function configureColumns(ColumnsBuilder $builder, GridParameters $parameters)
     {
         $builder
-            ->add( new NumberingColumn());
+            ->add(new NumberingColumn());
 
         $builder->addColumns([
             'name' => function (Journal $entity) {
-            $url = $this->urlGenerator->generate('journal_view', ['id' => $entity->getId()]);
+                $url = $this->urlGenerator->generate('journal_view', ['id' => $entity->getId()]);
                 return UrlField::field($url, $entity->getName());
             },
             'issn' => function (Journal $entity) {
                 return StringField::field($entity->getIssn());
             },
-            'publisher'  => function (Journal $entity) {
-                return StringField::field($entity->getCrossrefData()['publisher']);
+            'publisher' => function (Journal $entity) {
+                return $entity->getStat() === null ? StringField::field() :
+                    StringField::field($entity->getStat()->getPublisher());
             },
-            'period' => function(Journal $entity, ColumnMakerContext $context) {
-                $analytics = $this->journalAnalytics($entity, $context);
-                return $analytics === null ? StringField::field() :
-                    StringField::field(sprintf('%d-%d', $analytics->getAnalytics()['common']['min'], $analytics->getAnalytics()['common']['max']));
+            'period' => function (Journal $entity, ColumnMakerContext $context) {
+                return $entity->getStat() === null ? StringField::field() :
+                    StringField::field(sprintf('%d-%d',
+                        $entity->getStat()->getArticleMinYear(),
+                        $entity->getStat()->getArticleMaxYear()));
             },
-            'articles' => function(Journal $entity, ColumnMakerContext $context) {
-                $analytics = $this->journalAnalytics($entity, $context);
-                return $analytics === null ? StringField::field() :
-                    StringField::field($analytics->getAnalytics()['common']['count']);
+            'articles' => function (Journal $entity, ColumnMakerContext $context) {
+                return $entity->getStat() === null ? StringField::field() :
+                    StringField::field($entity->getStat()->getArticlesCount());
             },
         ], [
             'name' => 'Название',
@@ -64,10 +65,5 @@ class DataTable  extends AbstractConfigurableDataTable
             'period' => 'Период',
             'articles' => 'Статей'
         ]);
-    }
-
-    private function journalAnalytics(Journal $journal, ColumnMakerContext $context): ?JournalAnalytics {
-        $journalAnalytics = $context->getPage()->getPageContext()->get(JournalAnalytics::class);
-        return $journalAnalytics[$journal->getId()] ?? null;
     }
 }

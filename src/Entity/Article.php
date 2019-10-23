@@ -3,7 +3,6 @@
 
 namespace App\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,7 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Article
 {
-
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -46,52 +44,16 @@ class Article
     protected $journal;
 
     /**
-     * @var array
-     * @ORM\Column(name="crossref_data", type="json", nullable=true)
+     * @var ArticleCrossrefData
+     * @ORM\OneToOne(targetEntity="\App\Entity\ArticleCrossrefData", mappedBy="article")
      */
     protected $crossrefData;
 
     /**
-     * @var array
-     * @ORM\Column(name="publisher_data", type="json", nullable=true)
+     * @var ArticlePublisherData
+     * @ORM\OneToOne(targetEntity="\App\Entity\ArticlePublisherData", mappedBy="article")
      */
     protected $publisherData;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="published_print", type="date", nullable=true)
-     */
-    protected $publishedPrint;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="published_online", type="date", nullable=true)
-     */
-    protected $publishedOnline;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="publisher_received", type="date", nullable=true)
-     */
-    protected $publisherReceived;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="publisher_accepted", type="date", nullable=true)
-     */
-    protected $publisherAccepted;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="publisher_available_print", type="date", nullable=true)
-     */
-    protected $publisherAvailablePrint;
-
-    /**
-     * @var DateTime
-     * @ORM\Column(name="publisher_available_online", type="date", nullable=true)
-     */
-    protected $publisherAvailableOnline;
 
     /**
      * @var bool
@@ -149,95 +111,26 @@ class Article
         return $this;
     }
 
-    public function getCrossrefData(): ?array
+    public function getCrossrefData(): ?ArticleCrossrefData
     {
         return $this->crossrefData;
     }
 
-    public function setCrossrefData(?array $crossrefData): self
+    public function setCrossrefData(?ArticleCrossrefData $crossrefData): self
     {
         $this->crossrefData = $crossrefData;
         return $this;
     }
 
-    public function getPublishedPrint(): ?DateTime
-    {
-        return $this->publishedPrint;
-    }
-
-    public function setPublishedPrint(?DateTime $publishedPrint): self
-    {
-        $this->publishedPrint = $publishedPrint;
-        return $this;
-    }
-
-    public function getPublishedOnline(): ?DateTime
-    {
-        return $this->publishedOnline;
-    }
-
-    public function setPublishedOnline(?DateTime $publishedOnline): self
-    {
-        $this->publishedOnline = $publishedOnline;
-        return $this;
-    }
-
-    public function getPublisherData(): ?array
+    public function getPublisherData(): ?ArticlePublisherData
     {
         return $this->publisherData;
     }
 
 
-    public function setPublisherData(?array $publisherData): self
+    public function setPublisherData(?ArticlePublisherData $publisherData): self
     {
         $this->publisherData = $publisherData;
-        return $this;
-    }
-
-
-    public function getPublisherReceived(): ?DateTime
-    {
-        return $this->publisherReceived;
-    }
-
-    public function setPublisherReceived(?DateTime $publisherReceived): self
-    {
-        $this->publisherReceived = $publisherReceived;
-        return $this;
-    }
-
-
-    public function getPublisherAccepted(): ?DateTime
-    {
-        return $this->publisherAccepted;
-    }
-
-
-    public function setPublisherAccepted(?DateTime $publisherAccepted): self
-    {
-        $this->publisherAccepted = $publisherAccepted;
-        return $this;
-    }
-
-    public function getPublisherAvailableOnline(): ?DateTime
-    {
-        return $this->publisherAvailableOnline;
-    }
-
-    public function setPublisherAvailableOnline(?DateTime $publisherAvailableOnline): self
-    {
-        $this->publisherAvailableOnline = $publisherAvailableOnline;
-        return $this;
-    }
-
-    public function getPublisherAvailablePrint(): ?DateTime
-    {
-        return $this->publisherAvailablePrint;
-    }
-
-    public function setPublisherAvailablePrint(?DateTime $publisherAvailablePrint): self
-    {
-        $this->publisherAvailablePrint = $publisherAvailablePrint;
         return $this;
     }
 

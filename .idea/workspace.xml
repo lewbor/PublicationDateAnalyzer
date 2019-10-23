@@ -2,82 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f430a078-66ed-4ac7-b799-5f96fbe32122" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Command/CrawlerSettings.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Command/WordsCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Command/WosCrawlerCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/JournalJcrImpact.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Entity/JournalJcrQuartile.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Frontend/MainPage/DataSource.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Frontend/MainPage/DataTable.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Grid/AbstractGridEndpoint.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Grid/GridEndpointConfiguration.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Grid/GridEndpointConfigurationBuilder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Grid/GridEndpointServices.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Selenium/BrowserContext.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Selenium/DeferredContext.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Selenium/Path.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Selenium/SeleniumFirefoxTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Selenium/SeleniumWebdriverTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Selenium/UrlWaiter.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/Selenium/WosCommonActionsTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/StringUtils.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/BaseTasksTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Logger/CompositeLogger.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Logger/ConsoleLogger.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Logger/FileLogger.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Logger/NoOpTaskLogger.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Logger/TaskLogger.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/CommandArguments.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Exec/ExecBackgroundTask.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Exec/ExecBackgroundTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Exec/ExecOneTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Exec/ExecTask.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Exec/ExecTrait.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Exec/ParallelExecTask.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/FileSystemTasks.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Remote/QueueTransferTask.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Remote/SshMasterTask.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Remote/SshProxyTask.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/Remote/SshTask.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Task/SeleniumTask.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/TaskException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/TaskResult.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/TaskRunner/Utils.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bridge/bootstrap_layout.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bridge/grid/custom_filter/buttons.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bridge/grid/custom_filter/columns.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bridge/grid/custom_filter/custom_filter_grid.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bridge/grid/custom_filter/filter.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bridge/grid/custom_filter/filter_form_theme.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bridge/grid/custom_filter/order.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/bridge/grid/custom_filter/parameters.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/translations/messages.ru.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/DateAnalyzer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DateAnalyzer.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Analytics/JournalFillStatCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/ArticleCrossrefData.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/ArticlePublisherData.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/JournalStat.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Scrapper/ProcessorTrait.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/a6e2ed46-785e-4a83-bc19-705c0bb504b0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a6e2ed46-785e-4a83-bc19-705c0bb504b0.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/framework.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/framework.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/translation.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/translation.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/twig.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/twig.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/deploy.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_all.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsMultiProcessScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsMultiProcessScrapCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseMultiScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseMultiScrapCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Frontend/JournalViewEndpoint.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/JournalViewEndpoint.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Frontend/MainPageEndpoint.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/MainPage/MainPageEndpoint.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Lib/AbstractMultiProcessCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lib/AbstractMultiProcessCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Lib/IteratorUtils.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lib/IteratorUtils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Article.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Article.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Journal.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Journal.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Frontend/MainPage/DataSource.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/MainPage/DataSource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Frontend/MainPage/DataTable.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frontend/MainPage/DataTable.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Crossref/CrossrefPublicationsScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Crossref/CrossrefPublicationsScrapper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherQueer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherQueer.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/RscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/RscPublisherProcessor.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main_page.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/main_page.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -356,7 +299,7 @@
       <workItem from="1571201152030" duration="905000" />
       <workItem from="1571380541066" duration="8271000" />
       <workItem from="1571551633064" duration="7243000" />
-      <workItem from="1571709610489" duration="24225000" />
+      <workItem from="1571709610489" duration="37351000" />
     </task>
     <task id="LOCAL-00001" summary="Improvements">
       <created>1561784813183</created>
@@ -400,7 +343,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568260343560</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Improved frontend">
+      <created>1571804924226</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1571804924226</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView">
@@ -430,7 +380,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improvements" />
+    <MESSAGE value="Improved frontend" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved frontend" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -452,12 +403,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php</url>
-          <line>42</line>
+          <line>44</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php</url>
-          <line>120</line>
+          <line>125</line>
           <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>

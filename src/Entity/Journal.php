@@ -43,6 +43,12 @@ class Journal
      */
     protected $crossrefData;
 
+    /**
+     * @var JournalStat
+     * @ORM\OneToOne(targetEntity="\App\Entity\JournalStat", mappedBy="journal")
+     */
+    protected $stat;
+
     public function getId()
     {
         return $this->id;
@@ -92,5 +98,17 @@ class Journal
         $this->crossrefData = $crossrefData;
         return $this;
     }
+
+    public function getStat(): ?JournalStat
+    {
+        return $this->stat;
+    }
+
+    public function setStat(?JournalStat $stat): self
+    {
+        $this->stat = $stat;
+        return $this;
+    }
+
 
 }

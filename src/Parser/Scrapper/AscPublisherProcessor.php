@@ -14,6 +14,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class AscPublisherProcessor implements PublisherProcessor
 {
+    use ProcessorTrait;
+
     protected $em;
     protected $logger;
 
@@ -55,27 +57,29 @@ class AscPublisherProcessor implements PublisherProcessor
             $body = $response->getBody()->getContents();
 
             $data = $this->parseData($body);
-            $article->setPublisherData($data);
+
+            $publisherData = $this->createPublisherData($article);
+            $publisherData->setPublisherData($data);
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
-                $article->setPublisherReceived(new DateTime($data['Received']));
+                $publisherData->setPublisherReceived(new DateTime($data['Received']));
                 $datesProcessed++;
             }
             if (isset($data['Accepted'])) {
-                $article->setPublisherAccepted(new DateTime($data['Accepted']));
+                $publisherData->setPublisherAccepted(new DateTime($data['Accepted']));
                 $datesProcessed++;
             }
             if (isset($data['Published online'])) {
-                $article->setPublisherAvailableOnline(new DateTime($data['Published online']));
+                $publisherData->setPublisherAvailableOnline(new DateTime($data['Published online']));
                 $datesProcessed++;
             }
             if (isset($data['Published in issue'])) {
-                $article->setPublisherAvailablePrint(new DateTime($data['Published in issue']));
+                $publisherData->setPublisherAvailablePrint(new DateTime($data['Published in issue']));
                 $datesProcessed++;
             }
 
-            $this->em->persist($article);
+            $this->em->persist($publisherData);
             $this->em->flush();
 
             return $datesProcessed;
@@ -86,7 +90,9 @@ class AscPublisherProcessor implements PublisherProcessor
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
                 'message' => $e->getMessage(),
             ];
-            $article->setPublisherData($data);
+
+            $publisherData = $this->createPublisherData($article);
+            $publisherData->setPublisherData($data);
             $this->em->persist($article);
             $this->em->flush();
             return 0;
@@ -116,4 +122,6 @@ class AscPublisherProcessor implements PublisherProcessor
         return $data;
 
     }
+
+
 }

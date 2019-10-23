@@ -5,6 +5,7 @@ namespace App\Parser\Crossref;
 
 
 use App\Entity\Article;
+use App\Entity\ArticleCrossrefData;
 use App\Entity\Journal;
 use App\Entity\QueueItem;
 use App\Lib\QueueManager;
@@ -137,11 +138,16 @@ class CrossrefPublicationsScrapper
             ->setDoi($doi)
             ->setName($item['title'][0] ?? '')
             ->setYear($item['issued']['date-parts'][0][0] ?? 0)
-            ->setJournal($journal)
+            ->setJournal($journal);
+        $crossrefEntity = (new ArticleCrossrefData())
+            ->setArticle($article)
             ->setCrossrefData($item);
-        $this->updateCrossrefDates($article, $item);
+
+        $this->updateCrossrefDates($crossrefEntity, $item);
         $this->em->persist($article);
+        $this->em->persist($crossrefEntity);
         $this->em->flush();
+
         return true;
     }
 
@@ -179,7 +185,7 @@ class CrossrefPublicationsScrapper
         throw $lastException;
     }
 
-    private function updateCrossrefDates(Article $article, array $item): void
+    private function updateCrossrefDates(ArticleCrossrefData $article, array $item): void
     {
         if (isset($item['published-print'])) {
             $parts = $item['published-print']['date-parts'][0];

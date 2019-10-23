@@ -14,6 +14,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class RscPublisherProcessor implements PublisherProcessor
 {
+    use ProcessorTrait;
 
     protected $em;
     protected $logger;
@@ -44,8 +45,6 @@ class RscPublisherProcessor implements PublisherProcessor
         if (!empty($publisherData)) {
             return $this->updateArticleByPublisherData($article, $publisherData);
         }
-
-        //return $this->updateArticleByPublisherData($article, []);
 
         $publisherData = $this->scrapPublisherDataFromWeb($article);
         return $this->updateArticleByPublisherData($article, $publisherData);
@@ -123,7 +122,11 @@ class RscPublisherProcessor implements PublisherProcessor
 
     private function extractDataFromCrossref(Article $article): array
     {
-        $crossrefData = $article->getCrossrefData();
+        if($article->getCrossrefData() === null) {
+            return [];
+        }
+
+        $crossrefData = $article->getCrossrefData()->getCrossrefData();
         if (!isset($crossrefData['assertion'])) {
             return [];
         }
@@ -161,23 +164,24 @@ class RscPublisherProcessor implements PublisherProcessor
 
     private function updateArticleByPublisherData(Article $article, array $publisherData): int
     {
-        $article->setPublisherData($publisherData);
+        $publisherDataEntity = $this->createPublisherData($article);
+        $publisherDataEntity->setPublisherData($publisherData);
 
         $datesProcessed = 0;
         if (isset($publisherData['Received'])) {
-            $article->setPublisherReceived(new DateTime($publisherData['Received']));
+            $publisherDataEntity->setPublisherReceived(new DateTime($publisherData['Received']));
             $datesProcessed++;
         }
         if (isset($publisherData['Accepted'])) {
-            $article->setPublisherAccepted(new DateTime($publisherData['Accepted']));
+            $publisherDataEntity->setPublisherAccepted(new DateTime($publisherData['Accepted']));
             $datesProcessed++;
         }
         if (isset($publisherData['Published online'])) {
-            $article->setPublisherAvailableOnline(new DateTime($publisherData['Published online']));
+            $publisherDataEntity->setPublisherAvailableOnline(new DateTime($publisherData['Published online']));
             $datesProcessed++;
         }
 
-        $this->em->persist($article);
+        $this->em->persist($publisherDataEntity);
         $this->em->flush();
 
         return $datesProcessed;
