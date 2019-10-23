@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/journal/{id}", name="journal_view")
+ */
 class JournalViewEndpoint
 {
     protected $em;
@@ -25,9 +28,6 @@ class JournalViewEndpoint
         $this->templating = $templating;
     }
 
-    /**
-     * @Route("/journal/{id}", name="journal_view")
-     */
     public function __invoke(Request $request): Response
     {
         $entity = $this->em->getRepository(Journal::class)->find($request->attributes->get('id'));

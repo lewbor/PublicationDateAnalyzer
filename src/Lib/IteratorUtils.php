@@ -14,7 +14,7 @@ class IteratorUtils
 
         while(true) {
             $currentQb = clone $qb;
-            echo "querying\n";
+
             $iterator = $currentQb->andWhere(sprintf('%s.id > %d' , $entityAlias, $id))
                 ->setMaxResults($maxResults)
                 ->orderBy(sprintf('%s.id', $entityAlias))

@@ -1,0 +1,11 @@
+<div data-widget="collapse_block" data-expanded="true">
+    <div data-component-role="control_link" class="collapse_block-control_link" style="padding-bottom: 10px;">
+        <h4>{{ 'grid.filter'|trans }}</h4>
+        <i data-component-role="chevron" class="glyphicon glyphicon-chevron-down"></i>
+    </div>
+    <div data-component-role="collapse_element">
+        {% for fieldName, field in filterForm.children %}
+            {{ form_row(field, {'layout':'vertical'}) }}
+        {% endfor %}
+    </div>
+</div>

@@ -5,6 +5,7 @@ namespace App\Parser\Scrapper;
 
 
 use App\Entity\Article;
+use App\Lib\IteratorUtils;
 use App\Lib\QueueManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -45,16 +46,13 @@ class PublisherQueer
 
     private function articleIterator(): iterable
     {
-        $iterator = $this->em->createQueryBuilder()
+        yield from IteratorUtils::idIterator(
+            $this->em->createQueryBuilder()
             ->select('entity')
             ->from(Article::class, 'entity')
             ->andWhere('entity.crossrefData IS NOT NULL')
             ->andWhere('entity.publisherData IS NULL')
-            ->getQuery()
-            ->iterate();
-        foreach ($iterator as $item) {
-            yield $item[0];
-        }
+        );
     }
 
     private function queueArticle(Article $article): void

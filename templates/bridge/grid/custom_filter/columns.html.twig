@@ -1,0 +1,25 @@
+<div data-widget="collapse_block">
+    <div data-component-role="control_link" class="collapse_block-control_link" style="padding-top: 10px; padding-bottom: 10px;">
+        <h4>{{ 'grid.columns'|trans }}</h4>
+        <i data-component-role="chevron" class="glyphicon glyphicon-chevron-down"></i>
+    </div>
+    <div data-component-role="collapse_element" style="display: none">
+        {% set selectedFieldsForm = grid.form.gs.fi %}
+        {% set selectedFields = selectedFieldsForm.vars['data'] %}
+        <div class="form-group" data-widget="columns_selector_simple" data-component-role="collapse_element">
+            {{ form_widget(selectedFieldsForm, {'attr': {'data-component-role': 'selected_fields', 'style': 'display: none'}}) }}
+
+            {% for value, label in selectedFieldsForm.vars['fieldLabels'] %}
+                <div class="checkbox" data-component-role="target_columns">
+                    <label>
+                        <input type="checkbox"
+                               value="{{ value }}"
+                               {% if value in selectedFields %}checked{% endif %}
+                        />
+                        {{ label }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

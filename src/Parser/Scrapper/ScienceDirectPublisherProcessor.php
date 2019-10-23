@@ -95,7 +95,8 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
         } catch (RequestException $e) {
             $data = [
                 'success' => false,
-                'httpCode' => $e->getResponse()->getStatusCode(),
+                'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
+                'message' => $e->getMessage(),
             ];
             $article->setPublisherData($data);
             $this->em->persist($article);

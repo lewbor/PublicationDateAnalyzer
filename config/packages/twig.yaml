@@ -2,3 +2,6 @@ twig:
     default_path: '%kernel.project_dir%/templates'
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes:
+        - '@PaDatagrid/filter_widgets.html.twig'
+        - 'bridge/bootstrap_layout.html.twig'

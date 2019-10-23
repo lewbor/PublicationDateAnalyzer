@@ -1,0 +1,27 @@
+{% block string_filter_form_widget %}
+    <div {% if not form.vars['filter_enabled'] %}style="display: none" {% endif %}>
+        {{ form_widget(form.o) }}
+    </div>
+    {{ form_widget(form.v) }}
+{% endblock %}
+
+{% block entity_filter_form_widget %}
+    <div {% if not form.vars['filter_enabled'] %}style="display: none" {% endif %}>
+        {{ form_widget(form.o) }}
+    </div>
+    {{ form_widget(form.v) }}
+{% endblock %}
+
+{% block multiple_entity_filter_form_widget %}
+    <div {% if not form.vars['filter_enabled'] %}style="display: none" {% endif %}>
+        {{ form_widget(form.o) }}
+    </div>
+    {{ form_widget(form.v) }}
+{% endblock %}
+
+{% block enum_filter_form_widget %}
+    <div {% if not form.vars['filter_enabled'] %}style="display: none" {% endif %}>
+        {{ form_widget(form.o) }}
+    </div>
+    {{ form_widget(form.v) }}
+{% endblock %}

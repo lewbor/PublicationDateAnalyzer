@@ -1,0 +1,74 @@
+<div class="row">
+    <div class="col-md-9">
+
+        <div class="box box-primary box-full-width box_science_activity_list">
+            {% block grid_table_header %}
+                <div class="box-header">
+                    <h3 class="box-title">
+                        <h3 class="box-title">
+                            {% block grid_table_title %}{% endblock %}
+                        </h3>
+                    </h3>
+                </div>
+            {% endblock %}
+
+            <div class="box-body">
+                {% block data_table %}
+                    <div class="table-responsive">
+                        {% include '@PaDatagrid/parts/data_table.html.twig' %}
+                    </div>
+                {% endblock %}
+
+                {% block pagination %}
+                    {% if grid.dataSourceResult.totalItemsCount > 0 and grid.dataSourceResult.pager is defined %}
+                        {% set pager = grid.dataSourceResult.pager %}
+                        <hr/>
+
+                        <div class="text-center" style="min-height: 25px;">
+                            {% include '@PaDatagrid/parts/pagination.html.twig' with pager.getPaginationData() %}
+                            <div class="pull-right">
+                                {{ pager.getCurrentPageNumber() }}
+                                &nbsp;&nbsp;/&nbsp;&nbsp;{{ pager.getPageCount() }}
+                                &nbsp;&nbsp;-&nbsp;&nbsp;{{ 'total_items'|trans({'%itemsCount%': pager.getTotalItemsCount()}, 'PaDatagridBundle') }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        {% set dsForm = grid.form.ds %}
+        {% set filterForm = grid.form.ds.f %}
+
+        {{ form_start(dsForm) }}
+
+        <div class="box box-primary">
+            <div class="box-body">
+                {% if filterForm.children|length > 0 %}
+                    {% form_theme filterForm 'bridge/grid/custom_filter/filter_form_theme.html.twig' %}
+                    {% include 'bridge/grid/custom_filter/filter.html.twig' %}
+                {% endif %}
+
+                {% include 'bridge/grid/custom_filter/order.html.twig' %}
+
+                {% block grid_filter_after_columns %}
+                    {{ form_row(dsForm.pp, {'label': 'field.per_page'|trans, 'layout':'vertical'}) }}
+                {% endblock %}
+
+                <div style="margin-top: 10px">
+                    {% include 'bridge/grid/custom_filter/buttons.html.twig' %}
+                </div>
+
+                {% block grid_filter_after_buttons %}{% endblock %}
+            </div>
+        </div>
+
+
+        {% do filterForm.setRendered %}
+        {% do grid.form.ds.p.setRendered %}
+        {{ form_end(dsForm) }}
+    </div>
+</div>

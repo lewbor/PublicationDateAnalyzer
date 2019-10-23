@@ -1,0 +1,22 @@
+<div data-widget="collapse_block">
+    <div data-component-role="control_link" class="collapse_block-control_link" style="padding-bottom: 10px;">
+        <h4>{{ 'grid.parameters'|trans }}</h4>
+        <i data-component-role="chevron" class="glyphicon glyphicon-chevron-down"></i>
+    </div>
+    <div data-component-role="collapse_element" style="display: none">
+        <span>{{ 'grid.order'|trans }}:</span>
+        <table style="width: 100%; margin-bottom: 15px;">
+            <tr>
+                <th>{{ 'field.sort_field'|trans }}</th>
+                <th>{{ 'field.sort_direction'|trans }}</th>
+            </tr>
+            {% for orderItem in dsForm.o %}
+                <tr>
+                    <td>{{ form_widget(orderItem.f) }}</td>
+                    <td style="width: 150px">{{ form_widget(orderItem.d) }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        {{ form_row(dsForm.pp, {'label': 'field.per_page'|trans, 'layout':'vertical'}) }}
+    </div>
+</div>

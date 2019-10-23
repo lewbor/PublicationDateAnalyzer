@@ -11,12 +11,13 @@ class PublisherMultiProcessScrapCommand extends AbstractMultiProcessCommand
 
     protected function configure()
     {
+        parent::configure();
         $this->setName('publisher.multi_process_scrap');
     }
 
-    protected function processCount(): int
+    protected function defaultProcessCount(): int
     {
-        return 4;
+        return 5;
     }
 
     protected function commandName(): string

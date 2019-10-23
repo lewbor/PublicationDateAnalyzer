@@ -42,10 +42,14 @@ class PublisherScrapper
 
     public function run()
     {
-        foreach ($this->queueManager->singleIterator(PublisherQueer::QUEUE_NAME) as $queueItem) {
+        foreach ($this->queueManager->singleIterator(PublisherQueer::QUEUE_NAME) as $idx => $queueItem) {
             $this->processItem($queueItem);
             $this->queueManager->acknowledge($queueItem);
             $this->em->clear();
+
+            if($idx % 15 === 0) {
+                $this->logger->info(sprintf('Reminded %d tasks', $this->queueManager->remindingTasks(PublisherQueer::QUEUE_NAME)));
+            }
         }
     }
 
@@ -63,10 +67,9 @@ class PublisherScrapper
             return;
         }
         $datesUpdate = $processor->process($article);
-        $this->logger->info(sprintf("Processed article=%d, publisher=%s, year=%d, update %d dates, reminding %d tasks",
+        $this->logger->info(sprintf("Processed article=%d, publisher=%s, year=%d, update %d dates",
             $article->getId(), $processor->name(),
-            $article->getYear(), $datesUpdate,
-            $this->queueManager->remindingTasks(PublisherQueer::QUEUE_NAME)));
+            $article->getYear(), $datesUpdate));
     }
 
 

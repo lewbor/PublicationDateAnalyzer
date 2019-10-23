@@ -11,10 +11,11 @@ class UnpaywallSyncDatabaseMultiScrapCommand extends AbstractMultiProcessCommand
 
     protected function configure()
     {
+        parent::configure();
         $this->setName('unpaywall.sync_database.multi_scrap');
     }
 
-    protected function processCount(): int
+    protected function defaultProcessCount(): int
     {
         return 10;
     }

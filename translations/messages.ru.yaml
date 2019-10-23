@@ -1,0 +1,12 @@
+grid:
+  filter: Фильтр
+  order: Сортировка
+
+field:
+  sort_field: Поле
+  sort_direction: Направление
+  per_page: Записей на странице
+
+form:
+  apply: Применить
+  reset: Сбросить

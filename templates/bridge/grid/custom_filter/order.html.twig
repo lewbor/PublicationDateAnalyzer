@@ -1,0 +1,13 @@
+<h4>{{ 'grid.order'|trans }}</h4>
+<table style="width: 100%; margin-bottom: 15px;">
+    <tr>
+        <th>{{ 'field.sort_field'|trans }}</th>
+        <th>{{ 'field.sort_direction'|trans }}</th>
+    </tr>
+    {% for orderItem in dsForm.o %}
+        <tr>
+            <td>{{ form_widget(orderItem.f) }}</td>
+            <td style="width: 150px">{{ form_widget(orderItem.d) }}</td>
+        </tr>
+    {% endfor %}
+</table>

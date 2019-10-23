@@ -11,10 +11,11 @@ class CrossrefPublicationsMultiProcessScrapCommand extends AbstractMultiProcessC
 
     protected function configure()
     {
+        parent::configure();
         $this->setName('crossref.publications.multi_scrap');
     }
 
-    protected function processCount(): int
+    protected function defaultProcessCount(): int
     {
         return 10;
     }
