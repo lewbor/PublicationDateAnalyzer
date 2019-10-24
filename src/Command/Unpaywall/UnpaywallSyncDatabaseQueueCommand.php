@@ -5,7 +5,7 @@ namespace App\Command\Unpaywall;
 
 
 use App\Entity\Article;
-use App\Lib\IteratorUtils;
+use App\Lib\Iterator\DoctrineIterator;
 use App\Lib\QueueManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -39,7 +39,7 @@ class UnpaywallSyncDatabaseQueueCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $iterator = IteratorUtils::idIterator($this->em->createQueryBuilder()
+        $iterator = DoctrineIterator::idIterator($this->em->createQueryBuilder()
             ->select('entity')
             ->from(Article::class, 'entity')
             ->andWhere('entity.year >= 2018')

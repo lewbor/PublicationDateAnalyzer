@@ -1,11 +1,12 @@
 <?php
 
 
-namespace App\Command;
+namespace App\Command\Wos;
 
 
+use App\Command\CrawlerSettings;
 use App\Entity\Journal;
-use App\Lib\IteratorUtils;
+use App\Lib\Iterator\DoctrineIterator;
 use App\Lib\Selenium\BrowserContext;
 use App\Lib\Selenium\DeferredContext;
 use App\Lib\Selenium\Path;
@@ -55,7 +56,7 @@ class WosCrawlerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $journalIterator = IteratorUtils::idIterator($this->em->createQueryBuilder()
+        $journalIterator = DoctrineIterator::idIterator($this->em->createQueryBuilder()
             ->select('entity')
             ->from(Journal::class, 'entity')
             ->andWhere('entity.id >= 42'));
@@ -126,14 +127,15 @@ class WosCrawlerCommand extends Command
             $this->selectSaveOption($driver);
             $this->fillSaveRecordsForm($driver, $startNumber, $endNumber);
 
-            $this->logger->info("Waiting for results to download");
             $downloadFileName = Path::join($downloadDir, 'savedrecs.txt');
+            $this->logger->info(sprintf("Waiting for results to download, %s", $downloadFileName));
             $isFileSaved = $this->waitForFileDownload($downloadFileName);
             if($isFileSaved) {
                 $this->fs->rename($downloadFileName, $saveFileName, true);
                 $this->logger->info(sprintf("Saved results to %s", $saveFileName));
             } else {
                 $this->logger->error(sprintf('Filed to save file %s', $downloadFileName));
+                $this->fs->remove($downloadFileName);
             }
 
             $driver->navigate()->refresh();
@@ -141,7 +143,7 @@ class WosCrawlerCommand extends Command
         }
     }
 
-    protected function waitForFileDownload(string $filename, int $tryCount = 30, int $delay = 1): bool
+    protected function waitForFileDownload(string $filename, int $tryCount = 60, int $delay = 1): bool
     {
         for ($currentTry = 0; $currentTry < $tryCount; $currentTry++) {
             clearstatcache();

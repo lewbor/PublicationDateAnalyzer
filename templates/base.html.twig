@@ -2,114 +2,54 @@
 <html lang="ru">
 <head>
     <title>{% block title %}{% endblock %}</title>
-    {% block css %}
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-              crossorigin="anonymous">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" type="text/css" href="{{ asset('assets/styles.css') }}"/>
     {% endblock %}
-    {% block js %}
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-                integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-                crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-                crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-                crossorigin="anonymous"></script>
 
-        <style>
-            .pagination {
-                display: inline-block;
-                padding-left: 0;
-                margin: 20px 0;
-                border-radius: 4px
-            }
-
-            .pagination>li {
-                display: inline
-            }
-
-            .pagination>li>a,.pagination>li>span {
-                position: relative;
-                float: left;
-                padding: 6px 12px;
-                margin-left: -1px;
-                line-height: 1.42857143;
-                color: #337ab7;
-                text-decoration: none;
-                background-color: #fff;
-                border: 1px solid #ddd
-            }
-
-            .pagination>li:first-child>a,.pagination>li:first-child>span {
-                margin-left: 0;
-                border-top-left-radius: 4px;
-                border-bottom-left-radius: 4px
-            }
-
-            .pagination>li:last-child>a,.pagination>li:last-child>span {
-                border-top-right-radius: 4px;
-                border-bottom-right-radius: 4px
-            }
-
-            .pagination>li>a:focus,.pagination>li>a:hover,.pagination>li>span:focus,.pagination>li>span:hover {
-                z-index: 2;
-                color: #23527c;
-                background-color: #eee;
-                border-color: #ddd
-            }
-
-            .pagination>.active>a,.pagination>.active>a:focus,.pagination>.active>a:hover,.pagination>.active>span,.pagination>.active>span:focus,.pagination>.active>span:hover {
-                z-index: 3;
-                color: #fff;
-                cursor: default;
-                background-color: #337ab7;
-                border-color: #337ab7
-            }
-
-            .pagination>.disabled>a,.pagination>.disabled>a:focus,.pagination>.disabled>a:hover,.pagination>.disabled>span,.pagination>.disabled>span:focus,.pagination>.disabled>span:hover {
-                color: #777;
-                cursor: not-allowed;
-                background-color: #fff;
-                border-color: #ddd
-            }
-
-            .pagination-lg>li>a,.pagination-lg>li>span {
-                padding: 10px 16px;
-                font-size: 18px;
-                line-height: 1.3333333
-            }
-
-            .pagination-lg>li:first-child>a,.pagination-lg>li:first-child>span {
-                border-top-left-radius: 6px;
-                border-bottom-left-radius: 6px
-            }
-
-            .pagination-lg>li:last-child>a,.pagination-lg>li:last-child>span {
-                border-top-right-radius: 6px;
-                border-bottom-right-radius: 6px
-            }
-
-            .pagination-sm>li>a,.pagination-sm>li>span {
-                padding: 5px 10px;
-                font-size: 12px;
-                line-height: 1.5
-            }
-
-            .pagination-sm>li:first-child>a,.pagination-sm>li:first-child>span {
-                border-top-left-radius: 3px;
-                border-bottom-left-radius: 3px
-            }
-
-            .pagination-sm>li:last-child>a,.pagination-sm>li:last-child>span {
-                border-top-right-radius: 3px;
-                border-bottom-right-radius: 3px
-            }
-        </style>
+    {% block javascripts %}
+        <script src="{{ asset('assets/manifest.js') }}"></script>
+        <script src="{{ asset('assets/vendor.js') }}"></script>
+        <script src="{{ asset('assets/app.js') }}"></script>
     {% endblock %}
 </head>
-<body>
-{% block body %}{% endblock %}
+
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    {% block body %}
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
+                        <li class="nav-item has-treeview menu-open">
+                            <a href="/" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Список журналов
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+
+        <footer class="main-footer">
+            <!-- To the right -->
+            <div class="pull-right hidden-xs">
+                Anything you want
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
+        </footer>
+
+    {% endblock %}
+</div>
 </body>
 </html>

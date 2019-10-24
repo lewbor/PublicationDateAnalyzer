@@ -6,9 +6,9 @@ namespace App\Parser;
 
 use App\Entity\Article;
 use App\Entity\Journal;
-use App\Lib\CsvIterator;
-use App\Lib\FileIterator;
-use App\Lib\RecordIterator;
+use App\Lib\Iterator\CsvIterator;
+use App\Lib\Iterator\FileIterator;
+use App\Lib\Iterator\RecordIterator;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;

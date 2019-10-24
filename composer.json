@@ -15,7 +15,7 @@
     "palabs/datagrid-bundle": "^0.2.16",
     "sensio/framework-extra-bundle": "^5.0",
     "sensiolabs/security-checker": "^4.1",
-    "symfony/asset": "^4.0",
+    "symfony/asset": "4.3.*",
     "symfony/console": "4.3.*",
     "symfony/css-selector": "4.3.*",
     "symfony/dom-crawler": "4.3.*",

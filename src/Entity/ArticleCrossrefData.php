@@ -30,7 +30,7 @@ class ArticleCrossrefData
      * @var array
      * @ORM\Column(name="crossref_data", type="json", nullable=false)
      */
-    protected $crossrefData;
+    protected $data;
 
     /**
      * @var DateTime
@@ -60,14 +60,14 @@ class ArticleCrossrefData
         return $this;
     }
 
-    public function getCrossrefData(): array
+    public function getData(): array
     {
-        return $this->crossrefData;
+        return $this->data;
     }
 
-    public function setCrossrefData(array $crossrefData): self
+    public function setData(array $data): self
     {
-        $this->crossrefData = $crossrefData;
+        $this->data = $data;
         return $this;
     }
 

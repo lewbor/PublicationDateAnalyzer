@@ -1,11 +1,11 @@
 <?php
 
 
-namespace App\Lib;
+namespace App\Lib\Iterator;
 
 
-use App\Lib\FileIterator;
-use App\Lib\Utils;
+use App\Lib\Iterator\FileIterator;
+use App\Lib\Utils\Utils;
 
 class CsvIterator
 {

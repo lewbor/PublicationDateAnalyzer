@@ -1,0 +1,21 @@
+{
+  "devDependencies": {
+    "@symfony/webpack-encore": "^0.15.0",
+    "admin-lte": "3.0.0-rc.5",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.7",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.5",
+    "select2": "^4.0",
+    "url-loader": "^0.5.9",
+    "webpack-vendor-chunk-plugin": "^1.0.0"
+  },
+  "scripts": {
+    "dev-server": "./node_modules/.bin/encore dev-server",
+    "dev": "./node_modules/.bin/encore dev",
+    "watch": "./node_modules/.bin/encore dev --watch",
+    "prod": "./node_modules/.bin/encore production"
+  }
+}

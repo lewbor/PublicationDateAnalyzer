@@ -4,7 +4,7 @@
 namespace App\Lib\Selenium;
 
 
-use App\Lib\StringUtils;
+use App\Lib\Utils\StringUtils;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 
 class UrlWaiter

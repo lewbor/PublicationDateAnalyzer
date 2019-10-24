@@ -49,6 +49,23 @@ class JournalStat
      */
     protected $articleMaxYear;
 
+    /**
+     * @var int
+     * @ORM\Column(name="wos_articles_count", type="integer", nullable=false)
+     */
+    protected $wosArticlesCount;
+
+    /**
+     * @var array
+     * @ORM\Column(name="article_years", type="json", nullable=false)
+     */
+    protected $articleYears;
+
+    public function __construct()
+    {
+        $this->articleYears = [];
+    }
+
     public function getId()
     {
         return $this->id;
@@ -110,7 +127,26 @@ class JournalStat
         return $this;
     }
 
+    public function getWosArticlesCount(): int
+    {
+        return $this->wosArticlesCount;
+    }
 
+    public function setWosArticlesCount(int $wosArticlesCount): self
+    {
+        $this->wosArticlesCount = $wosArticlesCount;
+        return $this;
+    }
+
+    public function getArticleYears(): array
+    {
+        return $this->articleYears;
+    }
+
+    public function setArticleYears(array $articleYears): void
+    {
+        $this->articleYears = $articleYears;
+    }
 
 
 }

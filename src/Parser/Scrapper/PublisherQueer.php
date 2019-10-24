@@ -6,7 +6,7 @@ namespace App\Parser\Scrapper;
 
 use App\Entity\Article;
 use App\Entity\ArticlePublisherData;
-use App\Lib\IteratorUtils;
+use App\Lib\Iterator\DoctrineIterator;
 use App\Lib\QueueManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -47,7 +47,7 @@ class PublisherQueer
 
     private function articleIterator(): iterable
     {
-        yield from IteratorUtils::idIterator(
+        yield from DoctrineIterator::idIterator(
             $this->em->createQueryBuilder()
                 ->select('entity')
                 ->from(Article::class, 'entity')

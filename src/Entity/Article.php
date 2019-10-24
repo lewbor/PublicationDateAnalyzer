@@ -56,6 +56,12 @@ class Article
     protected $publisherData;
 
     /**
+     * @var ArticleWebOfScienceData
+     * @ORM\OneToOne(targetEntity="\App\Entity\ArticleWebOfScienceData", mappedBy="article")
+     */
+    protected $webOfScienceData;
+
+    /**
      * @var bool
      * @ORM\Column(name="open_access", type="boolean", nullable=true)
      */
@@ -133,6 +139,19 @@ class Article
         $this->publisherData = $publisherData;
         return $this;
     }
+
+    public function getWebOfScienceData(): ?ArticleWebOfScienceData
+    {
+        return $this->webOfScienceData;
+    }
+
+    public function setWebOfScienceData(?ArticleWebOfScienceData $webOfScienceData): self
+    {
+        $this->webOfScienceData = $webOfScienceData;
+        return $this;
+    }
+
+
 
     public function isOpenAccess(): ?bool
     {

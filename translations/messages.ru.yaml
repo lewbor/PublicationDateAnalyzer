@@ -1,6 +1,7 @@
 grid:
   filter: Фильтр
   order: Сортировка
+  columns: Столбцы
 
 field:
   sort_field: Поле

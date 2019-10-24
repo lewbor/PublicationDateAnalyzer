@@ -80,12 +80,12 @@ class PublisherScrapper
             return null;
         }
 
-        if(empty($article->getCrossrefData()->getCrossrefData()['publisher'])) {
+        if(empty($article->getCrossrefData()->getData()['publisher'])) {
             $this->logger->info(sprintf('Article %d - empty publisher', $article->getId()));
             return null;
         }
 
-        $publisher = $article->getCrossrefData()->getCrossrefData()['publisher'];
+        $publisher = $article->getCrossrefData()->getData()['publisher'];
         $publisher = mb_strtolower(trim($publisher));
 
         /** @var PublisherProcessor $processor */

@@ -69,7 +69,7 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
             $jsonData = json_decode($jsonDataStr, true);
 
             $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setPublisherData($jsonData);
+            $publisherDataEntity->setData($jsonData);
 
             $datesProcessed = 0;
             $dates = $jsonData['article']['dates'];
@@ -102,7 +102,7 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
             ];
 
             $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setPublisherData($data);
+            $publisherDataEntity->setData($data);
             $this->em->persist($publisherDataEntity);
             $this->em->flush();
             return 0;

@@ -59,7 +59,7 @@ class SpringerPublisherProcessor implements PublisherProcessor
 
             $data = $this->parseData($body);
             $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setPublisherData($data);
+            $publisherDataEntity->setData($data);
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
@@ -89,7 +89,7 @@ class SpringerPublisherProcessor implements PublisherProcessor
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
             ];
             $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setPublisherData($data);
+            $publisherDataEntity->setData($data);
             $this->em->persist($publisherDataEntity);
             $this->em->flush();
             return 0;

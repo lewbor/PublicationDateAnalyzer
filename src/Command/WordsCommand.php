@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Entity\Article;
 use App\Entity\Journal;
-use App\Lib\IteratorUtils;
+use App\Lib\Iterator\DoctrineIterator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,7 +30,7 @@ class WordsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $iterator = IteratorUtils::idIterator(
+        $iterator = DoctrineIterator::idIterator(
             $this->em->createQueryBuilder()
                 ->select('entity')
                 ->from(Article::class, 'entity')

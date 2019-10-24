@@ -31,7 +31,7 @@ class ArticlePublisherData
      * @var array
      * @ORM\Column(name="publisher_data", type="json", nullable=false)
      */
-    protected $publisherData;
+    protected $data;
 
     /**
      * @var DateTime
@@ -73,14 +73,14 @@ class ArticlePublisherData
         return $this;
     }
 
-    public function getPublisherData(): array
+    public function getData(): array
     {
-        return $this->publisherData;
+        return $this->data;
     }
 
-    public function setPublisherData(array $publisherData): self
+    public function setData(array $data): self
     {
-        $this->publisherData = $publisherData;
+        $this->data = $data;
         return $this;
     }
 

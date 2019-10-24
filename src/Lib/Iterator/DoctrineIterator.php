@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\Lib;
+namespace App\Lib\Iterator;
 
 
 use Doctrine\ORM\QueryBuilder;
 
-class IteratorUtils
+class DoctrineIterator
 {
 
     public static function idIterator(QueryBuilder $qb, string $entityAlias = 'entity', int $maxResults = 100): iterable {

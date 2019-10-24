@@ -5,9 +5,10 @@ namespace App\Command\Analytics;
 
 
 use App\Entity\Article;
+use App\Entity\ArticleWebOfScienceData;
 use App\Entity\Journal;
 use App\Entity\JournalStat;
-use App\Lib\IteratorUtils;
+use App\Lib\Iterator\DoctrineIterator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -44,7 +45,7 @@ class JournalFillStatCommand extends Command
 
     private function journalIterator(): iterable
     {
-        return IteratorUtils::idIterator(
+        return DoctrineIterator::idIterator(
             $this->em->createQueryBuilder()
                 ->select('entity')
                 ->from(Journal::class, 'entity')
@@ -72,6 +73,17 @@ class JournalFillStatCommand extends Command
             ->setJournal($journal)
             ->setPublisher($journal->getCrossrefData()['publisher']);
 
+        $this->updateArticlesCount($stat, $journal);
+        $this->updateMinMaxYears($stat, $journal);
+        $this->updateWosArticlesCount($stat, $journal);
+        $this->updateArticleYears($stat, $journal);
+
+        $this->em->persist($stat);
+        $this->em->flush();
+    }
+
+    private function updateArticlesCount(JournalStat $stat, Journal $journal): void
+    {
         $articlesCount = (int)$this->em->createQueryBuilder()
             ->select('COUNT(entity.id)')
             ->from(Article::class, 'entity')
@@ -80,8 +92,11 @@ class JournalFillStatCommand extends Command
             ->getQuery()
             ->getSingleScalarResult();
         $stat->setArticlesCount($articlesCount);
+    }
 
-        if ($articlesCount > 0) {
+    private function updateMinMaxYears(JournalStat $stat, Journal $journal): void
+    {
+        if ($stat->getArticlesCount() > 0) {
             $minYear = (int)$this->em->createQueryBuilder()
                 ->select('MIN(entity.year)')
                 ->from(Article::class, 'entity')
@@ -98,14 +113,50 @@ class JournalFillStatCommand extends Command
                 ->setParameter('journal', $journal)
                 ->getQuery()
                 ->getSingleScalarResult();
-            $stat->setArticleMaxYear($minYear);
+            $stat->setArticleMaxYear($maxYear);
 
         } else {
-            $stat->setArticleMinYear(0)
+            $stat
+                ->setArticleMinYear(0)
                 ->setArticleMaxYear(0);
         }
+    }
 
-        $this->em->persist($stat);
-        $this->em->flush();
+    private function updateWosArticlesCount(JournalStat $stat, Journal $journal): void
+    {
+        $wosArticlesCount = (int)$this->em->createQueryBuilder()
+            ->select('COUNT(entity.id)')
+            ->from(ArticleWebOfScienceData::class, 'entity')
+            ->andWhere(sprintf('entity.article IN (%s)',
+                $this->em->createQueryBuilder()
+                    ->select('article.id')
+                    ->from(Article::class, 'article')
+                    ->andWhere('article.journal = :journal')
+                    ->getDQL()))
+            ->setParameter('journal', $journal)
+            ->getQuery()
+            ->getSingleScalarResult();
+        $stat->setWosArticlesCount($wosArticlesCount);
+    }
+
+    private function updateArticleYears(JournalStat $stat, Journal $journal): void
+    {
+        $data = $this->em->createQueryBuilder()
+            ->select('entity.year', 'COUNT(entity.id) as articles')
+            ->from(Article::class, 'entity')
+            ->andWhere('entity.journal = :journal')
+            ->setParameter('journal', $journal)
+            ->groupBy('entity.year')
+            ->orderBy('entity.year', 'asc')
+            ->getQuery()
+            ->getResult();
+
+        $years = [];
+        foreach($data as $row) {
+            $years[(int) $row['year']] = (int) $row['articles'];
+        }
+
+        $stat->setArticleYears($years);
+
     }
 }

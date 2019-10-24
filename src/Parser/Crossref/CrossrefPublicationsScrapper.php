@@ -141,7 +141,7 @@ class CrossrefPublicationsScrapper
             ->setJournal($journal);
         $crossrefEntity = (new ArticleCrossrefData())
             ->setArticle($article)
-            ->setCrossrefData($item);
+            ->setData($item);
 
         $this->updateCrossrefDates($crossrefEntity, $item);
         $this->em->persist($article);

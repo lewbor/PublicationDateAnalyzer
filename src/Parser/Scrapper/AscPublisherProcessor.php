@@ -59,7 +59,7 @@ class AscPublisherProcessor implements PublisherProcessor
             $data = $this->parseData($body);
 
             $publisherData = $this->createPublisherData($article);
-            $publisherData->setPublisherData($data);
+            $publisherData->setData($data);
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
@@ -92,7 +92,7 @@ class AscPublisherProcessor implements PublisherProcessor
             ];
 
             $publisherData = $this->createPublisherData($article);
-            $publisherData->setPublisherData($data);
+            $publisherData->setData($data);
             $this->em->persist($article);
             $this->em->flush();
             return 0;

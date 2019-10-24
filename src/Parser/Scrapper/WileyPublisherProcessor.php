@@ -58,7 +58,7 @@ class WileyPublisherProcessor implements PublisherProcessor
 
             $data = $this->parseData($body);
             $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setPublisherData($data);
+            $publisherDataEntity->setData($data);
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
@@ -86,7 +86,7 @@ class WileyPublisherProcessor implements PublisherProcessor
                 'message' => $e->getMessage(),
             ];
             $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setPublisherData($data);
+            $publisherDataEntity->setData($data);
             $this->em->persist($publisherDataEntity);
             $this->em->persist($article);
             $this->em->flush();

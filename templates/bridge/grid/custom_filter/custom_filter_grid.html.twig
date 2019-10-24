@@ -1,18 +1,11 @@
 <div class="row">
     <div class="col-md-9">
 
-        <div class="box box-primary box-full-width box_science_activity_list">
+        <div class="card card-default box-full-width">
             {% block grid_table_header %}
-                <div class="box-header">
-                    <h3 class="box-title">
-                        <h3 class="box-title">
-                            {% block grid_table_title %}{% endblock %}
-                        </h3>
-                    </h3>
-                </div>
             {% endblock %}
 
-            <div class="box-body">
+            <div class="card-body">
                 {% block data_table %}
                     <div class="table-responsive">
                         {% include '@PaDatagrid/parts/data_table.html.twig' %}
@@ -45,14 +38,15 @@
 
         {{ form_start(dsForm) }}
 
-        <div class="box box-primary">
-            <div class="box-body">
+        <div class="card card-default">
+            <div class="card-body">
                 {% if filterForm.children|length > 0 %}
                     {% form_theme filterForm 'bridge/grid/custom_filter/filter_form_theme.html.twig' %}
                     {% include 'bridge/grid/custom_filter/filter.html.twig' %}
                 {% endif %}
 
                 {% include 'bridge/grid/custom_filter/order.html.twig' %}
+                {% include 'bridge/grid/custom_filter/columns.html.twig' %}
 
                 {% block grid_filter_after_columns %}
                     {{ form_row(dsForm.pp, {'label': 'field.per_page'|trans, 'layout':'vertical'}) }}

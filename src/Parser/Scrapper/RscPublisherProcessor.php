@@ -126,7 +126,7 @@ class RscPublisherProcessor implements PublisherProcessor
             return [];
         }
 
-        $crossrefData = $article->getCrossrefData()->getCrossrefData();
+        $crossrefData = $article->getCrossrefData()->getData();
         if (!isset($crossrefData['assertion'])) {
             return [];
         }
@@ -165,7 +165,7 @@ class RscPublisherProcessor implements PublisherProcessor
     private function updateArticleByPublisherData(Article $article, array $publisherData): int
     {
         $publisherDataEntity = $this->createPublisherData($article);
-        $publisherDataEntity->setPublisherData($publisherData);
+        $publisherDataEntity->setData($publisherData);
 
         $datesProcessed = 0;
         if (isset($publisherData['Received'])) {

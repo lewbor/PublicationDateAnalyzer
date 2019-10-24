@@ -1,10 +1,11 @@
 <?php
 
 
-namespace App\Lib;
+namespace App\Lib\Iterator;
 
 
-use App\Lib\FileIterator;
+use App\Lib\Iterator;
+use App\Lib\Iterator\FileIterator;
 use Exception;
 
 class RecordIterator
@@ -15,7 +16,7 @@ class RecordIterator
         $header = null;
         foreach ($csvIterator as $value) {
             if (!$readHeader) {
-                $header = $value[FileIterator::LINE];
+                $header = $value[Iterator\FileIterator::LINE];
                 $readHeader = true;
                 continue;
             }
@@ -26,7 +27,7 @@ class RecordIterator
 
     private static function createRecord($header, $value)
     {
-        $row = $value[FileIterator::LINE];
+        $row = $value[Iterator\FileIterator::LINE];
 
         if (self::recordIsValid($header, $row)) {
             $data = [];
@@ -37,7 +38,7 @@ class RecordIterator
             return [$data, null];
         }
         $error = new Exception(sprintf("File %s, Line %d: header and row size is not valid, header has %d elements, row - %d",
-            $value[FileIterator::FILE], $value[FileIterator::LINE_NUMBER], count($header), count($row)));
+            $value[Iterator\FileIterator::FILE], $value[Iterator\FileIterator::LINE_NUMBER], count($header), count($row)));
         return [null, $error];
 
 
