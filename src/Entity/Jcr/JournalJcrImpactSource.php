@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Entity;
+namespace App\Entity\Jcr;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
         @ORM\UniqueConstraint(name="journal_year", columns={"issn", "year"})
  * })
  */
-class JournalJcrImpact
+class JournalJcrImpactSource
 {
 
     /**

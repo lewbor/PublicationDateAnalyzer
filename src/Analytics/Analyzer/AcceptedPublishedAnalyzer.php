@@ -17,15 +17,16 @@ class AcceptedPublishedAnalyzer implements AnalyzerInterface
         return 'Accepted_Published';
     }
 
-    public function limitArticles(QueryBuilder $qb): void
+    public function limitArticles(QueryBuilder $qb): QueryBuilder
     {
         $qb
-            ->andWhere('entity.publisherAccepted IS NOT NULL')
-            ->andWhere('entity.publisherAvailableOnline IS NOT NULL OR entity.publisherAvailablePrint IS NOT NULL');
+            ->andWhere('publisherData.publisherAccepted IS NOT NULL')
+            ->andWhere('publisherData.publisherAvailableOnline IS NOT NULL OR publisherData.publisherAvailablePrint IS NOT NULL');
+        return $qb;
     }
 
     public function datesDiff(Article $article): int
     {
-        return $this->fromDateToPublished($article->getPublisherAccepted(), $article);
+        return $this->fromDateToPublished($article->getPublisherData()->getPublisherAccepted(), $article);
     }
 }

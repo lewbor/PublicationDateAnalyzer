@@ -4,7 +4,7 @@
 namespace App\Parser\Crossref;
 
 
-use App\Entity\Journal;
+use App\Entity\Journal\Journal;
 use App\Lib\QueueManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;

@@ -4,7 +4,7 @@
 namespace App\Analytics;
 
 
-use App\Entity\JournalAnalytics;
+use App\Entity\Journal\JournalAnalytics;
 use App\Lib\CsvWriter;
 use Doctrine\ORM\EntityManagerInterface;
 

@@ -4,7 +4,7 @@
 namespace App\Parser;
 
 
-use App\Entity\Journal;
+use App\Entity\Journal\Journal;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;

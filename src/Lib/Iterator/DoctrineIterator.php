@@ -19,11 +19,10 @@ class DoctrineIterator
                 ->setMaxResults($maxResults)
                 ->orderBy(sprintf('%s.id', $entityAlias))
                 ->getQuery()
-                ->iterate();
+                ->getResult();
 
             $hasItems = false;
-            foreach($iterator as $item) {
-                $entity = $item[0];
+            foreach($iterator as $entity) {
                 $hasItems = true;
                 yield $entity;
                 $id = $entity->getId();
@@ -34,4 +33,5 @@ class DoctrineIterator
             }
         }
     }
+
 }

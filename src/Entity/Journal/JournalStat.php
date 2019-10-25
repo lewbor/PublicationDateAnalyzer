@@ -1,8 +1,9 @@
 <?php
 
 
-namespace App\Entity;
+namespace App\Entity\Journal;
 
+use App\Entity\Journal\Journal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,7 +21,7 @@ class JournalStat
 
     /**
      * @var Journal
-     * @ORM\OneToOne(targetEntity="\App\Entity\Journal", inversedBy="stat")
+     * @ORM\OneToOne(targetEntity="App\Entity\Journal\Journal", inversedBy="stat")
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $journal;
@@ -36,6 +37,12 @@ class JournalStat
      * @ORM\Column(name="articles_count", type="integer", nullable=false)
      */
     protected $articlesCount;
+
+    /**
+     * @var int
+     * @ORM\Column(name="science_articles_count", type="integer", nullable=false)
+     */
+    protected $scienceArticlesCount;
 
     /**
      * @var int
@@ -61,9 +68,16 @@ class JournalStat
      */
     protected $articleYears;
 
+    /**
+     * @var array
+     * @ORM\Column(name="wos_publication_types", type="json", nullable=false)
+     */
+    protected $wosPublicationTypes;
+
     public function __construct()
     {
         $this->articleYears = [];
+        $this->wosPublicationTypes = [];
     }
 
     public function getId()
@@ -146,6 +160,28 @@ class JournalStat
     public function setArticleYears(array $articleYears): void
     {
         $this->articleYears = $articleYears;
+    }
+
+    public function getWosPublicationTypes(): array
+    {
+        return $this->wosPublicationTypes;
+    }
+
+    public function setWosPublicationTypes(array $wosPublicationTypes): self
+    {
+        $this->wosPublicationTypes = $wosPublicationTypes;
+        return $this;
+    }
+
+    public function getScienceArticlesCount(): int
+    {
+        return $this->scienceArticlesCount;
+    }
+
+    public function setScienceArticlesCount(int $scienceArticlesCount): self
+    {
+        $this->scienceArticlesCount = $scienceArticlesCount;
+        return $this;
     }
 
 

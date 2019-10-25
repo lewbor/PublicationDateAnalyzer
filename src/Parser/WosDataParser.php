@@ -5,7 +5,7 @@ namespace App\Parser;
 
 
 use App\Entity\Article;
-use App\Entity\Journal;
+use App\Entity\Journal\Journal;
 use App\Lib\Iterator\CsvIterator;
 use App\Lib\Iterator\FileIterator;
 use App\Lib\Iterator\RecordIterator;

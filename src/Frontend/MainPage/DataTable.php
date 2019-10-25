@@ -4,8 +4,8 @@
 namespace App\Frontend\MainPage;
 
 
-use App\Entity\Journal;
-use App\Entity\JournalAnalytics;
+use App\Entity\Journal\Journal;
+use App\Entity\Journal\JournalAnalytics;
 use App\Lib\Utils\IssnUtils;
 use PaLabs\DatagridBundle\DataTable\AbstractConfigurableDataTable;
 use PaLabs\DatagridBundle\DataTable\Column\ColumnsBuilder;
@@ -29,7 +29,7 @@ class DataTable extends AbstractConfigurableDataTable
 
     protected function defaultSettings(GridParameters $parameters): DataTableSettings
     {
-        return new DataTableSettings(['name', 'issn', 'publisher', 'period', 'articles', 'jcr2_impact']);
+        return new DataTableSettings(['name', 'issn', 'publisher', 'period', 'articles', 'jcr_impact_2', 'jcr_quartile']);
     }
 
     protected function configureColumns(ColumnsBuilder $builder, GridParameters $parameters)
@@ -59,21 +59,28 @@ class DataTable extends AbstractConfigurableDataTable
                 return $entity->getStat() === null ? StringField::field() :
                     StringField::field($entity->getStat()->getArticlesCount());
             },
+            'jcr_impact_2' => function (ColumnMakerContext $context) {
+                return StringField::field($context->getRow()['jcrImpact2'] ?? '');
+            },
+            'jcr_quartile' => function (ColumnMakerContext $context) {
+                if (empty($context->getRow()['jcrQuartile'])) {
+                    return StringField::field();
+                }
+                return StringField::field(sprintf('Q%s', $context->getRow()['jcrQuartile']));
+            },
             'wos_articles' => function (Journal $entity) {
                 return $entity->getStat() === null ? StringField::field() :
                     StringField::field($entity->getStat()->getWosArticlesCount());
             },
-            'jcr2_impact' => function(ColumnMakerContext $context) {
-                return StringField::field($context->getRow()['journalImpact2'] ?? '');
-            }
         ], [
             'name' => 'Название',
             'issn' => 'ISSN',
             'publisher' => 'Издатель',
             'period' => 'Период',
             'articles' => 'Статей',
+            'jcr_impact_2' => 'Импакт-фактор JCR (2-летний)',
+            'jcr_quartile' => 'Квартиль JCR',
             'wos_articles' => 'Статей (Web of knowledge)',
-            'jcr2_impact' => 'Импакт-фактор JCR 2-летний'
         ]);
     }
 }

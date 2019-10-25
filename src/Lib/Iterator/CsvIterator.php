@@ -6,6 +6,7 @@ namespace App\Lib\Iterator;
 
 use App\Lib\Iterator\FileIterator;
 use App\Lib\Utils\Utils;
+use Symfony\Component\Form\Util\StringUtil;
 
 class CsvIterator
 {
@@ -22,7 +23,7 @@ class CsvIterator
     {
         foreach ($csvIterator as $value) {
             $normalizedRow = array_map(function ($item) {
-                return Utils::fixEncoding(trim($item));
+                return StringUtil::fixEncoding(trim($item));
             }, $value[FileIterator::LINE]);
             yield array_replace($value, [FileIterator::LINE => $normalizedRow]);
         }

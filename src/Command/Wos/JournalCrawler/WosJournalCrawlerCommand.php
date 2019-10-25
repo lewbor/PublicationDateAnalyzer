@@ -1,22 +1,23 @@
 <?php
 
 
-namespace App\Command\Wos;
+namespace App\Command\Wos\JournalCrawler;
 
 
 use App\Command\CrawlerSettings;
-use App\Entity\Journal;
-use App\Lib\Iterator\DoctrineIterator;
+use App\Entity\Journal\Journal;
+use App\Lib\QueueManager;
 use App\Lib\Selenium\BrowserContext;
 use App\Lib\Selenium\DeferredContext;
 use App\Lib\Selenium\Path;
+use App\Lib\Selenium\SeleniumFirefoxTrait;
 use App\Lib\Selenium\SeleniumWebdriverTrait;
 use App\Lib\Selenium\UrlWaiter;
 use App\Lib\Selenium\WosCommonActionsTrait;
 use App\Lib\TaskRunner\Logger\ConsoleLogger;
 use App\Lib\TaskRunner\Task\SeleniumTask;
+use App\Lib\Utils\PathUtils;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Facebook\WebDriver\Exception\NoSuchElementException;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
@@ -24,10 +25,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\Lib\Selenium\SeleniumFirefoxTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
-class WosCrawlerCommand extends Command
+class WosJournalCrawlerCommand extends Command
 {
     use SeleniumFirefoxTrait;
     use SeleniumWebdriverTrait;
@@ -35,45 +35,51 @@ class WosCrawlerCommand extends Command
 
     protected $logger;
     protected $em;
+    protected $queueManager;
     protected $fs;
 
     public function __construct(
         EntityManagerInterface $em,
-        LoggerInterface $logger
-
+        LoggerInterface $logger,
+        QueueManager $queueManager
     )
     {
         parent::__construct();
         $this->em = $em;
         $this->logger = $logger;
+        $this->queueManager = $queueManager;
         $this->fs = new Filesystem();
     }
 
     protected function configure()
     {
-        $this->setName('wos.craw');
+        $this->setName('wos.journal.craw');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $journalIterator = DoctrineIterator::idIterator($this->em->createQueryBuilder()
-            ->select('entity')
-            ->from(Journal::class, 'entity')
-            ->andWhere('entity.id >= 42'));
-
         /** @var Journal $journal */
-        foreach($journalIterator as $journal) {
+        foreach ($this->queueManager->singleIterator(WosJournalQueerCommand::QUEUE_NAME) as $idx => $queueItem) {
+            $data = $queueItem->getData();
+            $journal = $this->em->getRepository(Journal::class)->find($data['id']);
+            if ($journal === null) {
+                $this->logger->error(sprintf('Journal id=%d does not exist', $data['id']));
+                $this->queueManager->acknowledge($queueItem);
+                continue;
+            }
+
             $this->logger->info(sprintf('Start processing journal %d (%s)', $journal->getId(), $journal->getName()));
             $this->processJournal($journal);
             $this->em->clear();
             $this->logger->info(sprintf('End processing journal %d (%s)', $journal->getId(), $journal->getName()));
+            $this->queueManager->acknowledge($queueItem);
             sleep(10);
         }
     }
 
     private function processJournal(Journal $journal): void
     {
-        $saveDir = sprintf(__DIR__ . '/../../data/wos/%d', $journal->getId());
+        $saveDir = sprintf('%s/data/wos/%d', PathUtils::projectDir(), $journal->getId());
         if ($this->fs->exists($saveDir)) {
             $this->fs->remove($saveDir);
             $this->logger->info(sprintf('Removed dir %s', $saveDir));
@@ -107,9 +113,75 @@ class WosCrawlerCommand extends Command
                 return;
             }
 
-            $this->goToSearchResults($driver, 1);
-            $this->saveAll($driver, $saveDir, $browserContext->downloadDir, '', $searchResultItemsCount);
+            if ($searchResultItemsCount > 100000) {
+                $this->goToSearchResults($driver, 1);
+
+                $years = $this->buildYearFacet($driver);
+                asort($years);
+                $yearSlices = $this->buildYearSlices($years);
+
+                foreach ($yearSlices as $sliceNumber => $slice) {
+                    $query = sprintf('SO="%s" AND (%s)',
+                        $journal->getName(),
+                        implode(' OR ', array_map(function ($year) {
+                            return sprintf('PY=%d', $year);
+                        }, $slice))
+                    );
+                    $driver->get(CrawlerSettings::BASE_URL);
+                    $this->search($driver, $query, 'WOS_GeneralSearch_input.do', 'WOS_AdvancedSearch_input.do');
+                    $searchResultItemsCount = $this->searchResultItemsCount($driver, 1 + $sliceNumber + 1);
+                    $this->logger->info(sprintf("Found %d results", $searchResultItemsCount));
+
+                    $this->goToSearchResults($driver, 1 + $sliceNumber + 1);
+                    $this->saveAll($driver, $saveDir, $browserContext->downloadDir, $sliceNumber, $searchResultItemsCount);
+
+                }
+            } else {
+                $this->goToSearchResults($driver, 1);
+                $this->saveAll($driver, $saveDir, $browserContext->downloadDir, '', $searchResultItemsCount);
+            }
         });
+    }
+
+    private function buildYearSlices(array $years): array
+    {
+        $slices = [];
+
+        $currentSlice = [];
+        $currentSum = 0;
+        foreach ($years as $year => $articlesCount) {
+            if ($currentSum + $articlesCount > 100000) {
+                $slices[] = $currentSlice;
+                $currentSlice = [];
+                $currentSum = 0;
+            }
+            $currentSlice[] = $year;
+            $currentSum += $articlesCount;
+        }
+        if (count($currentSlice) > 0) {
+            $slices[] = $currentSlice;
+        }
+
+        return $slices;
+    }
+
+    private function buildYearFacet(RemoteWebDriver $driver): array
+    {
+        $years = [];
+        $driver->findElement(WebDriverBy::cssSelector('a#PublicationYear'))->click();
+
+        $yearElements = $driver->findElements(WebDriverBy::cssSelector('form#refine_more_form tr#PublicationYear_raMore_tr td.refineItem label'));
+        foreach ($yearElements as $yearElement) {
+            $labelValue = $yearElement->getText();
+            $labelParts = explode(' ', trim($labelValue));
+            if (count($labelParts) !== 2) {
+                $this->logger->error(sprintf('Year label format error: %s', $labelValue));
+                continue;
+            }
+            $yearCount = (int)trim(str_replace(['(', ')', ','], '', $labelParts[1]));
+            $years[(int)trim($labelParts[0])] = $yearCount;
+        }
+        return $years;
     }
 
     private function saveAll(RemoteWebDriver $driver, string $saveDir,
@@ -130,7 +202,7 @@ class WosCrawlerCommand extends Command
             $downloadFileName = Path::join($downloadDir, 'savedrecs.txt');
             $this->logger->info(sprintf("Waiting for results to download, %s", $downloadFileName));
             $isFileSaved = $this->waitForFileDownload($downloadFileName);
-            if($isFileSaved) {
+            if ($isFileSaved) {
                 $this->fs->rename($downloadFileName, $saveFileName, true);
                 $this->logger->info(sprintf("Saved results to %s", $saveFileName));
             } else {

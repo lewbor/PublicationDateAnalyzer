@@ -4,7 +4,7 @@
 namespace App\Repository;
 
 
-use App\Entity\JournalAnalytics;
+use App\Entity\Journal\JournalAnalytics;
 use Doctrine\ORM\EntityRepository;
 
 class JournalAnalyticsRepository extends EntityRepository

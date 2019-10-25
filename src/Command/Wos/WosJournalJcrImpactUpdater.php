@@ -4,10 +4,10 @@
 namespace App\Command\Wos;
 
 
-use App\Entity\Journal;
-use App\Entity\JournalImpact\JournalJcr2Impact;
-use App\Entity\JournalImpact\JournalJcr5Impact;
-use App\Entity\JournalJcrImpact;
+use App\Entity\Journal\Journal;
+use App\Entity\Jcr\JournalJcr2Impact;
+use App\Entity\Jcr\JournalJcr5Impact;
+use App\Entity\Jcr\JournalJcrImpactSource;
 use App\Lib\Utils\IssnUtils;
 use App\Lib\Iterator\DoctrineIterator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class JournalJcrImpactUpdater extends Command
+class WosJournalJcrImpactUpdater extends Command
 {
     protected $em;
     protected $logger;
@@ -33,7 +33,7 @@ class JournalJcrImpactUpdater extends Command
 
     protected function configure()
     {
-        $this->setName('journal.jcr_impacts_update');
+        $this->setName('wos.journal.impacts_update');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -79,7 +79,7 @@ class JournalJcrImpactUpdater extends Command
 
         $qb = $this->em->createQueryBuilder()
             ->select('entity')
-            ->from(JournalJcrImpact::class, 'entity');
+            ->from(JournalJcrImpactSource::class, 'entity');
         if (!empty($journal->getIssn())) {
             $qb->orWhere('entity.issn = :issn')
                 ->setParameter('issn', IssnUtils::formatIssnWithHyphen($journal->getIssn()));
@@ -94,7 +94,7 @@ class JournalJcrImpactUpdater extends Command
             return;
         }
 
-        /** @var JournalJcrImpact $item */
+        /** @var JournalJcrImpactSource $item */
         foreach($result as $item) {
             if(!empty($item->getImpactFactor())) {
                 $journalItem = (new JournalJcr2Impact())

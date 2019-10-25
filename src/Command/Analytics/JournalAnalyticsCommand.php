@@ -4,21 +4,21 @@
 namespace App\Command\Analytics;
 
 
-use App\Analytics\AnalyticsSaver;
 use App\Analytics\Analyzer\AcceptedPublishedAnalyzer;
 use App\Analytics\Analyzer\ReceivedAcceptedAnalyzer;
 use App\Analytics\Analyzer\ReceivedPublishedAnalyzer;
 use App\Analytics\JournalAnalyticsMaker;
 use App\Analytics\YearPeriod;
-use App\Entity\Journal;
-use App\Entity\JournalAnalytics;
+use App\Entity\Journal\Journal;
+use App\Entity\Journal\JournalAnalytics;
+use App\Lib\Iterator\DoctrineIterator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class JournalCommonStatCommand extends Command
+class JournalAnalyticsCommand extends Command
 {
     protected $em;
     protected $logger;
@@ -37,11 +37,12 @@ class JournalCommonStatCommand extends Command
 
     protected function configure()
     {
-        $this->setName('journal.stat');
+        $this->setName('journal.analytics');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /** @var YearPeriod[] $yearPeriods */
         $yearPeriods = [
             new YearPeriod(2000, 2009),
             new YearPeriod(2000, 2009, true),
@@ -56,44 +57,44 @@ class JournalCommonStatCommand extends Command
             new ReceivedPublishedAnalyzer(),
         ];
 
-        $this->clearStat();
-
         /** @var Journal $journal */
         foreach ($this->journalIterator() as $journal) {
-            $stat = $this->analyticsMaker->analyticsForJournal($journal, $yearPeriods, $dateAnalyzers);
-            $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
-            $this->saveStat($journal, $stat);
+            $this->clearStat($journal);
 
-            $this->em->clear();
-            $this->logger->info(sprintf('Processed journal %s', $journal->getName()));
+            foreach ($yearPeriods as $yearPeriod) {
+                $stat = $this->analyticsMaker->analyticsForJournal($journal, $yearPeriod, $dateAnalyzers);
+                $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
+                $this->saveStat($journal, $yearPeriod, $stat);
+
+                $this->em->clear();
+                $this->logger->info(sprintf('Processed journal %s with %s', $journal->getName(), json_encode($yearPeriod->toArray())));
+            }
         }
     }
 
     private function journalIterator(): iterable
     {
-        $journals = $this->em->createQueryBuilder()
+        return DoctrineIterator::idIterator($this->em->createQueryBuilder()
             ->select('entity')
             ->from(Journal::class, 'entity')
-            ->getQuery()
-            ->getResult();
-        foreach ($journals as $journal) {
-            yield $journal;
-        }
-
+        );
     }
 
-    private function clearStat()
+    private function clearStat(Journal $journal): void
     {
         $this->em->createQueryBuilder()
             ->delete(JournalAnalytics::class, 'entity')
+            ->andWhere('entity.journal = :journal')
+            ->setParameter('journal', $journal)
             ->getQuery()
             ->execute();
     }
 
-    private function saveStat(?Journal $journal, array $stat)
+    private function saveStat(Journal $journal, YearPeriod $yearPeriod, array $stat): void
     {
         $entity = (new JournalAnalytics())
             ->setJournal($journal)
+            ->setOptions($yearPeriod->toArray())
             ->setAnalytics($stat);
 
         $this->em->persist($entity);

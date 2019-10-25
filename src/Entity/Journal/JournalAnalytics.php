@@ -1,8 +1,9 @@
 <?php
 
 
-namespace App\Entity;
+namespace App\Entity\Journal;
 
+use App\Entity\Journal\Journal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,9 +29,21 @@ class JournalAnalytics
 
     /**
      * @var array
+     * @ORM\Column(name="options", type="json", nullable=false)
+     */
+    protected $options;
+
+    /**
+     * @var array
      * @ORM\Column(name="analytics", type="json", nullable=false)
      */
     protected $analytics;
+
+    public function __construct()
+    {
+        $this->options = [];
+        $this->analytics = [];
+    }
 
     public function getId()
     {
@@ -56,6 +69,17 @@ class JournalAnalytics
     public function setAnalytics(array $analytics): self
     {
         $this->analytics = $analytics;
+        return $this;
+    }
+
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    public function setOptions(array $options): self
+    {
+        $this->options = $options;
         return $this;
     }
 

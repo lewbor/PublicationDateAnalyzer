@@ -11,7 +11,7 @@ interface AnalyzerInterface
 {
     public function getName(): string;
 
-    public function limitArticles(QueryBuilder $qb): void;
+    public function limitArticles(QueryBuilder $qb): QueryBuilder;
 
     public function datesDiff(Article $article): int;
 }

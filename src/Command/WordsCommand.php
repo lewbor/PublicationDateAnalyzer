@@ -5,7 +5,7 @@ namespace App\Command;
 
 
 use App\Entity\Article;
-use App\Entity\Journal;
+use App\Entity\Journal\Journal;
 use App\Lib\Iterator\DoctrineIterator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -32,11 +32,12 @@ class WordsCommand extends Command
 
         $iterator = DoctrineIterator::idIterator(
             $this->em->createQueryBuilder()
-                ->select('entity')
+                ->select('entity', 'partial publisherData.{id}', 'partial webOfScienceData.{id}', 'partial crossrefData.{id}')
                 ->from(Article::class, 'entity')
+                ->leftJoin('entity.publisherData', 'publisherData')
+                ->leftJoin('entity.webOfScienceData', 'webOfScienceData')
+                ->leftJoin('entity.crossrefData', 'crossrefData')
         );
-
-        $articleCount = 0;
 
         $names = [];
         /** @var Article $article */
@@ -48,11 +49,12 @@ class WordsCommand extends Command
                 $names[$articleName] = isset($names[$articleName]) ? $names[$articleName] + 1 : 1;
             }
 
-            if(count($names) > 1000) {
+            if (count($names) > 1000) {
                 break;
             }
         }
 
+        arsort($names);
         print_r($names);
     }
 }

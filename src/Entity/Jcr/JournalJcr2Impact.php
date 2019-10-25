@@ -1,9 +1,10 @@
 <?php
 
 
-namespace App\Entity\JournalImpact;
+namespace App\Entity\Jcr;
 
 
+use App\Entity\Journal\JournalImpactBase;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

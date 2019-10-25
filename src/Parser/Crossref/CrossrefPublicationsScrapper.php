@@ -6,7 +6,7 @@ namespace App\Parser\Crossref;
 
 use App\Entity\Article;
 use App\Entity\ArticleCrossrefData;
-use App\Entity\Journal;
+use App\Entity\Journal\Journal;
 use App\Entity\QueueItem;
 use App\Lib\QueueManager;
 use DateTime;

@@ -3,6 +3,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Journal\Journal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,7 +39,7 @@ class Article
 
     /**
      * @var Journal
-     * @ORM\ManyToOne(targetEntity="Journal")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Journal\Journal")
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      **/
     protected $journal;

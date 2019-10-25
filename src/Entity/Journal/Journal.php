@@ -1,8 +1,9 @@
 <?php
 
 
-namespace App\Entity;
+namespace App\Entity\Journal;
 
+use App\Entity\Journal\JournalStat;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -45,7 +46,7 @@ class Journal
 
     /**
      * @var JournalStat
-     * @ORM\OneToOne(targetEntity="\App\Entity\JournalStat", mappedBy="journal")
+     * @ORM\OneToOne(targetEntity="App\Entity\Journal\JournalStat", mappedBy="journal")
      */
     protected $stat;
 

@@ -4,8 +4,8 @@
 namespace App\Frontend;
 
 
-use App\Entity\Journal;
-use App\Entity\JournalAnalytics;
+use App\Entity\Journal\Journal;
+use App\Entity\Journal\JournalAnalytics;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

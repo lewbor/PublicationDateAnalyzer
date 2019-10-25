@@ -19,7 +19,7 @@
     {{ form_widget(form.v) }}
 {% endblock %}
 
-{% block enum_filter_form_widget %}
+{% block choice_filter_form_widget %}
     <div {% if not form.vars['filter_enabled'] %}style="display: none" {% endif %}>
         {{ form_widget(form.o) }}
     </div>

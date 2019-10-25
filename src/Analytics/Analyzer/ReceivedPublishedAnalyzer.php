@@ -16,15 +16,16 @@ class ReceivedPublishedAnalyzer implements AnalyzerInterface
         return 'Received_Published';
     }
 
-    public function limitArticles(QueryBuilder $qb): void
+    public function limitArticles(QueryBuilder $qb): QueryBuilder
     {
         $qb
-            ->andWhere('entity.publisherReceived IS NOT NULL')
-            ->andWhere('entity.publisherAvailableOnline IS NOT NULL OR entity.publisherAvailablePrint IS NOT NULL');
+            ->andWhere('publisherData.publisherReceived IS NOT NULL')
+            ->andWhere('publisherData.publisherAvailableOnline IS NOT NULL OR publisherData.publisherAvailablePrint IS NOT NULL');
+        return $qb;
     }
 
     public function datesDiff(Article $article): int
     {
-        return $this->fromDateToPublished($article->getPublisherReceived(), $article);
+        return $this->fromDateToPublished($article->getPublisherData()->getPublisherReceived(), $article);
     }
 }

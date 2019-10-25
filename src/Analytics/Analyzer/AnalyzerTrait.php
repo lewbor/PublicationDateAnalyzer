@@ -11,25 +11,29 @@ use LogicException;
 trait AnalyzerTrait
 {
 
-    private function dateDiffs(\DateTime $start, \DateTime $end): int {
+    private function dateDiffs(DateTime $start, DateTime $end): int {
         return (int)$start->diff($end)->format('%r%a');
     }
 
     private function fromDateToPublished(DateTime $fromDate, Article $article) {
-        if($article->getPublisherAvailableOnline() !== null && $article->getPublisherAvailablePrint() !== null) {
-            $diff = $this->dateDiffs($article->getPublisherAvailablePrint(), $article->getPublisherAvailableOnline());
+        if($article->getPublisherData() === null) {
+            throw new LogicException(sprintf('Article has no publisher data, id=%d', $article->getId()));
+        }
+        $publisherData = $article->getPublisherData();
+        if($publisherData->getPublisherAvailableOnline() !== null && $publisherData->getPublisherAvailablePrint() !== null) {
+            $diff = $this->dateDiffs($publisherData->getPublisherAvailablePrint(), $publisherData->getPublisherAvailableOnline());
             if($diff > 365 * 3) {
-                return $this->dateDiffs($fromDate, $article->getPublisherAvailablePrint());
+                return $this->dateDiffs($fromDate, $publisherData->getPublisherAvailablePrint());
             } else {
-                return $this->dateDiffs($fromDate, $article->getPublisherAvailableOnline());
+                return $this->dateDiffs($fromDate, $publisherData->getPublisherAvailableOnline());
             }
         }
 
-        if($article->getPublisherAvailableOnline() === null && $article->getPublisherAvailablePrint() !== null) {
-            return $this->dateDiffs($fromDate, $article->getPublisherAvailablePrint());
+        if($publisherData->getPublisherAvailableOnline() === null && $publisherData->getPublisherAvailablePrint() !== null) {
+            return $this->dateDiffs($fromDate, $publisherData->getPublisherAvailablePrint());
         }
-        if($article->getPublisherAvailableOnline() !== null && $article->getPublisherAvailablePrint() === null) {
-            return $this->dateDiffs($fromDate, $article->getPublisherAvailableOnline());
+        if($publisherData->getPublisherAvailableOnline() !== null && $publisherData->getPublisherAvailablePrint() === null) {
+            return $this->dateDiffs($fromDate, $publisherData->getPublisherAvailableOnline());
         }
 
         throw new LogicException();

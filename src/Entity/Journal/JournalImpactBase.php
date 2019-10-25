@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\Entity\JournalImpact;
+namespace App\Entity\Journal;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Journal;
+use App\Entity\Journal\Journal;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 abstract class JournalImpactBase
@@ -18,8 +18,8 @@ abstract class JournalImpactBase
     protected $id;
 
     /**
-     * @var Journal
-     * @ORM\ManyToOne(targetEntity="App\Entity\Journal")
+     * @var \App\Entity\Journal\Journal
+     * @ORM\ManyToOne(targetEntity="App\Entity\Journal\Journal")
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      * @NotBlank()
      **/
@@ -44,13 +44,13 @@ abstract class JournalImpactBase
     }
 
 
-    public function getJournal(): ?Journal
+    public function getJournal(): ?\App\Entity\Journal\Journal
     {
         return $this->journal;
     }
 
 
-    public function setJournal(Journal $journal)
+    public function setJournal(\App\Entity\Journal\Journal $journal)
     {
         $this->journal = $journal;
         return $this;
