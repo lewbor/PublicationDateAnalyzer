@@ -46,7 +46,7 @@ class YearPeriod
                 ->setParameter('endYear', $this->end);
         }
         if ($this->openAccess !== null) {
-            $qb->andWhere('entity.openAccess = true');
+            $qb->andWhere('unpaywallData.openAccess = true');
         }
 
         return $qb;

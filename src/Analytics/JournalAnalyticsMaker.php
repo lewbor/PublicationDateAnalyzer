@@ -7,11 +7,11 @@ namespace App\Analytics;
 use App\Analytics\Analyzer\AnalyzerInterface;
 use App\Entity\Article;
 use App\Entity\Journal\Journal;
-use App\Lib\ArticleQueries;
 use App\Lib\Iterator\DoctrineIterator;
 use App\Lib\Iterator\IteratorUtils;
 use App\Lib\ScienceArticleFilter;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class JournalAnalyticsMaker
 {
@@ -32,12 +32,8 @@ class JournalAnalyticsMaker
 
         $iterator = DoctrineIterator::idIterator(
             $yearPeriod->limitQuery(
-                ArticleQueries::partialDataJoinQuery(
-                    $this->em->createQueryBuilder()
-                        ->select('entity')
-                        ->from(Article::class, 'entity')
-                        ->andWhere('entity.journal = :journal')
-                        ->setParameter('journal', $journal))));
+                $this->dataQuery(
+                    $this->journalQuery($journal))));
         $iterator = $this->scienceArticleFilter->apply($iterator);
         $periodArticlesCount = IteratorUtils::itemCount($iterator);
         $stat['articles_count'] = $periodArticlesCount;
@@ -49,12 +45,8 @@ class JournalAnalyticsMaker
             $articlesIterator = DoctrineIterator::idIterator(
                 $analyzer->limitArticles(
                     $yearPeriod->limitQuery(
-                        $this->em->createQueryBuilder()
-                            ->select('entity', 'publisherData')
-                            ->from(Article::class, 'entity')
-                            ->join('entity.publisherData', 'publisherData')
-                            ->andWhere('entity.journal = :journal')
-                            ->setParameter('journal', $journal))));
+                        $this->dataQuery(
+                            $this->journalQuery($journal)))));
             $articlesIterator = $this->scienceArticleFilter->apply($articlesIterator);
 
             $dateSeries = $this->buildDateSeries($articlesIterator, $analyzer);
@@ -174,6 +166,31 @@ class JournalAnalyticsMaker
         }
 
         return $quartiles;
+    }
+
+    private function dataQuery(QueryBuilder $qb): QueryBuilder
+    {
+        $qb
+            ->leftJoin('entity.crossrefData', 'crossrefData')
+            ->leftJoin('entity.publisherData', 'publisherData')
+            ->leftJoin('entity.webOfScienceData', 'webOfScienceData')
+            ->leftJoin('entity.unpaywallData', 'unpaywallData')
+            ->addSelect(
+                'partial crossrefData.{id}',
+                'partial webOfScienceData.{id}',
+                'publisherData',
+                'partial unpaywallData.{id, openAccess}'
+            );
+        return $qb;
+    }
+
+    private function journalQuery(Journal $journal): QueryBuilder
+    {
+        return $this->em->createQueryBuilder()
+            ->select('entity')
+            ->from(Article::class, 'entity')
+            ->andWhere('entity.journal = :journal')
+            ->setParameter('journal', $journal);
     }
 
 }

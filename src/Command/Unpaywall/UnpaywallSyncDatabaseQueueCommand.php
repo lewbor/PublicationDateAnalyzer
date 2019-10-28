@@ -5,6 +5,8 @@ namespace App\Command\Unpaywall;
 
 
 use App\Entity\Article;
+use App\Entity\ArticleUnpaywallData;
+use App\Lib\ArticleQueries;
 use App\Lib\Iterator\DoctrineIterator;
 use App\Lib\QueueManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,11 +41,18 @@ class UnpaywallSyncDatabaseQueueCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $iterator = DoctrineIterator::idIterator($this->em->createQueryBuilder()
-            ->select('entity')
-            ->from(Article::class, 'entity')
-            ->andWhere('entity.year >= 2018')
-            ->andWhere('entity.openAccess IS NULL')
+        $iterator = DoctrineIterator::idIterator(
+            ArticleQueries::partialDataJoinQuery(
+                $this->em->createQueryBuilder()
+                    ->select('entity')
+                    ->from(Article::class, 'entity')
+                    ->andWhere(sprintf('entity.id NOT IN (%s)',
+                        $this->em->createQueryBuilder()
+                            ->select('article_unpaywall_data_article.id')
+                            ->from(ArticleUnpaywallData::class, 'article_unpaywall_data')
+                            ->join('article_unpaywall_data.article', 'article_unpaywall_data_article')
+                            ->getDQL()))
+            )
         );
         foreach ($iterator as $idx => $article) {
             /** @var Article $article */

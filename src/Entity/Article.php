@@ -63,10 +63,10 @@ class Article
     protected $webOfScienceData;
 
     /**
-     * @var bool
-     * @ORM\Column(name="open_access", type="boolean", nullable=true)
+     * @var ArticleUnpaywallData
+     * @ORM\OneToOne(targetEntity="\App\Entity\ArticleUnpaywallData", mappedBy="article")
      */
-    protected $openAccess;
+    protected $unpaywallData;
 
 
     public function getId()
@@ -152,16 +152,14 @@ class Article
         return $this;
     }
 
-
-
-    public function isOpenAccess(): ?bool
+    public function getUnpaywallData(): ?ArticleUnpaywallData
     {
-        return $this->openAccess;
+        return $this->unpaywallData;
     }
 
-    public function setOpenAccess(?bool $openAccess): self
+    public function setUnpaywallData(?ArticleUnpaywallData $unpaywallData): self
     {
-        $this->openAccess = $openAccess;
+        $this->unpaywallData = $unpaywallData;
         return $this;
     }
 

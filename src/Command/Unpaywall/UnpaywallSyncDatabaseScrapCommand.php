@@ -5,8 +5,10 @@ namespace App\Command\Unpaywall;
 
 
 use App\Entity\Article;
+use App\Entity\ArticleUnpaywallData;
 use App\Entity\QueueItem;
 use App\Entity\Unpaywall;
+use App\Lib\AbstractMultiProcessCommand;
 use App\Lib\QueueManager;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
@@ -51,24 +53,25 @@ class UnpaywallSyncDatabaseScrapCommand extends Command
             $this->queueManager->acknowledge($queueItem);
 
             $this->em->clear();
-            if ($idx % 5 === 0) {
-                $this->logger->info(sprintf("reminding %d records",
-                    $this->queueManager->remindingTasks(UnpaywallSyncDatabaseQueueCommand::QUEUE_NAME)));
+            if ($idx % 10 === 0) {
+                $this->logger->info(sprintf("%d - Processed %d records",
+                    $_ENV[AbstractMultiProcessCommand::ENV_PROCESS_NUMBER] ?? 0,
+                    $idx + 1));
             }
         }
     }
 
     private function processArticle(Article $article): void
     {
-        $existingEntity = $this->em->getRepository(Unpaywall::class)->findOneBy(['doi' => $article->getDoi()]);
-        if ($existingEntity !== null) {
-            return;
+        if ($article->getUnpaywallData() !== null) {
+            $this->logger->info(sprintf('Article already have a unpaywall, id=%d', $article->getId()));
         }
 
         try {
             $response = $this->unpaywallResponse($article->getDoi());
-            $entity = (new Unpaywall())
-                ->setDoi($article->getDoi())
+            $entity = (new ArticleUnpaywallData())
+                ->setArticle($article)
+                ->setData($response)
                 ->setOpenAccess(isset($response['is_oa']) ? $response['is_oa'] : null);
             $this->em->persist($entity);
             $this->em->flush();

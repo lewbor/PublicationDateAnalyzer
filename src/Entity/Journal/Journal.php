@@ -3,7 +3,9 @@
 
 namespace App\Entity\Journal;
 
-use App\Entity\Journal\JournalStat;
+use App\Entity\Jcr\JournalWosCategory;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,6 +41,12 @@ class Journal
     protected $eissn;
 
     /**
+     * @var JournalWosCategory[]|Collection
+     * @ORM\OneToMany(targetEntity="\App\Entity\Jcr\JournalWosCategory", mappedBy="journal")
+     */
+    protected $wosCategories;
+
+    /**
      * @var array
      * @ORM\Column(type="json", nullable=true)
      */
@@ -49,6 +57,11 @@ class Journal
      * @ORM\OneToOne(targetEntity="App\Entity\Journal\JournalStat", mappedBy="journal")
      */
     protected $stat;
+
+    public function __construct()
+    {
+        $this->wosCategories = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -111,5 +124,8 @@ class Journal
         return $this;
     }
 
-
+    public function getWosCategories()
+    {
+        return $this->wosCategories;
+    }
 }

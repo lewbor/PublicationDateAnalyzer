@@ -10,6 +10,7 @@ use App\Entity\Jcr\JournalJcr2Impact;
 use App\Entity\Journal\JournalStat;
 use App\Lib\Grid\Filter\Choice\ChoiceFilter;
 use App\Lib\Grid\Filter\JcrQuartile\JcrQuartileFilter;
+use App\Lib\Grid\Filter\WosCategory\WosCategoryFilter;
 use App\Lib\JcrYearLocator;
 use Doctrine\ORM\QueryBuilder;
 use PaLabs\DatagridBundle\DataSource\DataSourceSettings;
@@ -44,7 +45,8 @@ class DataSource extends DoctrineDataSource
             ->add('stat.articlesCount', 'Статей')
             ->add('stat.wos_articles', 'Статей (Web of knowledge)')
             ->add('jcrImpact2', 'Импакт-фактор JCR 2-летний')
-            ->add('jcrQuartile', 'Квартиль JCR');
+            ->add('jcrQuartile', 'Квартиль JCR')
+            ->add('entity.id', 'ID');
     }
 
     protected function configureFilters(FilterBuilder $builder, GridParameters $parameters): void
@@ -61,6 +63,9 @@ class DataSource extends DoctrineDataSource
                     'choices' => $this->publisherChoices()
                 ]
             ], null, ['field' => 'stat.publisher'])
+            ->add('wosCategory', WosCategoryFilter::class, [
+                'label' => 'Категория Web of science'
+            ])
             ->add('jcrQuartile', JcrQuartileFilter::class, [
                 'label' => 'Квартиль JCR',
                 'default' => true
@@ -72,9 +77,10 @@ class DataSource extends DoctrineDataSource
         $lastImpactYear =$this->jcrYearLocator->latestYear();
 
         $qb = $this->em->createQueryBuilder()
-            ->select('entity', 'stat')
+            ->select('entity', 'stat', 'wosCategories')
             ->from(Journal::class, 'entity')
-            ->leftJoin('entity.stat', 'stat');
+            ->leftJoin('entity.stat', 'stat')
+            ->leftJoin('entity.wosCategories', 'wosCategories');
 
         if ($lastImpactYear > 0) {
             $qb->addSelect(sprintf('(%s) as jcrImpact2',

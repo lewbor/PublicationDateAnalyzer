@@ -13,6 +13,7 @@ use Symfony\Component\Process\Process;
 
 abstract class AbstractMultiProcessCommand extends Command
 {
+    public const ENV_PROCESS_NUMBER = 'PROCESS_NUMBER';
 
     protected $logger;
 
@@ -41,7 +42,10 @@ abstract class AbstractMultiProcessCommand extends Command
 
         $this->logger->info(sprintf('Will run %d processes', $procCount));
         foreach (range(1, $procCount) as $procNumber) {
-            $process = new Process(['bin/console', $this->commandName()], null, $_ENV);
+            $env = array_merge($_ENV, [
+                self::ENV_PROCESS_NUMBER => $procNumber
+            ]);
+            $process = new Process(['bin/console', $this->commandName()], null, $env);
             $process->start(function ($type, $buffer) use ($output) {
                 echo $buffer;
             });
