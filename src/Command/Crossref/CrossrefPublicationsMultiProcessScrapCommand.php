@@ -5,8 +5,9 @@ namespace App\Command\Crossref;
 
 
 use App\Lib\AbstractMultiProcessCommand;
+use App\Lib\AbstractMultiProxyCommand;
 
-class CrossrefPublicationsMultiProcessScrapCommand extends AbstractMultiProcessCommand
+class CrossrefPublicationsMultiProcessScrapCommand extends AbstractMultiProxyCommand
 {
 
     protected function configure()

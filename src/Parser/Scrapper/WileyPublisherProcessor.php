@@ -5,6 +5,8 @@ namespace App\Parser\Scrapper;
 
 
 use App\Entity\Article;
+use App\Entity\ArticlePublisherData;
+use Campo\UserAgent;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
@@ -14,6 +16,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class WileyPublisherProcessor implements PublisherProcessor
 {
+    const QUEUE_NAME = 'publisher.willey';
+
     use ProcessorTrait;
 
     protected $em;
@@ -39,6 +43,11 @@ class WileyPublisherProcessor implements PublisherProcessor
         ];
     }
 
+    public function queueName(): string
+    {
+        return self::QUEUE_NAME;
+    }
+
     public function process(Article $article): int
     {
         try {
@@ -47,7 +56,10 @@ class WileyPublisherProcessor implements PublisherProcessor
                 'allow_redirects' => true,
                 'verify' => false,
                 'headers' => [
-                    'User-Agent' => "Mozilla/5.0 (X11; FreeBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36",
+                    'User-Agent' => UserAgent::random([
+                        'os_type' => 'Windows',
+                        'device_type' => 'Desktop'
+                    ])
                 ],
             ]);
 
@@ -57,8 +69,7 @@ class WileyPublisherProcessor implements PublisherProcessor
             $body = $response->getBody()->getContents();
 
             $data = $this->parseData($body);
-            $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setData($data);
+            $publisherDataEntity = $this->createPublisherData($article, $data, ArticlePublisherData::SCRAP_RESULT_SUCCESS);
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
@@ -81,12 +92,10 @@ class WileyPublisherProcessor implements PublisherProcessor
 
         } catch (RequestException $e) {
             $data = [
-                'success' => false,
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
                 'message' => $e->getMessage(),
             ];
-            $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setData($data);
+            $publisherDataEntity = $this->createPublisherData($article, $data, ArticlePublisherData::SCRAP_RESULT_ERROR);
             $this->em->persist($publisherDataEntity);
             $this->em->persist($article);
             $this->em->flush();

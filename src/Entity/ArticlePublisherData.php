@@ -12,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ArticlePublisherData
 {
+    const SCRAP_RESULT_SUCCESS = 1;
+    const SCRAP_RESULT_ERROR = 2;
+    const SCRAP_RESULT_NO_DATA = 3;
 
     /**
      * @ORM\Column(type="integer")
@@ -26,6 +29,12 @@ class ArticlePublisherData
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $article;
+
+    /**
+     * @var int
+     * @ORM\Column(name="scrap_result", type="integer", nullable=false)
+     */
+    protected $scrapResult;
 
     /**
      * @var array
@@ -129,5 +138,17 @@ class ArticlePublisherData
         $this->publisherAvailablePrint = $publisherAvailablePrint;
         return $this;
     }
+
+    public function getScrapResult(): int
+    {
+        return $this->scrapResult;
+    }
+
+    public function setScrapResult(int $scrapResult): self
+    {
+        $this->scrapResult = $scrapResult;
+        return $this;
+    }
+
 
 }

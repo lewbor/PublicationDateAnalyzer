@@ -34,7 +34,7 @@ class CrossrefPublicationsQueer
             $this->queueAJournal($journal);
             $this->em->clear();
         }
-        $this->logger->info(sprintf('Totally queued %d journals', $idx + 1));
+        $this->logger->info(sprintf('Queued %d journals', $idx + 1));
 
     }
 
@@ -43,6 +43,7 @@ class CrossrefPublicationsQueer
         $iterator = $this->em->createQueryBuilder()
             ->select('entity')
             ->from(Journal::class, 'entity')
+            ->orderBy('entity.id', 'desc')
             ->getQuery()
             ->iterate();
         foreach ($iterator as $item) {

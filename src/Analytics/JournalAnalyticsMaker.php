@@ -70,7 +70,8 @@ class JournalAnalyticsMaker
                 ];
             } else {
                 $analyzerResult = [
-                    'count' => 0,
+                    'articles_count' => 0,
+                    'percent' => 0.0,
                     'min' => null,
                     'min_count' => null,
                     'max' => null,

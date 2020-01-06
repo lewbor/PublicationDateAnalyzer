@@ -1,100 +1,301 @@
 {% extends 'base.html.twig' %}
 
-{% block css %}
-    {{ parent() }}
+{% block title %}{{ journal.name }}{% endblock %}
 
+{% block content %}
     <style>
-        .analyzer-stack {
-            display: flex;
-            align-items: center;
-            justify-content: left;
+        table#jcr-quartiles {
+            border-collapse: collapse;
         }
-
-        .analyzer-item {
-            margin: 0 20px;
+        table#jcr-quartiles td {
+            border: 1px solid #fff;
+        }
+        table#jcr-quartiles td.quartile-1 {
+            background-color: rgb(164, 207, 99);
+        }
+        table#jcr-quartiles td.quartile-2 {
+            background-color: rgb(232, 213, 89);
+        }
+        table#jcr-quartiles td.quartile-3 {
+            background-color: rgb(251, 163, 83);
+        }
+        table#jcr-quartiles td.quartile-4 {
+            background-color: rgb(221, 90, 78);
         }
     </style>
-{% endblock %}
+    <section class="content-header">
+        <h1>
+            Журнал {{ journal.name }}
+        </h1>
+    </section>
 
-{% block body %}
-    <h1>Журнал {{ journal.name }}</h1>
+    <section class="content container-fluid">
 
-    <h3>Общая статистика</h3>
-    <table class="table" style="max-width: 300px">
-        <tr>
-            <th>Публикаций</th>
-            <td>{{ analytics['common']['count']|number_format }}</td>
-        </tr>
-        <tr>
-            <th>Период</th>
-            <td>{{ analytics['common']['min'] }}-{{ analytics['common']['max'] }}</td>
-        </tr>
-        <tr>
-            <th>Издательство</th>
-            <td>{{ journal.crossrefData['publisher']|default('') }}</td>
-        </tr>
-    </table>
-
-    {% for period in analytics['periods'] %}
-        <h3>{{ period['start'] }}-{{ period['end'] }} {% if period['openAccess'] %} (OA) {% endif %}</h3>
-        {% set analyzers = {
-            'Received_Accepted' : 'Получена в редакции - Принята к публикации',
-            'Accepted_Published' : 'Принята к публикации - Опубликована',
-            'Received_Published': 'Получена в редакции  - Опубликована'
-        } %}
-        <div class="analyzer-stack">
-            {% for analyzerName, analyzerLabel in  analyzers %}
-                {% set analyzerData = period['analyzers'][analyzerName] %}
-                {% if analyzerData['count'] > 0 %}
-                    <div class="analyzer-item">
-                        <b>{{ analyzerLabel }}</b><br/>
-                        <table class="table" style="max-width:500px;">
+        <div class="card card-default">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Общая информация</h3>
+                        <table class="table">
                             <tr>
-                                <th>Публикаций</th>
-                                <td>{{ analyzerData['count'] }}</td>
+                                <th>Название</th>
+                                <td>{{ journal.name }}</td>
                             </tr>
                             <tr>
-                                <th>Минимум дней</th>
-                                <td>{{ analyzerData['min'] }} ({{ analyzerData['min_count'] }} публикаций)</td>
+                                <th>Issn</th>
+                                <td>{{ journal.issn }}</td>
                             </tr>
                             <tr>
-                                <th>Максимум дней</th>
-                                <td>{{ analyzerData['max'] }} ({{ analyzerData['max_count'] }} публикаций)</td>
+                                <th>Eissn</th>
+                                <td>{{ journal.eissn }}</td>
                             </tr>
                             <tr>
-                                <th>Среднее дней</th>
-                                <td>{{ analyzerData['avg'] }}</td>
+                                <th>Издатель</th>
+                                <td>{{ stat.publisher }}</td>
                             </tr>
                             <tr>
-                                <th>Медиана дней</th>
-                                <td>{{ analyzerData['median'] }} ({{ analyzerData['median_count'] }} публикаций)</td>
+                                <th>Число статей</th>
+                                <td>{{ stat.articlesCount }}</td>
                             </tr>
                             <tr>
-                                <th>Квартили дней</th>
-                                <td>
-                                    <table class="table">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Публикаций</th>
-                                            <th>Дней</th>
-                                        </tr>
-                                        {% for quartile in analyzerData['quartiles'] %}
-                                            <tr>
-                                                <td>{{ quartile['quartile'] }} ({{ quartile['quartile'] * 25 }}%)</td>
-                                                <td>{{ quartile['idx'] }}</td>
-                                                <td>{{ quartile['value'] }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </table>
+                                <th>Число научных статей</th>
+                                <td>{{ stat.scienceArticlesCount }}</td>
+                            </tr>
+                            <tr>
+                                <th>Период</th>
+                                <td>{{ stat.articleMinYear }}-{{ stat.articleMaxYear }}</td>
+                            </tr>
+                            <tr>
+                                <th>Число статей в Web of science</th>
+                                <td>{{ stat.wosArticlesCount }}</td>
+                            </tr>
+                            <tr>
+                                <th>Категории Web of science</th>
+                                <td>{% if journal.wosCategories|length > 0 %}
+                                        <ul>
+                                            {% for category in journal.wosCategories %}
+                                                <li>{{ category.category.name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
                                 </td>
                             </tr>
                         </table>
                     </div>
-                {% endif %}
-            {% endfor %}
+                    <div class="col-md-6">
+                        <h3>Импакт-факторы JCR</h3>
+                        <canvas id="jcr_impacts"
+                                height="100"
+                                data-chart-data="{{ jcr2Impacts|json_encode }}"
+                                data-chart-label="Импакт-факторы JCR"
+                        ></canvas>
+
+                        <h3>Квартили JCR</h3>
+                        <table class="table" id="jcr-quartiles">
+                            <tr>
+                                <th>Категория</th>
+                                {% for year in jcrQuartiles['years'] %}
+                                    <th>{{ year }}</th>
+                                {% endfor %}
+                            </tr>
+                            {% for category in jcrQuartiles['categories'] %}
+                                <tr>
+                                    <td>{{ category }}</td>
+                                    {% for year in jcrQuartiles['years'] %}
+                                        {% if jcrQuartiles['quartiles'][category][year] is defined %}
+                                            <td class="quartile-{{ jcrQuartiles['quartiles'][category][year] }}">
+                                                Q{{ jcrQuartiles['quartiles'][category][year] }}
+                                            </td>
+                                        {% else %}
+                                            <td></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {% if not loop.last %}
-            <hr/>{% endif %}
-    {% endfor %}
+        <div class="card card-default">
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Годы публикаций</h3>
+                        <canvas id="publication_years"
+                                data-chart-data="{{ stat.articleYears|json_encode }}"
+                                data-chart-label="Годы публикаций"
+                        ></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Типы публикаций (Web of science)</h3>
+                        <canvas id="wos_publication_types"
+                                data-chart-data="{{ wosTypes|json_encode }}"
+                                data-chart-label="Типы публикаций (WOS)"></canvas>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Скорость публикации</h3>
+                        <canvas id="publication_speed"
+                                data-chart-data="{{ publicationSpeed|json_encode }}"
+                                data-chart-label="Медианное количество дней"
+                        ></canvas>
+                    </div>
+                </div>
+
+                <script>
+                    function buildBarChart(canvasId, additionalOptions) {
+                        let canvasElement = document.getElementById(canvasId);
+                        let ctx = canvasElement.getContext('2d');
+                        let chartData = JSON.parse(canvasElement.dataset.chartData);
+                        let chartConfig = {
+                            ...{
+                                type: 'bar',
+                                data: {
+                                    labels: Object.keys(chartData),
+                                    datasets: [{
+                                        label: canvasElement.dataset.chartLabel,
+                                        backgroundColor: 'rgb(255, 99, 132)',
+                                        borderColor: 'rgb(255, 99, 132)',
+                                        data: Object.values(chartData)
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true,
+                                            }
+                                        }]
+                                    },
+                                    legend: {
+                                        position: 'bottom',
+                                        align: 'start'
+                                    }
+                                }
+                            }, ...additionalOptions
+                        };
+                        let myChart = new Chart(ctx, chartConfig);
+                    }
+
+                    function buildPieChart(canvasId, additionalOptions) {
+                        let canvasElement = document.getElementById(canvasId);
+                        let ctx = canvasElement.getContext('2d');
+                        let chartData = JSON.parse(canvasElement.dataset.chartData);
+                        let chartConfig = {
+                            ...{
+                                type: 'pie',
+                                data: {
+                                    labels: Object.keys(chartData).map((value) => value + '(' + chartData[value] + ')'),
+                                    datasets: [{
+                                        label: canvasElement.dataset.chartLabel,
+                                        backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                                        // borderColor: 'rgb(255, 99, 132)',
+                                        data: Object.values(chartData)
+                                    }]
+                                },
+                                options: {
+                                    legend: {
+                                        position: 'bottom',
+                                        align: 'start'
+                                    }
+                                }
+                            }, ...additionalOptions
+                        };
+                        let myChart = new Chart(ctx, chartConfig);
+                    }
+
+                    buildBarChart('publication_years');
+                    buildBarChart('jcr_impacts');
+                    buildBarChart('publication_speed');
+                    buildPieChart('wos_publication_types');
+
+                </script>
+            </div>
+        </div>
+
+
+        {% if analytics|length > 0 %}
+            <h2>Аналитика за периоды</h2>
+
+            {% for analyticsItem in analytics %}
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <h4>
+                            Период: {{ analyticsItem.options['start'] }}-{{ analyticsItem.options['end'] }}
+                            {% if analyticsItem.options['openAccess'] is not null %}, Open Access{% endif %}
+                        </h4>
+
+                        <b>Статей - </b> {{ analyticsItem.analytics['articles_count'] }},
+                        {{ (analyticsItem.analytics['articles_count'] / stat.articlesCount)|number_format(3) }}% от
+                        общего количества
+                        <br/><br/>
+
+                        {% set analyzerData = analyticsItem.analytics['analyzers']['Accepted_Published'] %}
+                        <h4>Скорость публикации</h4>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table">
+                                    <tr>
+                                        <th>Проанализировано статей</th>
+                                        <td>{{ analyzerData['articles_count'] }}
+                                            ({{ analyzerData['percent']|number_format }}
+                                            %)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            Минимальное время публикации
+                                        </th>
+                                        <td>
+                                            {{ analyzerData['min'] }} дней, {{ analyzerData['min_count'] }} статей
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            Максимальное время публикации
+                                        </th>
+                                        <td>
+                                            {{ analyzerData['max'] }} дней, {{ analyzerData['max_count'] }} статей
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            Среднее время публикации
+                                        </th>
+                                        <td>
+                                            {{ analyzerData['avg'] }} дней
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            Медианное время публикации
+                                        </th>
+                                        <td>
+                                            {{ analyzerData['median'] }} дней, {{ analyzerData['median_count'] }} статей
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="publication_years_{{ analyticsItem.id }}_Accepted_Published"
+                                        data-chart-data="{{ analyzerData['histogram']|json_encode }}"
+                                        data-chart-label="Скорость опубликования"></canvas>
+                                <script>
+                                    buildBarChart('publication_years_{{ analyticsItem.id }}_Accepted_Published');
+                                </script>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </section>
 {% endblock %}
+

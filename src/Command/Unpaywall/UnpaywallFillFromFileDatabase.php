@@ -6,7 +6,6 @@ namespace App\Command\Unpaywall;
 
 use App\Entity\Article;
 use App\Entity\ArticleUnpaywallData;
-use App\Entity\Unpaywall;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -15,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UnpaywallFillFromFileDatabase extends Command
 {
+    private const BATCH_SIZE = 500;
+
     protected $em;
     protected $logger;
 
@@ -38,65 +39,80 @@ class UnpaywallFillFromFileDatabase extends Command
 
         $fileName = '/project/unpaywall_snapshot_2019-04-19T193256.jsonl.gz';
 
+        foreach ($this->batchIterator($fileName, 74634000, self::BATCH_SIZE) as $idx => $records) {
+            /** @var Article[] $articles */
+            $articles = $this->em->createQueryBuilder()
+                ->select('entity')
+                ->from(Article::class, 'entity')
+                ->leftJoin('entity.unpaywallData', 'unpaywallData')
+                ->andWhere('entity.doi IN (:doi)')
+                ->andWhere('unpaywallData IS NULL')
+                ->setParameter('doi', array_keys($records))
+                ->getQuery()
+                ->getResult();
+
+            foreach ($articles as $article) {
+                $unpaywallData = $records[$article->getDoi()];
+                $dataEntity = (new ArticleUnpaywallData())
+                    ->setArticle($article)
+                    ->setData($unpaywallData)
+                    ->setOpenAccess($unpaywallData['is_oa']);
+                $this->em->persist($dataEntity);
+            }
+            $this->em->flush();
+            $this->em->clear();
+            $this->logger->info(sprintf('Processed %s records, updated %d articles',
+                number_format(($idx + 1) * self::BATCH_SIZE),
+                count($articles)));
+        }
+
+    }
+
+    protected function batchIterator(string $fileName, int $recordsToSkip = 0, int $batchSize = 500): iterable
+    {
         $zh = gzopen($fileName, 'r');
         if ($zh === false) {
             die("can't open: $php_errormsg");
         }
 
-        $recordsToSkip =  56808000;
         $processedRecords = 0;
+        $batch = [];
         while ($line = gzgets($zh)) {
-            try {
-                if($processedRecords < $recordsToSkip) {
-                    continue;
+            $processedRecords++;
+            if ($processedRecords < $recordsToSkip) {
+                if ($processedRecords % 5000 === 0) {
+                    $this->logger->info(sprintf('Skipping %s records', number_format($processedRecords)));
                 }
-                $data = json_decode($line, true);
-
-                if (!isset($data['doi'])) {
-                    $this->logger->error(sprintf('Doi is not set, %s', json_encode($data)));
-                    continue;
-                }
-
-                if (!isset($data['is_oa'])) {
-                    $this->logger->error(sprintf('is_oa is not set, %s', json_encode($data)));
-                }
-
-                if (strlen($data['doi']) > 700) {
-                    $this->logger->error(sprintf('Too long doi: %s', $data['doi']));
-                    continue;
-                }
-
-                $article = $this->em->getRepository(Article::class)
-                    ->findOneBy(['doi' => $data['doi']]);
-                if ($article === null) {
-                    continue;
-                }
-                if ($article->getUnpaywallData() !== null) {
-                    continue;
-                }
-
-                $dataEntity = (new ArticleUnpaywallData())
-                    ->setArticle($article)
-                    ->setData($data)
-                    ->setOpenAccess($data['is_oa']);
-                $this->em->persist($dataEntity);
-                $this->em->flush();
-            } finally {
-                $processedRecords++;
-
-                if ($processedRecords % 100 === 0) {
-                    $this->em->clear();
-                }
-
-                if ($processedRecords % 1000 === 0) {
-                    $this->logger->info(sprintf("%s records, memory %s kb", number_format($processedRecords),
-                        memory_get_usage() / 1024));
-                }
+                continue;
             }
+            $data = json_decode($line, true);
+
+            if (!isset($data['doi'])) {
+                $this->logger->error(sprintf('Doi is not set, %s', json_encode($data)));
+                continue;
+            }
+
+            if (!isset($data['is_oa'])) {
+                $this->logger->error(sprintf('is_oa is not set, %s', json_encode($data)));
+            }
+
+            if (strlen($data['doi']) > 700) {
+                $this->logger->error(sprintf('Too long doi: %s', $data['doi']));
+                continue;
+            }
+
+            $batch[$data['doi']] = $data;
+            if (count($batch) >= $batchSize) {
+                yield $batch;
+                $batch = [];
+            }
+        }
+
+        if (count($batch) !== 0) {
+            yield $batch;
         }
 
         gzclose($zh);
 
     }
-
 }

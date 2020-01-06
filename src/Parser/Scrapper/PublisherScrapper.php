@@ -6,7 +6,9 @@ namespace App\Parser\Scrapper;
 
 use App\Entity\Article;
 use App\Entity\QueueItem;
+use App\Lib\AbstractMultiProcessCommand;
 use App\Lib\QueueManager;
+use App\Parser\PublisherProcessorFinder;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -15,40 +17,33 @@ class PublisherScrapper
     protected $queueManager;
     protected $em;
     protected $logger;
-    protected $processors;
+    protected $processorFinder;
 
     public function __construct(
         EntityManagerInterface $em,
         LoggerInterface $logger,
         QueueManager $queueManager,
-        ScienceDirectPublisherProcessor $scienceDirectPublisherProcessor,
-        SpringerPublisherProcessor $springerPublisherProcessor,
-        AscPublisherProcessor $ascPublisherProcessor,
-        RscPublisherProcessor $rscPublisherProcessor,
-        WileyPublisherProcessor $wileyPublisherProcessor)
+        PublisherProcessorFinder $processorFinder
+    )
     {
         $this->em = $em;
         $this->logger = $logger;
         $this->queueManager = $queueManager;
-
-        $this->processors = [
-            $scienceDirectPublisherProcessor,
-            $springerPublisherProcessor,
-            $ascPublisherProcessor,
-            $rscPublisherProcessor,
-            $wileyPublisherProcessor
-        ];
+        $this->processorFinder = $processorFinder;
     }
 
-    public function run()
+    public function run(string $queueName)
     {
-        foreach ($this->queueManager->singleIterator(PublisherQueer::QUEUE_NAME) as $idx => $queueItem) {
+        $procNumber = (int)$_ENV[AbstractMultiProcessCommand::ENV_PROCESS_NUMBER] ?? 0;
+
+        foreach ($this->queueManager->singleIterator($queueName) as $idx => $queueItem) {
             $this->processItem($queueItem);
             $this->queueManager->acknowledge($queueItem);
             $this->em->clear();
 
-            if($idx % 15 === 0) {
-                $this->logger->info(sprintf('Reminded %d tasks', $this->queueManager->remindingTasks(PublisherQueer::QUEUE_NAME)));
+            if ($idx % 10 === 0 && $procNumber === 1) {
+                $this->logger->info(sprintf('Reminded %d tasks',
+                    $this->queueManager->remindingTasks($queueName)));
             }
         }
     }
@@ -62,41 +57,15 @@ class PublisherScrapper
             return;
         }
 
-        $processor = $this->findProcessor($article);
+        $processor = $this->processorFinder->findProcessor($article);
         if ($processor === null) {
             return;
         }
         $datesUpdate = $processor->process($article);
-        $this->logger->info(sprintf("Processed article=%d, publisher=%s, year=%d, update %d dates",
-            $article->getId(), $processor->name(),
+        $this->logger->info(sprintf("Processed article=%s, publisher=%s, year=%d, update %d dates",
+            $article->getDoi(), $processor->name(),
             $article->getYear(), $datesUpdate));
     }
 
 
-    private function findProcessor(Article $article): ?PublisherProcessor
-    {
-        if($article->getCrossrefData() === null) {
-            $this->logger->info(sprintf('Article %d - no crossref data', $article->getId()));
-            return null;
-        }
-
-        if(empty($article->getCrossrefData()->getData()['publisher'])) {
-            $this->logger->info(sprintf('Article %d - empty publisher', $article->getId()));
-            return null;
-        }
-
-        $publisher = $article->getCrossrefData()->getData()['publisher'];
-        $publisher = mb_strtolower(trim($publisher));
-
-        /** @var PublisherProcessor $processor */
-        foreach ($this->processors as $processor) {
-            foreach ($processor->publisherNames() as $publisherName) {
-                if (strpos($publisher, $publisherName) !== false) {
-                    return $processor;
-                }
-            }
-        }
-        $this->logger->error(sprintf("No processor for publisher %s", $publisher));
-        return null;
-    }
 }

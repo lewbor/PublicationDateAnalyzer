@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints\NotNull;
 
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="\App\Repository\JournalJcrQuartileRepository")
  * @ORM\Table(name="journal_wos_quartile", uniqueConstraints={
 @ORM\UniqueConstraint(name="search_idx", columns={"journal_id", "year", "category"})
  * })

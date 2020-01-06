@@ -13,5 +13,7 @@ interface PublisherProcessor
 
     public function publisherNames(): array;
 
+    public function queueName(): string;
+
     public function process(Article $article): int;
 }

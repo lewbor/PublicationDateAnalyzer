@@ -5,6 +5,8 @@ namespace App\Parser\Scrapper;
 
 
 use App\Entity\Article;
+use App\Entity\ArticlePublisherData;
+use Campo\UserAgent;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
@@ -14,6 +16,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class RscPublisherProcessor implements PublisherProcessor
 {
+    const QUEUE_NAME = 'publisher.rsc';
+
     use ProcessorTrait;
 
     protected $em;
@@ -39,6 +43,11 @@ class RscPublisherProcessor implements PublisherProcessor
         ];
     }
 
+    public function queueName(): string
+    {
+        return self::QUEUE_NAME;
+    }
+
     public function process(Article $article): int
     {
         $publisherData = $this->extractDataFromCrossref($article);
@@ -60,7 +69,10 @@ class RscPublisherProcessor implements PublisherProcessor
                 'allow_redirects' => true,
                 'verify' => false,
                 'headers' => [
-                    'User-Agent' => "Mozilla/5.0 (X11; FreeBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36",
+                    'User-Agent' => UserAgent::random([
+                        'os_type' => 'Windows',
+                        'device_type' => 'Desktop'
+                    ])
                 ],
             ]);
 
@@ -164,8 +176,7 @@ class RscPublisherProcessor implements PublisherProcessor
 
     private function updateArticleByPublisherData(Article $article, array $publisherData): int
     {
-        $publisherDataEntity = $this->createPublisherData($article);
-        $publisherDataEntity->setData($publisherData);
+        $publisherDataEntity = $this->createPublisherData($article, $publisherData, ArticlePublisherData::SCRAP_RESULT_SUCCESS);
 
         $datesProcessed = 0;
         if (isset($publisherData['Received'])) {

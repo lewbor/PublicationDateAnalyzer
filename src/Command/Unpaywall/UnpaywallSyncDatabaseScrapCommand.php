@@ -45,6 +45,7 @@ class UnpaywallSyncDatabaseScrapCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $procNumber = (int)$_ENV[AbstractMultiProcessCommand::ENV_PROCESS_NUMBER] ?? 0;
         foreach ($this->queueManager->singleIterator(UnpaywallSyncDatabaseQueueCommand::QUEUE_NAME) as $idx => $queueItem) {
             $article = $this->em->getRepository(Article::class)->find($queueItem->getData()['id']);
             $this->processArticle($article);
@@ -54,9 +55,11 @@ class UnpaywallSyncDatabaseScrapCommand extends Command
 
             $this->em->clear();
             if ($idx % 10 === 0) {
-                $this->logger->info(sprintf("%d - Processed %d records",
-                    $_ENV[AbstractMultiProcessCommand::ENV_PROCESS_NUMBER] ?? 0,
-                    $idx + 1));
+                $this->logger->info(sprintf("%d - Processed %d records", $procNumber, $idx + 1));
+            }
+            if ($idx % 10 === 0 && $procNumber === 1) {
+                $this->logger->info(sprintf('Reminded %d tasks',
+                    $this->queueManager->remindingTasks(UnpaywallSyncDatabaseQueueCommand::QUEUE_NAME)));
             }
         }
     }

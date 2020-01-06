@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4708cb9a653afdcba3d8dd49d55d214",
+    "content-hash": "cb24b5325d7aec514cc247d8c520e853",
     "packages": [
+        {
+            "name": "campo/random-user-agent",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joecampo/random-user-agent.git",
+                "reference": "4a88bd90f66ca398b050b19848e3c6ea143ce8a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/joecampo/random-user-agent/zipball/4a88bd90f66ca398b050b19848e3c6ea143ce8a0",
+                "reference": "4a88bd90f66ca398b050b19848e3c6ea143ce8a0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Campo\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Joe Campo",
+                    "email": "jcampo@gmail.com"
+                }
+            ],
+            "description": "Generate real random user-agents.",
+            "keywords": [
+                "spoofing user",
+                "user agent",
+                "user agents",
+                "user-agent"
+            ],
+            "time": "2018-06-13T14:26:21+00:00"
+        },
         {
             "name": "composer/ca-bundle",
             "version": "1.2.4",

@@ -8,6 +8,7 @@ use App\Entity\Article;
 use App\Entity\ArticleCrossrefData;
 use App\Entity\Journal\Journal;
 use App\Entity\QueueItem;
+use App\Lib\AbstractMultiProcessCommand;
 use App\Lib\QueueManager;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,6 +38,7 @@ class CrossrefPublicationsScrapper
 
     public function scrap()
     {
+        $procNumber = (int)$_ENV[AbstractMultiProcessCommand::ENV_PROCESS_NUMBER] ?? 0;
 
         foreach ($this->queueManager->singleIterator(CrossrefPublicationsQueer::QUEUE_NAME) as $idx => $queueItem) {
             $this->processItem($queueItem);
@@ -45,8 +47,10 @@ class CrossrefPublicationsScrapper
             $this->queueManager->acknowledge($queueItem);
 
             $this->em->clear();
-            $this->logger->info(sprintf("reminding %d records",
-                $this->queueManager->remindingTasks(CrossrefPublicationsQueer::QUEUE_NAME)));
+            if ($procNumber === 1) {
+                $this->logger->info(sprintf("reminding %d records",
+                    $this->queueManager->remindingTasks(CrossrefPublicationsQueer::QUEUE_NAME)));
+            }
         }
 
     }
@@ -65,6 +69,8 @@ class CrossrefPublicationsScrapper
 
     private function processJournal(Journal $journal)
     {
+        $scrappingDate = new \DateTime();
+
         $issn = null;
         if (!empty($journal->getIssn())) {
             $issn = $journal->getIssn();
@@ -84,7 +90,7 @@ class CrossrefPublicationsScrapper
             $this->em->clear();
             $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
 
-            $result = $this->fetchCrossrefData($issn, $nextCursor);
+            $result = $this->fetchCrossrefData($issn, $journal->getScrappingDate(), $nextCursor);
 
             if ($result['status'] != 'ok') {
                 $this->logger->error(sprintf('Error response: %s', json_encode($result)));
@@ -98,7 +104,7 @@ class CrossrefPublicationsScrapper
 
             foreach ($result['message']['items'] as $item) {
                 $wasInsertion = $this->processPublication($item, $journal);
-                if($wasInsertion) {
+                if ($wasInsertion) {
                     $insertedArticles++;
                 }
                 $this->em->clear();
@@ -113,6 +119,10 @@ class CrossrefPublicationsScrapper
             $this->logger->info(sprintf('Journal %d - processed %d items, inserted %d',
                 $journal->getId(), $scrappedArticles, $insertedArticles));
         }
+        $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
+        $journal->setScrappingDate($scrappingDate);
+        $this->em->persist($journal);
+        $this->em->flush();
 
         $this->logger->info(sprintf('End process journal %d, scrapped %d articles', $journal->getId(), $scrappedArticles));
     }
@@ -151,16 +161,21 @@ class CrossrefPublicationsScrapper
         return true;
     }
 
-    private function fetchCrossrefData(string $issn, string $nextCursor): array
+    private function fetchCrossrefData(string $issn, ?DateTime $scrappedDate, string $nextCursor): array
     {
         $lastException = null;
+
+        $filter = 'type:journal-article';
+        if($scrappedDate !== null) {
+            $filter .= sprintf(',from-deposit-date:%s', $scrappedDate->format('Y-m-d'));
+        }
 
         for ($i = 0; $i < self::TRY_COUNT; $i++) {
             try {
                 $url = sprintf('https://api.crossref.org/journals/%s/works', $issn);
                 $urlParams = [
-                    'filter' => 'type:journal-article',
-                    'mailto' => 'lewbor@mail.ru',
+                    'filter' =>$filter,
+                    'mailto' => $this->randomEmail(),
                     'rows' => 500,
                     'cursor' => $nextCursor
                 ];
@@ -212,6 +227,12 @@ class CrossrefPublicationsScrapper
             isset($parts[2]) ? (int)$parts[2] : 1
         );
         return new DateTime($dateStr);
+    }
+
+    private function randomEmail(): string
+    {
+        $permittedChars = '0123456789abcdefghijklmnopqrstuvwxyz';
+        return sprintf('%s@mail.ru', substr(str_shuffle($permittedChars), 0, 10));
     }
 
 

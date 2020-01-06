@@ -4,6 +4,9 @@
 namespace App\Command\Analytics;
 
 
+use App\Analytics\Analyzer\ReceivedPublishedAnalyzer;
+use App\Analytics\JournalAnalyticsMaker;
+use App\Analytics\YearPeriod;
 use App\Entity\Article;
 use App\Entity\ArticleWebOfScienceData;
 use App\Entity\Journal\Journal;
@@ -23,16 +26,19 @@ class JournalStatCommand extends Command
     protected $em;
     protected $logger;
     protected $scienceArticleFilter;
+    protected $analyticsMaker;
 
     public function __construct(
         EntityManagerInterface $em,
         LoggerInterface $logger,
-        ScienceArticleFilter $scienceArticleFilter)
+        ScienceArticleFilter $scienceArticleFilter,
+        JournalAnalyticsMaker $analyticsMaker)
     {
         parent::__construct();
         $this->em = $em;
         $this->logger = $logger;
         $this->scienceArticleFilter = $scienceArticleFilter;
+        $this->analyticsMaker = $analyticsMaker;
     }
 
     protected function configure()
@@ -84,6 +90,7 @@ class JournalStatCommand extends Command
         $this->calculateWosArticlesCount($stat, $journal);
         $this->calculateArticleYears($stat, $journal);
         $this->calculateArticleWosTypes($stat, $journal);
+        $this->calculateMedianPublicationTime($stat, $journal);
 
         $stat->setJournal($this->em->getRepository(Journal::class)->find($journal->getId()));
         $this->em->persist($stat);
@@ -220,5 +227,34 @@ class JournalStatCommand extends Command
 
         $articlesCount = IteratorUtils::itemCount($iterator);
         $stat->setScienceArticlesCount($articlesCount);
+    }
+
+    private function calculateMedianPublicationTime(JournalStat $stat, Journal $journal): void
+    {
+        $articleYears = $this->em->createQueryBuilder()
+            ->select('distinct entity.year')
+            ->from(Article::class, 'entity')
+            ->andWhere('entity.journal = :journal')
+            ->setParameter('journal', $journal)
+            ->orderBy('entity.year', 'asc')
+            ->getQuery()
+            ->getResult();
+        $years = array_map(function (array $row) {
+            return $row['year'];
+        }, $articleYears);
+
+        $medianPublicationTime = [];
+
+        foreach ($years as $year) {
+            $yearPeriod = new YearPeriod($year, $year);
+            $analyzerResult = $this->analyticsMaker->analyticsForJournal($journal, $yearPeriod, [new ReceivedPublishedAnalyzer()]);
+            $medianPublicationTime[$year] = [
+                'articles_count' => $analyzerResult['analyzers']['Received_Published']['articles_count'],
+                'median' => $analyzerResult['analyzers']['Received_Published']['median'],
+                'median_count' => $analyzerResult['analyzers']['Received_Published']['median_count'],
+            ];
+        }
+
+        $stat->setMedianPublicationTime($medianPublicationTime);
     }
 }

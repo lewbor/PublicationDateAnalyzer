@@ -1,16 +1,16 @@
 <?php
 
 
-namespace App\Frontend;
+namespace App\Frontend\Journal;
 
 
 use App\Entity\Journal\Journal;
-use App\Entity\Journal\JournalAnalytics;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
 
 /**
  * @Route("/journal/{id}", name="journal_view")
@@ -19,13 +19,16 @@ class JournalViewEndpoint
 {
     protected $em;
     protected $templating;
+    protected $viewBuilder;
 
     public function __construct(
         EntityManagerInterface $em,
-        \Twig\Environment $templating)
+        Environment $templating,
+        JournalViewBuilder $viewBuilder)
     {
         $this->em = $em;
         $this->templating = $templating;
+        $this->viewBuilder = $viewBuilder;
     }
 
     public function __invoke(Request $request): Response
@@ -35,15 +38,9 @@ class JournalViewEndpoint
             throw new NotFoundHttpException();
         }
 
-        $analytics = $this->em->getRepository(JournalAnalytics::class)->findOneBy(['journal' => $entity]);
-        if ($analytics === null) {
-            throw new \LogicException();
-        }
-
-        return new Response($this->templating->render('journal.html.twig', [
-            'journal' => $entity,
-            'analytics' => $analytics->getAnalytics()
-        ]));
+        return new Response($this->templating->render('journal.html.twig', $this->viewBuilder->buildData($entity)));
 
     }
+
+
 }

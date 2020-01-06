@@ -5,6 +5,8 @@ namespace App\Parser\Scrapper;
 
 
 use App\Entity\Article;
+use App\Entity\ArticlePublisherData;
+use Campo\UserAgent;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
@@ -14,6 +16,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class SpringerPublisherProcessor implements PublisherProcessor
 {
+    const QUEUE_NAME = 'publisher.science_direct';
+
     use ProcessorTrait;
 
     protected $em;
@@ -40,6 +44,11 @@ class SpringerPublisherProcessor implements PublisherProcessor
         ];
     }
 
+    public function queueName(): string
+    {
+        return self::QUEUE_NAME;
+    }
+
     public function process(Article $article): int
     {
         try {
@@ -48,7 +57,10 @@ class SpringerPublisherProcessor implements PublisherProcessor
                 'allow_redirects' => true,
                 'verify' => false,
                 'headers' => [
-                    'User-Agent' => "Mozilla/5.0 (X11; FreeBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36",
+                    'User-Agent' => UserAgent::random([
+                        'os_type' => 'Windows',
+                        'device_type' => 'Desktop'
+                    ])
                 ],
             ]);
 
@@ -58,8 +70,7 @@ class SpringerPublisherProcessor implements PublisherProcessor
             $body = $response->getBody()->getContents();
 
             $data = $this->parseData($body);
-            $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setData($data);
+            $publisherDataEntity = $this->createPublisherData($article, $data, ArticlePublisherData::SCRAP_RESULT_SUCCESS);
 
             $datesProcessed = 0;
             if (isset($data['Received'])) {
@@ -85,11 +96,9 @@ class SpringerPublisherProcessor implements PublisherProcessor
         } catch (RequestException $e) {
             $this->logger->error($e->getMessage());
             $data = [
-                'success' => false,
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
             ];
-            $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setData($data);
+            $publisherDataEntity = $this->createPublisherData($article, $data, ArticlePublisherData::SCRAP_RESULT_ERROR);
             $this->em->persist($publisherDataEntity);
             $this->em->flush();
             return 0;

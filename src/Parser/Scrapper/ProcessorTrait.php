@@ -9,13 +9,17 @@ use App\Entity\ArticlePublisherData;
 
 trait ProcessorTrait
 {
-    private function createPublisherData(Article $article): ArticlePublisherData
+    private function createPublisherData(Article $article, array $data, int $scrapResult): ArticlePublisherData
     {
         if($article->getPublisherData() !== null) {
-            return $article->getPublisherData();
+            $publisherData = $article->getPublisherData();
         } else {
-            return (new ArticlePublisherData())
+            $publisherData = (new ArticlePublisherData())
                 ->setArticle($article);
         }
+        $publisherData
+            ->setData($data)
+            ->setScrapResult($scrapResult);
+        return $publisherData;
     }
 }

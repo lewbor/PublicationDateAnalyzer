@@ -7,6 +7,7 @@ namespace App\Command\Publisher;
 use App\Parser\Scrapper\PublisherScrapper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -28,11 +29,13 @@ class PublisherScrapCommand  extends Command
 
     protected function configure()
     {
-        $this->setName(self::CMD_NAME);
+        $this
+            ->setName(self::CMD_NAME)
+            ->addArgument('queueName', InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->scraper->run();
+        $this->scraper->run($input->getArgument('queueName'));
     }
 }

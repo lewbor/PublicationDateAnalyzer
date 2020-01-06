@@ -41,6 +41,18 @@ class Journal
     protected $eissn;
 
     /**
+     * @var string
+     * @ORM\Column(name="publisher", type="string", nullable=true)
+     */
+    protected $publisher;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="scrapping_date", type="datetime", nullable=true)
+     */
+    protected $scrappingDate;
+
+    /**
      * @var JournalWosCategory[]|Collection
      * @ORM\OneToMany(targetEntity="\App\Entity\Jcr\JournalWosCategory", mappedBy="journal")
      */
@@ -128,4 +140,29 @@ class Journal
     {
         return $this->wosCategories;
     }
+
+    public function getPublisher(): ?string
+    {
+        return $this->publisher;
+    }
+
+    public function setPublisher(?string $publisher): self
+    {
+        $this->publisher = $publisher;
+        return $this;
+    }
+
+    public function getScrappingDate(): ?\DateTime
+    {
+        return $this->scrappingDate;
+    }
+
+    public function setScrappingDate(?\DateTime $scrappingDate): self
+    {
+        $this->scrappingDate = $scrappingDate;
+        return $this;
+    }
+
+
+
 }

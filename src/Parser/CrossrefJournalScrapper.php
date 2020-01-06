@@ -60,9 +60,16 @@ class CrossrefJournalScrapper
         $client = new Client();
         $response = $client->get($url, ['exceptions' => false]);
         $body = $response->getBody()->getContents();
+        if($body === 'Resource not found.') {
+            $this->em->remove($journal);
+            $this->em->flush();
+            return;
+        }
         $result = \GuzzleHttp\json_decode($body, true);
 
-        $journal->setCrossrefData($result['message']);
+        $journal
+            ->setCrossrefData($result['message'])
+            ->setPublisher($result['message']['publisher']);
         $this->em->persist($journal);
         $this->em->flush();
     }

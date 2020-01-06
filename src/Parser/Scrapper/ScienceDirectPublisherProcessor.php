@@ -5,16 +5,19 @@ namespace App\Parser\Scrapper;
 
 
 use App\Entity\Article;
+use App\Entity\ArticlePublisherData;
+use Campo\UserAgent;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 class ScienceDirectPublisherProcessor implements PublisherProcessor
 {
+    const QUEUE_NAME = 'publisher.science_direct';
+
     use ProcessorTrait;
 
     protected $em;
@@ -40,6 +43,11 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
         ];
     }
 
+    public function queueName(): string
+    {
+        return self::QUEUE_NAME;
+    }
+
     public function process(Article $article): int
     {
         try {
@@ -48,7 +56,10 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
                 'allow_redirects' => true,
                 'verify' => false,
                 'headers' => [
-                    'User-Agent' => "Mozilla/5.0 (X11; FreeBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.130 Safari/537.36",
+                    'User-Agent' => UserAgent::random([
+                        'os_type' => 'Windows',
+                        'device_type' => 'Desktop'
+                    ])
                 ],
             ]);
 
@@ -58,6 +69,19 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
             $body = $response->getBody()->getContents();
 
             $crawler = new Crawler($body);
+            if($crawler->filter('#trackErrorPage')->count() > 0) {
+                $data = [
+                    'success' => false,
+                    'httpCode' => $response->getStatusCode(),
+                    'message' => 'Requested article is not found in IHub',
+                ];
+
+                $publisherDataEntity = $this->createPublisherData($article, $data, ArticlePublisherData::SCRAP_RESULT_NO_DATA);
+                $this->em->persist($publisherDataEntity);
+                $this->em->flush();
+                return 0;
+            }
+
             $redirectUrl = $crawler->filter('input[name=redirectURL]')->attr('value');
             $redirectUrl = urldecode($redirectUrl);
 
@@ -68,8 +92,7 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
             $jsonDataStr = $crawler->filter('script[data-iso-key="_0"]')->text();
             $jsonData = json_decode($jsonDataStr, true);
 
-            $publisherDataEntity = $this->createPublisherData($article);
-            $publisherDataEntity->setData($jsonData);
+            $publisherDataEntity = $this->createPublisherData($article, $jsonData, ArticlePublisherData::SCRAP_RESULT_SUCCESS);
 
             $datesProcessed = 0;
             $dates = $jsonData['article']['dates'];
@@ -96,12 +119,11 @@ class ScienceDirectPublisherProcessor implements PublisherProcessor
             return $datesProcessed;
         } catch (RequestException $e) {
             $data = [
-                'success' => false,
                 'httpCode' => $e->getResponse() === null ? null : $e->getResponse()->getStatusCode(),
                 'message' => $e->getMessage(),
             ];
 
-            $publisherDataEntity = $this->createPublisherData($article);
+            $publisherDataEntity = $this->createPublisherData($article, $data, ArticlePublisherData::SCRAP_RESULT_ERROR);
             $publisherDataEntity->setData($data);
             $this->em->persist($publisherDataEntity);
             $this->em->flush();

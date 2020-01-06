@@ -3,7 +3,6 @@
 
 namespace App\Entity\Journal;
 
-use App\Entity\Journal\Journal;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -70,6 +69,12 @@ class JournalStat
 
     /**
      * @var array
+     * @ORM\Column(name="median_publication_time", type="json", nullable=false)
+     */
+    protected $medianPublicationTime;
+
+    /**
+     * @var array
      * @ORM\Column(name="wos_publication_types", type="json", nullable=false)
      */
     protected $wosPublicationTypes;
@@ -78,6 +83,7 @@ class JournalStat
     {
         $this->articleYears = [];
         $this->wosPublicationTypes = [];
+        $this->medianPublicationTime = [];
     }
 
     public function getId()
@@ -181,6 +187,17 @@ class JournalStat
     public function setScienceArticlesCount(int $scienceArticlesCount): self
     {
         $this->scienceArticlesCount = $scienceArticlesCount;
+        return $this;
+    }
+
+    public function getMedianPublicationTime(): array
+    {
+        return $this->medianPublicationTime;
+    }
+
+    public function setMedianPublicationTime(array $medianPublicationTime): self
+    {
+        $this->medianPublicationTime = $medianPublicationTime;
         return $this;
     }
 
