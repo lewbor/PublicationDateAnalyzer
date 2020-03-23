@@ -28,10 +28,28 @@ class JournalAnalytics
     protected $journal;
 
     /**
-     * @var array
-     * @ORM\Column(name="options", type="json", nullable=false)
+     * @var string
+     * @ORM\Column(name="name", type="string", nullable=false)
      */
-    protected $options;
+    protected $name;
+
+    /**
+     * @var int
+     * @ORM\Column(name="start_year", type="integer", nullable=false)
+     */
+    protected $startYear;
+
+    /**
+     * @var int
+     * @ORM\Column(name="end_year", type="integer", nullable=false)
+     */
+    protected $endYear;
+
+    /**
+     * @var ?bool
+     * @ORM\Column(name="open_access", type="boolean", nullable=true)
+     */
+    protected $openAccess;
 
     /**
      * @var array
@@ -41,7 +59,6 @@ class JournalAnalytics
 
     public function __construct()
     {
-        $this->options = [];
         $this->analytics = [];
     }
 
@@ -72,16 +89,50 @@ class JournalAnalytics
         return $this;
     }
 
-    public function getOptions(): array
+    public function getName(): string
     {
-        return $this->options;
+        return $this->name;
     }
 
-    public function setOptions(array $options): self
+    public function setName(string $name): self
     {
-        $this->options = $options;
+        $this->name = $name;
         return $this;
     }
+
+    public function getStartYear(): int
+    {
+        return $this->startYear;
+    }
+
+    public function setStartYear(int $startYear): self
+    {
+        $this->startYear = $startYear;
+        return $this;
+    }
+
+    public function getEndYear(): int
+    {
+        return $this->endYear;
+    }
+
+    public function setEndYear(int $endYear): self
+    {
+        $this->endYear = $endYear;
+        return $this;
+    }
+
+    public function getOpenAccess(): ?bool
+    {
+        return $this->openAccess;
+    }
+
+    public function setOpenAccess(?bool $openAccess): self
+    {
+        $this->openAccess = $openAccess;
+        return $this;
+    }
+
 
 
 }

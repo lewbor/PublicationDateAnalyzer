@@ -1,4 +1,7 @@
 {
+    "beberlei/doctrineextensions": {
+        "version": "v1.2.6"
+    },
     "campo/random-user-agent": {
         "version": "1.3.0"
     },
@@ -105,6 +108,9 @@
     "knplabs/knp-paginator-bundle": {
         "version": "v2.8.0"
     },
+    "laminas/laminas-zendframework-bridge": {
+        "version": "1.0.1"
+    },
     "monolog/monolog": {
         "version": "1.24.0"
     },
@@ -116,6 +122,9 @@
     },
     "palabs/datagrid-bundle": {
         "version": "0.2.16"
+    },
+    "php": {
+        "version": "7.4"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -198,6 +207,9 @@
     },
     "symfony/dotenv": {
         "version": "v4.3.1"
+    },
+    "symfony/error-handler": {
+        "version": "v4.4.2"
     },
     "symfony/event-dispatcher": {
         "version": "v4.3.1"
@@ -401,17 +413,11 @@
             "config/packages/validator.yaml"
         ]
     },
+    "symfony/var-dumper": {
+        "version": "v4.4.2"
+    },
     "symfony/var-exporter": {
         "version": "v4.3.1"
-    },
-    "symfony/web-server-bundle": {
-        "version": "3.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.3",
-            "ref": "dae9b39fd6717970be7601101ce5aa960bf53d9a"
-        }
     },
     "symfony/yaml": {
         "version": "v4.3.1"
@@ -430,6 +436,9 @@
     },
     "twig/twig": {
         "version": "v2.11.3"
+    },
+    "webimpress/safe-writer": {
+        "version": "2.0.0"
     },
     "zendframework/zend-code": {
         "version": "3.3.1"

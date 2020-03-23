@@ -5,21 +5,20 @@ namespace App\Parser;
 
 
 use App\Entity\Article;
-use App\Lib\QueueManager;
-use App\Parser\Scrapper\AscPublisherProcessor;
-use App\Parser\Scrapper\PublisherProcessor;
-use App\Parser\Scrapper\RscPublisherProcessor;
-use App\Parser\Scrapper\ScienceDirectPublisherProcessor;
-use App\Parser\Scrapper\SpringerPublisherProcessor;
-use App\Parser\Scrapper\WileyPublisherProcessor;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Parser\Publisher\Impl\AscPublisherProcessor;
+use App\Parser\Publisher\Impl\TailorFrancisProcessor;
+use App\Parser\Publisher\PublisherProcessor;
+use App\Parser\Publisher\Impl\RscPublisherProcessor;
+use App\Parser\Publisher\Impl\ScienceDirectPublisherProcessor;
+use App\Parser\Publisher\Impl\SpringerPublisherProcessor;
 use Psr\Log\LoggerInterface;
 
 class PublisherProcessorFinder
 {
-    protected $logger;
+    protected LoggerInterface $logger;
+
     /** @var PublisherProcessor[] */
-    protected $processors;
+    protected array $processors;
 
     public function __construct(
         LoggerInterface $logger,
@@ -27,7 +26,7 @@ class PublisherProcessorFinder
         SpringerPublisherProcessor $springerPublisherProcessor,
         AscPublisherProcessor $ascPublisherProcessor,
         RscPublisherProcessor $rscPublisherProcessor,
-        WileyPublisherProcessor $wileyPublisherProcessor)
+        TailorFrancisProcessor $tailorFrancisProcessor)
     {
         $this->logger = $logger;
 
@@ -36,49 +35,34 @@ class PublisherProcessorFinder
             $springerPublisherProcessor,
             $ascPublisherProcessor,
             $rscPublisherProcessor,
-            $wileyPublisherProcessor
+            $tailorFrancisProcessor
         ];
     }
 
 
-    public function publishersByQueueName(string $queueName): array {
-        $publishers = [];
-
-        foreach($this->processors as $processor) {
-            if($processor->queueName() == $queueName) {
-                $publishers = array_merge($publishers, $processor->publisherNames());
-            }
-        }
-
-        $publishers = array_unique(array_filter($publishers));
-
-        return $publishers;
-    }
-
-    public function findProcessor(Article $article): ?PublisherProcessor
+    public function processorsForQueue(string $queueName): array
     {
-        if($article->getCrossrefData() === null) {
-            $this->logger->info(sprintf('Article %d - no crossref data', $article->getId()));
-            return null;
-        }
+        $processors = [];
 
-        if(empty($article->getCrossrefData()->getData()['publisher'])) {
-            $this->logger->info(sprintf('Article %d - empty publisher', $article->getId()));
-            return null;
-        }
-
-        $publisher = $article->getCrossrefData()->getData()['publisher'];
-        $publisher = mb_strtolower(trim($publisher));
-
-        /** @var PublisherProcessor $processor */
         foreach ($this->processors as $processor) {
-            foreach ($processor->publisherNames() as $publisherName) {
-                if (strpos($publisher, $publisherName) !== false) {
-                    return $processor;
-                }
+            if ($processor->queueName() === $queueName) {
+                $processors[] = $processor;
             }
         }
-        $this->logger->error(sprintf("No processor for publisher %s", $publisher));
-        return null;
+
+        return $processors;
     }
+
+    public function processorsForDomain(string $domain) : array {
+        $processors = [];
+
+        foreach ($this->processors as $processor) {
+            if (in_array($domain, $processor->scrappingDomains())) {
+                $processors[] = $processor;
+            }
+        }
+
+        return $processors;
+    }
+
 }

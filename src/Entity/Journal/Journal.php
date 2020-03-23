@@ -4,6 +4,7 @@
 namespace App\Entity\Journal;
 
 use App\Entity\Jcr\JournalWosCategory;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -47,7 +48,7 @@ class Journal
     protected $publisher;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(name="scrapping_date", type="datetime", nullable=true)
      */
     protected $scrappingDate;
@@ -152,12 +153,12 @@ class Journal
         return $this;
     }
 
-    public function getScrappingDate(): ?\DateTime
+    public function getScrappingDate(): ?DateTime
     {
         return $this->scrappingDate;
     }
 
-    public function setScrappingDate(?\DateTime $scrappingDate): self
+    public function setScrappingDate(?DateTime $scrappingDate): self
     {
         $this->scrappingDate = $scrappingDate;
         return $this;

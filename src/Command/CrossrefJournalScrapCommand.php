@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CrossrefJournalScrapCommand extends Command
 {
-    protected $scrapper;
+    protected CrossrefJournalScrapper $scrapper;
 
     public function __construct(CrossrefJournalScrapper $scrapper)
     {
@@ -27,5 +27,6 @@ class CrossrefJournalScrapCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->scrapper->run();
+        return 0;
     }
 }

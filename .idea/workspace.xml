@@ -2,56 +2,94 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f430a078-66ed-4ac7-b799-5f96fbe32122" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Command/CompareJournalsCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Command/LoadJournalsCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Command/Migrations/Migration20191211122400Command.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Frontend/Journal/JournalViewBuilder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Frontend/Journal/JournalViewEndpoint.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Lib/AbstractMultiProxyCommand.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20191029034015.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20191211052240.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20191213043346.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Parser/PublisherProcessorFinder.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/JournalJcr2ImpactRepository.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Repository/JournalJcrQuartileRepository.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/crossref_publications_scrap.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/crossref_url_scrap.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/publisher_scrap.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/unpaywall_scrap.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/ClearQueueCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Crossref/DomainMerge/DomainMergeQueueCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Crossref/DomainMerge/DomainMergeScrapCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Crossref/UrlResolve/CrossrefUrlResolveQueueCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Crossref/UrlResolve/CrossrefUrlResolveScrapCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/FillAggregatesCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Migrations/Migration20102003102000Command.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Migrations/Migration20200127130800Command.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/SeleniumTrait.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Stuff/DomainCrossrefDatesAnalyzer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Stuff/DomainPublisherDatesAnalyzer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Stuff/JournalDatesAnalyzer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Stuff/JournalDomainListCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallScrapCommand.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/Agregate/ArticleDatesOaAggregate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/ArticleUrl.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Entity/ArticleUrlDomain.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20191219102618.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200113023110.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200113041013.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200116063303.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200116081202.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200116081321.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Migrations/Version20200120034904.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Crossref/CrossrefUrlResolveQueer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Crossref/CrossrefUrlScrapper.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Publisher/Impl/TailorFrancisProcessor.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Publisher/PublisherQueer.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Publisher/PublisherService.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Parser/Publisher/ScrapperUtils.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/DateAnalyzer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DateAnalyzer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/a6e2ed46-785e-4a83-bc19-705c0bb504b0.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/a6e2ed46-785e-4a83-bc19-705c0bb504b0.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/packages/doctrine.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/doctrine.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Analytics/AnalyticsSaver.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Analytics/JournalAnalyticsMaker.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Analytics/JournalAnalyticsMaker.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Analytics/JournalStatCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Analytics/JournalStatCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsMultiProcessScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsMultiProcessScrapCommand.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherErrorsQueueCommand.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Analytics/YearPeriod.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Analytics/YearPeriod.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Analytics/JournalAnalyticsCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Analytics/JournalAnalyticsCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Analytics/JournalSpeedAnalyticsCommand.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsMultiProcessScrapCommand.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsQueueCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Crossref/Publications/CrossrefPublicationsQueueCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Crossref/CrossrefPublicationsScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Crossref/Publications/CrossrefPublicationsScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/CrossrefJournalScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/CrossrefJournalScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/LoadJournalsCommand.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherMultiProcessScrapCommand.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherQueueCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherQueueCommand.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Command/Publisher/PublisherScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Publisher/PublisherScrapCommand.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallFillFromFileDatabase.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallFillFromFileDatabase.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseScrapCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseScrapCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseMultiScrapCommand.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseQueueCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallQueueCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Unpaywall/UnpaywallSyncDatabaseScrapCommand.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Wos/JournalCrawler/WosJournalCrawlerCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Wos/JournalCrawler/WosJournalCrawlerCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Wos/WosJournalJcrImpactUpdater.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Wos/WosJournalJcrImpactUpdater.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Command/Wos/WosJournalQuartileUpdater.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Command/Wos/WosJournalQuartileUpdater.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Article.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Article.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/ArticlePublisherData.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/ArticlePublisherData.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Jcr/JournalJcr2Impact.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Jcr/JournalJcr2Impact.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Jcr/JournalJcrQuartile.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Jcr/JournalJcrQuartile.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/ArticleUnpaywallData.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/ArticleUnpaywallData.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Journal/Journal.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Journal/Journal.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Journal/JournalStat.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Journal/JournalStat.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Frontend/JournalViewEndpoint.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Lib/Iterator/DoctrineIterator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lib/Iterator/DoctrineIterator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Journal/JournalAnalytics.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Journal/JournalAnalytics.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/QueueItem.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/QueueItem.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Unpaywall.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Lib/AbstractMultiProcessCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lib/AbstractMultiProcessCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Lib/AbstractMultiProxyCommand.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lib/AbstractMultiProxyCommand.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Lib/ArticleQueries.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lib/ArticleQueries.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Lib/QueueManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Lib/QueueManager.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/Crossref/CrossrefPublicationsQueer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Crossref/CrossrefPublicationsQueer.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/Crossref/CrossrefPublicationsScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Crossref/CrossrefPublicationsScrapper.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Parser/CrossrefJournalScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/CrossrefJournalScrapper.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/ProcessorTrait.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/ProcessorTrait.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherQueer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherQueer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/RscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/RscPublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/PublisherProcessorFinder.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/PublisherProcessorFinder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/AscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Publisher/Impl/AscPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/ProcessorTrait.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Publisher/ProcessorTrait.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Publisher/PublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherQueer.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/PublisherScrapper.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Publisher/PublisherScrapper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/RscPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Publisher/Impl/RscPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Publisher/Impl/ScienceDirectPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/SpringerPublisherProcessor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser/Publisher/Impl/SpringerPublisherProcessor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parser/Scrapper/WileyPublisherProcessor.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/journal.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/journal.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,42 +98,7 @@
   </component>
   <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
-    <execution>
-      <executable />
-    </execution>
-  </component>
-  <component name="DatabaseView">
-    <option name="SHOW_INTERMEDIATE" value="true" />
-    <option name="GROUP_DATA_SOURCES" value="true" />
-    <option name="GROUP_SCHEMA" value="true" />
-    <option name="GROUP_CONTENTS" value="false" />
-    <option name="SORT_POSITIONED" value="false" />
-    <option name="SHOW_EMPTY_GROUPS" value="false" />
-    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
-    <option name="HIDDEN_KINDS">
-      <set />
-    </option>
-    <expand>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="publication_dates@localhost" type="feb32156:DbDataSourceImpl" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="publication_dates@localhost" type="feb32156:DbDataSourceImpl" />
-        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="publication_dates@localhost" type="feb32156:DbDataSourceImpl" />
-        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="publication_dates: schema" type="ebfa3cd1:MariaImplModel$Schema" />
-      </path>
-    </expand>
-    <select />
-  </component>
-  <component name="FavoritesManager">
-    <favorites_list name="DateAnalyzer" />
+    <execution />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -154,8 +157,6 @@
       <path value="$PROJECT_DIR$/vendor/doctrine/doctrine-migrations-bundle" />
       <path value="$PROJECT_DIR$/vendor/doctrine/migrations" />
       <path value="$PROJECT_DIR$/vendor/symfony/stopwatch" />
-      <path value="$PROJECT_DIR$/vendor/zendframework/zend-code" />
-      <path value="$PROJECT_DIR$/vendor/zendframework/zend-eventmanager" />
       <path value="$PROJECT_DIR$/vendor/ocramius/package-versions" />
       <path value="$PROJECT_DIR$/vendor/ocramius/proxy-manager" />
       <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
@@ -192,20 +193,25 @@
       <path value="$PROJECT_DIR$/vendor/symfony/options-resolver" />
       <path value="$PROJECT_DIR$/vendor/twig/extensions" />
       <path value="$PROJECT_DIR$/vendor/twig/twig" />
-      <path value="$PROJECT_DIR$/vendor/symfony/web-server-bundle" />
       <path value="$PROJECT_DIR$/vendor/facebook/webdriver" />
       <path value="$PROJECT_DIR$/vendor/palabs/datagrid-bundle" />
       <path value="$PROJECT_DIR$/vendor/knplabs/knp-paginator-bundle" />
       <path value="$PROJECT_DIR$/vendor/knplabs/knp-components" />
       <path value="$PROJECT_DIR$/vendor/symfony/templating" />
       <path value="$PROJECT_DIR$/vendor/campo/random-user-agent" />
+      <path value="$PROJECT_DIR$/vendor/webimpress/safe-writer" />
+      <path value="$PROJECT_DIR$/vendor/symfony/var-dumper" />
+      <path value="$PROJECT_DIR$/vendor/symfony/error-handler" />
+      <path value="$PROJECT_DIR$/vendor/laminas/laminas-code" />
+      <path value="$PROJECT_DIR$/vendor/laminas/laminas-zendframework-bridge" />
+      <path value="$PROJECT_DIR$/vendor/laminas/laminas-eventmanager" />
+      <path value="$PROJECT_DIR$/vendor/beberlei/doctrineextensions" />
     </include_path>
   </component>
   <component name="ProjectId" id="1OfZSsbHjFhLr14K7Tcs3laZ3yC" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -216,44 +222,38 @@
     <property name="database.console.LAST_STATE" value="false" />
     <property name="database.data.extractors.current.id" value="Tab-separated (TSV)_id" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="database.main" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
       <recent name="$PROJECT_DIR$/frontend/src/js/component" />
       <recent name="$PROJECT_DIR$/frontend" />
       <recent name="$PROJECT_DIR$/data/wos/CHEMCATCHEM" />
       <recent name="$PROJECT_DIR$/data/wos/APPLIED CATALYSIS B-ENVIRONMENTAL" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/frontend/src/js/component" />
       <recent name="$PROJECT_DIR$/src/Lib/Grid/Filter" />
       <recent name="$PROJECT_DIR$/frontend/src/js/lib" />
       <recent name="$PROJECT_DIR$/frontend/src/style" />
-      <recent name="$PROJECT_DIR$/frontend/src" />
     </key>
   </component>
   <component name="RunManager">
     <configuration name="Unnamed" type="PhpRemoteDebugRunConfigurationType" factoryName="PHP Remote Debug" nameIsGenerated="true" filter_connections="FILTER" server_name="localhost" session_id="PHPSTORM">
       <method v="2" />
     </configuration>
-  </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <option name="contentProportion" value="0.16062737" />
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -360,7 +360,41 @@
       <workItem from="1577942646338" duration="2789000" />
       <workItem from="1578024909725" duration="2071000" />
       <workItem from="1578245768194" duration="19000" />
-      <workItem from="1578289645871" duration="254000" />
+      <workItem from="1578289645871" duration="2985000" />
+      <workItem from="1578373855226" duration="3002000" />
+      <workItem from="1578460531704" duration="1282000" />
+      <workItem from="1578542589431" duration="6835000" />
+      <workItem from="1578574537657" duration="1202000" />
+      <workItem from="1578620521583" duration="5822000" />
+      <workItem from="1578881258924" duration="11996000" />
+      <workItem from="1579150770940" duration="20792000" />
+      <workItem from="1579229338220" duration="9351000" />
+      <workItem from="1579486820338" duration="10103000" />
+      <workItem from="1579527303706" duration="616000" />
+      <workItem from="1579574906259" duration="14824000" />
+      <workItem from="1579667228380" duration="13888000" />
+      <workItem from="1579746658225" duration="3490000" />
+      <workItem from="1579856063765" duration="811000" />
+      <workItem from="1579934001428" duration="625000" />
+      <workItem from="1579956436070" duration="721000" />
+      <workItem from="1580102383560" duration="1170000" />
+      <workItem from="1580104704399" duration="12310000" />
+      <workItem from="1580178454952" duration="3595000" />
+      <workItem from="1581991909863" duration="4380000" />
+      <workItem from="1583125061172" duration="6429000" />
+      <workItem from="1583205542376" duration="1032000" />
+      <workItem from="1583291610492" duration="2719000" />
+      <workItem from="1583380374277" duration="2265000" />
+      <workItem from="1583465384679" duration="5000" />
+      <workItem from="1583897128766" duration="3313000" />
+      <workItem from="1583979979123" duration="9907000" />
+      <workItem from="1584326557162" duration="420000" />
+      <workItem from="1584326997587" duration="14476000" />
+      <workItem from="1584414124302" duration="6761000" />
+      <workItem from="1584520651161" duration="6698000" />
+      <workItem from="1584584785526" duration="19128000" />
+      <workItem from="1584707833536" duration="613000" />
+      <workItem from="1584934775380" duration="20109000" />
     </task>
     <task id="LOCAL-00001" summary="Improvements">
       <created>1561784813183</created>
@@ -439,33 +473,30 @@
       <option name="project" value="LOCAL" />
       <updated>1572251141343</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Improvements">
+      <created>1578289939719</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1578289939720</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Improved frontend" />
@@ -473,89 +504,210 @@
     <option name="LAST_COMMIT_MESSAGE" value="Improvements" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2614" y="369" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1576812458401">
+    <state x="2480" y="275" key="#SQL_Dialects" timestamp="1579590085268">
       <screen x="1920" y="0" width="1920" height="1200" />
     </state>
-    <state x="2614" y="369" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576812458401" />
+    <state x="2480" y="275" key="#SQL_Dialects/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1579590085268" />
+    <state x="2480" y="368" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1583125080825">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2480" y="275" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1578882327495" />
+    <state x="2480" y="368" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1583125080825" />
+    <state x="4400" y="275" key="#com.intellij.execution.impl.EditConfigurationsDialog/3840.0.1920.1200/1920.60.1920.1080/0.60.1920.1080@3840.0.1920.1200" timestamp="1581991943357" />
+    <state x="2674" y="419" key="#com.intellij.ide.util.MemberChooser" timestamp="1584944470157">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2674" y="332" key="#com.intellij.ide.util.MemberChooser/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580105133108" />
+    <state x="2674" y="419" key="#com.intellij.ide.util.MemberChooser/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584944470157" />
+    <state x="4594" y="332" key="#com.intellij.ide.util.MemberChooser/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584674338910" />
+    <state x="1920" y="146" width="804" height="1054" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1584953579565">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="1920" y="26" width="804" height="1174" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580105332053" />
+    <state x="1920" y="146" width="804" height="1054" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584953579565" />
+    <state x="3840" y="26" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1583980011899" />
+    <state x="2614" y="452" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1584940113777">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2614" y="369" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580180802242" />
+    <state x="2614" y="452" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584940113777" />
+    <state x="4534" y="369" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584685228572" />
+    <state x="722" y="503" key="#com.jetbrains.php.refactoring.move.PhpMoveClassDialog#1" timestamp="1583380442078">
+      <screen x="0" y="60" width="1920" height="1080" />
+    </state>
+    <state x="2642" y="492" key="#com.jetbrains.php.refactoring.move.PhpMoveClassDialog#1/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1579681191948" />
+    <state x="722" y="503" key="#com.jetbrains.php.refactoring.move.PhpMoveClassDialog#1/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@0.60.1920.1080" timestamp="1583380442078" />
+    <state x="2661" y="550" key="#com.jetbrains.php.refactoring.move.namespace.PhpMoveNamespaceDialog#" timestamp="1584332684193">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2661" y="550" key="#com.jetbrains.php.refactoring.move.namespace.PhpMoveNamespaceDialog#/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584332684193" />
+    <state x="1920" y="146" width="1430" height="1054" key="#com.jetbrains.php.refactoring.move.namespace.PhpMoveRelatedNamespacesDialog" timestamp="1584332684186">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="1920" y="146" width="1430" height="1054" key="#com.jetbrains.php.refactoring.move.namespace.PhpMoveRelatedNamespacesDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584332684186" />
+    <state x="2474" y="211" key="CommitChangelistDialog2" timestamp="1578289939296">
+      <screen x="1920" y="0" width="1920" height="1200" />
+    </state>
+    <state x="2474" y="211" key="CommitChangelistDialog2/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1578289939296" />
     <state x="2020" y="126" width="1720" height="974" key="DiffContextDialog" timestamp="1576812858599">
       <screen x="1920" y="0" width="1920" height="1200" />
     </state>
     <state x="2020" y="126" width="1720" height="974" key="DiffContextDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576812858599" />
-    <state x="2663" y="342" width="432" height="545" key="FileChooserDialogImpl" timestamp="1576810881755">
+    <state x="2663" y="428" width="432" height="545" key="FileChooserDialogImpl" timestamp="1584436544829">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2663" y="342" width="432" height="545" key="FileChooserDialogImpl/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1578890737934" />
+    <state x="2663" y="428" key="FileChooserDialogImpl/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584436544829" />
+    <state width="1551" height="255" key="GridCell.Tab.0.bottom" timestamp="1584945133606">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.0.bottom/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1551" height="297" key="GridCell.Tab.0.bottom/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@0.60.1920.1080" timestamp="1583380428862" />
+    <state width="1551" height="255" key="GridCell.Tab.0.bottom/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584945133606" />
+    <state width="1551" height="277" key="GridCell.Tab.0.bottom/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584675141172" />
+    <state width="1543" height="319" key="GridCell.Tab.0.bottom/3840.0.1920.1200/1920.60.1920.1080/0.60.1920.1080@3840.0.1920.1200" timestamp="1581994932965" />
+    <state width="1551" height="255" key="GridCell.Tab.0.center" timestamp="1584945133606">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.0.center/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1551" height="297" key="GridCell.Tab.0.center/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@0.60.1920.1080" timestamp="1583380428861" />
+    <state width="1551" height="255" key="GridCell.Tab.0.center/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584945133606" />
+    <state width="1551" height="277" key="GridCell.Tab.0.center/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584675141172" />
+    <state width="1543" height="319" key="GridCell.Tab.0.center/3840.0.1920.1200/1920.60.1920.1080/0.60.1920.1080@3840.0.1920.1200" timestamp="1581994932964" />
+    <state width="1551" height="255" key="GridCell.Tab.0.left" timestamp="1584945133606">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.0.left/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1551" height="297" key="GridCell.Tab.0.left/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@0.60.1920.1080" timestamp="1583380428861" />
+    <state width="1551" height="255" key="GridCell.Tab.0.left/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584945133606" />
+    <state width="1551" height="277" key="GridCell.Tab.0.left/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584675141172" />
+    <state width="1543" height="319" key="GridCell.Tab.0.left/3840.0.1920.1200/1920.60.1920.1080/0.60.1920.1080@3840.0.1920.1200" timestamp="1581994932964" />
+    <state width="1551" height="255" key="GridCell.Tab.0.right" timestamp="1584945133606">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.0.right/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1551" height="297" key="GridCell.Tab.0.right/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@0.60.1920.1080" timestamp="1583380428862" />
+    <state width="1551" height="255" key="GridCell.Tab.0.right/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584945133606" />
+    <state width="1551" height="277" key="GridCell.Tab.0.right/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584675141172" />
+    <state width="1543" height="319" key="GridCell.Tab.0.right/3840.0.1920.1200/1920.60.1920.1080/0.60.1920.1080@3840.0.1920.1200" timestamp="1581994932965" />
+    <state width="1878" height="345" key="GridCell.Tab.1.bottom" timestamp="1584411788724">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.1.bottom/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1878" height="345" key="GridCell.Tab.1.bottom/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584411788724" />
+    <state width="1878" height="345" key="GridCell.Tab.1.center" timestamp="1584411788724">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.1.center/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1878" height="345" key="GridCell.Tab.1.center/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584411788724" />
+    <state width="1878" height="345" key="GridCell.Tab.1.left" timestamp="1584411788724">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.1.left/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1878" height="345" key="GridCell.Tab.1.left/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584411788724" />
+    <state width="1878" height="345" key="GridCell.Tab.1.right" timestamp="1584411788724">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.1.right/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1878" height="345" key="GridCell.Tab.1.right/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584411788724" />
+    <state width="1878" height="345" key="GridCell.Tab.2.bottom" timestamp="1584411788724">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.2.bottom/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1878" height="345" key="GridCell.Tab.2.bottom/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584411788724" />
+    <state width="1878" height="345" key="GridCell.Tab.2.center" timestamp="1584411788724">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.2.center/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1878" height="345" key="GridCell.Tab.2.center/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584411788724" />
+    <state width="1878" height="345" key="GridCell.Tab.2.left" timestamp="1584411788724">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.2.left/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1878" height="345" key="GridCell.Tab.2.left/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584411788724" />
+    <state width="1878" height="345" key="GridCell.Tab.2.right" timestamp="1584411788724">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="1868" height="392" key="GridCell.Tab.2.right/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580185926088" />
+    <state width="1878" height="345" key="GridCell.Tab.2.right/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584411788724" />
+    <state width="220" height="477" key="HiddenNamespacesPopup" timestamp="1581991931691">
+      <screen x="3840" y="0" width="1920" height="1200" />
+    </state>
+    <state width="220" height="477" key="HiddenNamespacesPopup/3840.0.1920.1200/1920.60.1920.1080/0.60.1920.1080@3840.0.1920.1200" timestamp="1581991931691" />
+    <state x="2630" y="505" width="568" height="493" key="NewPhpClassDialog" timestamp="1584942235619">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2630" y="428" width="568" height="365" key="NewPhpClassDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580105326238" />
+    <state x="710" y="445" width="568" height="493" key="NewPhpClassDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@0.60.1920.1080" timestamp="1583292233091" />
+    <state x="2630" y="505" key="NewPhpClassDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584942235619" />
+    <state x="4550" y="428" key="NewPhpClassDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584685213932" />
+    <state x="4301" y="248" key="SettingsEditor" timestamp="1584520859414">
+      <screen x="3840" y="0" width="1920" height="1200" />
+    </state>
+    <state x="2381" y="248" key="SettingsEditor/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1578887369956" />
+    <state x="2381" y="343" key="SettingsEditor/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584332578026" />
+    <state x="4301" y="248" key="SettingsEditor/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584520859414" />
+    <state x="2480" y="349" key="Vcs.Push.Dialog.v2" timestamp="1578289941785">
       <screen x="1920" y="0" width="1920" height="1200" />
     </state>
-    <state x="2663" y="342" width="432" height="545" key="FileChooserDialogImpl/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576810881755" />
-    <state width="1551" height="261" key="GridCell.Tab.0.bottom" timestamp="1577602048630">
+    <state x="2480" y="349" key="Vcs.Push.Dialog.v2/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1578289941784" />
+    <state width="960" height="529" key="XDebugger.FullValuePopup" timestamp="1584336218417">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state width="960" height="587" key="XDebugger.FullValuePopup/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580116246070" />
+    <state width="960" height="529" key="XDebugger.FullValuePopup/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584336218417" />
+    <state x="2778" y="511" width="384" height="287" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1" timestamp="1578550935103">
       <screen x="1920" y="0" width="1920" height="1200" />
     </state>
-    <state width="1551" height="261" key="GridCell.Tab.0.bottom/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1577602048630" />
-    <state width="1551" height="261" key="GridCell.Tab.0.center" timestamp="1577602048629">
+    <state x="2778" y="511" width="384" height="287" key="com.intellij.database.actions.DdlActions$DeleteProvider2$1/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1578550935103" />
+    <state x="2468" y="331" key="com.intellij.database.dbimport.ImportDialog" timestamp="1584956822039">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2468" y="331" key="com.intellij.database.dbimport.ImportDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584956822039" />
+    <state x="2020" y="246" width="1720" height="854" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1584967549958">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2020" y="246" width="1720" height="854" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584967549958" />
+    <state x="2020" y="126" width="1720" height="974" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1579589902264">
       <screen x="1920" y="0" width="1920" height="1200" />
     </state>
-    <state width="1551" height="261" key="GridCell.Tab.0.center/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1577602048629" />
-    <state width="1551" height="261" key="GridCell.Tab.0.left" timestamp="1577602048629">
+    <state x="2020" y="126" width="1720" height="974" key="com.intellij.history.integration.ui.views.FileHistoryDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1579589902264" />
+    <state x="2571" y="428" key="com.intellij.ide.util.TipDialog" timestamp="1578881260018">
       <screen x="1920" y="0" width="1920" height="1200" />
     </state>
-    <state width="1551" height="261" key="GridCell.Tab.0.left/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1577602048629" />
-    <state width="1551" height="261" key="GridCell.Tab.0.right" timestamp="1577602048630">
+    <state x="2571" y="428" key="com.intellij.ide.util.TipDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1578881260018" />
+    <state x="2563" y="433" width="634" height="514" key="find.popup" timestamp="1584939225050">
+      <screen x="1920" y="120" width="1920" height="1080" />
+    </state>
+    <state x="2563" y="348" width="634" height="530" key="find.popup/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580181777267" />
+    <state x="2563" y="433" width="634" height="514" key="find.popup/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@1920.120.1920.1080" timestamp="1584939225050" />
+    <state x="4483" y="348" width="634" height="530" key="find.popup/1920.120.1920.1080/3840.0.1920.1200/0.60.1920.1080@3840.0.1920.1200" timestamp="1584523973063" />
+    <state x="2608" y="258" key="refactoring.ChangeSignatureDialog" timestamp="1579160485459">
       <screen x="1920" y="0" width="1920" height="1200" />
     </state>
-    <state width="1551" height="261" key="GridCell.Tab.0.right/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1577602048630" />
-    <state width="1878" height="393" key="GridCell.Tab.1.bottom" timestamp="1576816501890">
+    <state x="2608" y="258" key="refactoring.ChangeSignatureDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1579160485459" />
+    <state x="2543" y="288" width="672" height="678" key="search.everywhere.popup" timestamp="1580106997422">
       <screen x="1920" y="0" width="1920" height="1200" />
     </state>
-    <state width="1878" height="393" key="GridCell.Tab.1.bottom/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576816501890" />
-    <state width="1878" height="393" key="GridCell.Tab.1.center" timestamp="1576816501890">
-      <screen x="1920" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1878" height="393" key="GridCell.Tab.1.center/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576816501890" />
-    <state width="1878" height="393" key="GridCell.Tab.1.left" timestamp="1576816501890">
-      <screen x="1920" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1878" height="393" key="GridCell.Tab.1.left/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576816501890" />
-    <state width="1878" height="393" key="GridCell.Tab.1.right" timestamp="1576816501890">
-      <screen x="1920" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1878" height="393" key="GridCell.Tab.1.right/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576816501890" />
-    <state width="1878" height="393" key="GridCell.Tab.2.bottom" timestamp="1576816501890">
-      <screen x="1920" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1878" height="393" key="GridCell.Tab.2.bottom/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576816501890" />
-    <state width="1878" height="393" key="GridCell.Tab.2.center" timestamp="1576816501890">
-      <screen x="1920" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1878" height="393" key="GridCell.Tab.2.center/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576816501890" />
-    <state width="1878" height="393" key="GridCell.Tab.2.left" timestamp="1576816501890">
-      <screen x="1920" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1878" height="393" key="GridCell.Tab.2.left/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576816501890" />
-    <state width="1878" height="393" key="GridCell.Tab.2.right" timestamp="1576816501890">
-      <screen x="1920" y="0" width="1920" height="1200" />
-    </state>
-    <state width="1878" height="393" key="GridCell.Tab.2.right/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576816501890" />
-    <state x="2630" y="428" key="NewPhpClassDialog" timestamp="1576812402945">
-      <screen x="1920" y="0" width="1920" height="1200" />
-    </state>
-    <state x="2630" y="428" key="NewPhpClassDialog/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1576812402945" />
+    <state x="2543" y="288" width="672" height="678" key="search.everywhere.popup/1920.0.1920.1200/0.120.1920.1080@1920.0.1920.1200" timestamp="1580106997422" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
-          <condition expression="is_array($article) === true" language="PHP" />
-          <url>file://$PROJECT_DIR$/src/Lib/ScienceArticleFilter.php</url>
-          <line>45</line>
-          <option name="timeStamp" value="35" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/src/Parser/Scrapper/ScienceDirectPublisherProcessor.php</url>
-          <line>53</line>
-          <option name="timeStamp" value="37" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/Command/CompareJournalsCommand.php</url>
           <line>79</line>
           <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Parser/Crossref/CrossrefPublicationsScrapper.php</url>
+          <line>43</line>
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/src/Parser/Publisher/Impl/TailorFrancisProcessor.php</url>
+          <line>94</line>
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -4,7 +4,7 @@
 namespace App\Command\Publisher;
 
 
-use App\Parser\Scrapper\PublisherQueer;
+use App\Parser\Publisher\PublisherQueer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PublisherQueueCommand extends Command
 {
-    protected $queer;
+    protected PublisherQueer $queer;
 
     public function __construct(PublisherQueer $scraper)
     {
@@ -24,11 +24,12 @@ class PublisherQueueCommand extends Command
     {
         $this
             ->setName('publisher.queue')
-            ->addArgument('queueName', InputArgument::REQUIRED);
+            ->addArgument('domain', InputArgument::REQUIRED);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->queer->run($input->getArgument('queueName'));
+        $this->queer->run($input->getArgument('domain'));
+        return 0;
     }
 }

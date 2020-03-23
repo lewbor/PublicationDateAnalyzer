@@ -39,13 +39,14 @@ class WosJournalQuartileUpdater extends Command
     {
         $this->clearQuartiles();
 
-        foreach ($this->journalIterator() as $idx => $journal) {
-            $this->processJournal($journal);
-            $this->em->clear();
-
-            if ($idx % 10 === 0) {
-                $this->logger->info(sprintf("Processed %d journals", $idx));
+        $processedItems = 0;
+        foreach ($this->journalIterator() as $batch) {
+            foreach($batch as $journal) {
+                $this->processJournal($journal);
+                $processedItems++;
+                $this->logger->info(sprintf("Processed %d journals", $processedItems));
             }
+            $this->em->clear();
         }
     }
 
@@ -60,7 +61,7 @@ class WosJournalQuartileUpdater extends Command
 
     private function journalIterator(): iterable
     {
-        return DoctrineIterator::idIterator(
+        return DoctrineIterator::batchIdIterator(
             $this->em->createQueryBuilder()
                 ->select('entity')
                 ->from(Journal::class, 'entity')

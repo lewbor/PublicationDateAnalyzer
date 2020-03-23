@@ -17,56 +17,53 @@ class Article
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    protected $id;
+    protected ?int $id = null;
 
     /**
-     * @var string
      * @ORM\Column(name="doi", type="string", unique=true, nullable=true)
      */
-    protected $doi;
+    protected ?string $doi = null;
 
     /**
-     * @var string
      * @ORM\Column(type="text", nullable=false)
      */
-    protected $name;
+    protected ?string $name = null;
 
     /**
-     * @var integer
      * @ORM\Column(name="year", type="integer", nullable=false)
      */
-    protected $year;
+    protected ?int $year = null;
 
     /**
-     * @var Journal
-     * @ORM\ManyToOne(targetEntity="App\Entity\Journal\Journal")
+     * @ORM\ManyToOne(targetEntity=Journal::class)
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      **/
-    protected $journal;
+    protected ?Journal $journal = null;
 
     /**
-     * @var ArticleCrossrefData
-     * @ORM\OneToOne(targetEntity="\App\Entity\ArticleCrossrefData", mappedBy="article")
+     * @ORM\OneToOne(targetEntity=ArticleCrossrefData::class, mappedBy="article")
      */
-    protected $crossrefData;
+    protected ?ArticleCrossrefData $crossrefData = null;
 
     /**
-     * @var ArticlePublisherData
-     * @ORM\OneToOne(targetEntity="\App\Entity\ArticlePublisherData", mappedBy="article")
+     * @ORM\OneToOne(targetEntity=ArticlePublisherData::class, mappedBy="article")
      */
-    protected $publisherData;
+    protected ?ArticlePublisherData $publisherData = null;
 
     /**
-     * @var ArticleWebOfScienceData
-     * @ORM\OneToOne(targetEntity="\App\Entity\ArticleWebOfScienceData", mappedBy="article")
+     * @ORM\OneToOne(targetEntity=ArticleWebOfScienceData::class, mappedBy="article")
      */
-    protected $webOfScienceData;
+    protected ?ArticleWebOfScienceData $webOfScienceData = null;
 
     /**
-     * @var ArticleUnpaywallData
-     * @ORM\OneToOne(targetEntity="\App\Entity\ArticleUnpaywallData", mappedBy="article")
+     * @ORM\OneToOne(targetEntity=ArticleUnpaywallData::class, mappedBy="article")
      */
-    protected $unpaywallData;
+    protected ?ArticleUnpaywallData $unpaywallData = null;
+
+    /**
+     * @ORM\OneToOne(targetEntity=ArticleUrl::class, mappedBy="article")
+     */
+    protected ?ArticleUrl $url = null;
 
 
     public function getId()
@@ -160,6 +157,17 @@ class Article
     public function setUnpaywallData(?ArticleUnpaywallData $unpaywallData): self
     {
         $this->unpaywallData = $unpaywallData;
+        return $this;
+    }
+
+    public function getUrl(): ?ArticleUrl
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?ArticleUrl $url): self
+    {
+        $this->url = $url;
         return $this;
     }
 

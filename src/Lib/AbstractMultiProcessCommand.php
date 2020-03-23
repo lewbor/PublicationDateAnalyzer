@@ -15,7 +15,7 @@ abstract class AbstractMultiProcessCommand extends Command
 {
     public const ENV_PROCESS_NUMBER = 'PROCESS_NUMBER';
 
-    protected $logger;
+    protected LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger)
     {

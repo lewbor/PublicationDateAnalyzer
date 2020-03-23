@@ -26,6 +26,18 @@ class ArticleUnpaywallData
     protected $article;
 
     /**
+     * @var ?\DateTime
+     * @ORM\Column(name="scrapped_at", type="datetime", nullable=true)
+     */
+    protected $scrappedAt;
+
+    /**
+     * @var int
+     * @ORM\Column(name="response_code", type="integer", nullable=false)
+     */
+    protected $responseCode;
+
+    /**
      * @var array
      * @ORM\Column(name="publisher_data", type="json", nullable=true)
      */
@@ -74,4 +86,30 @@ class ArticleUnpaywallData
         $this->openAccess = $openAccess;
         return $this;
     }
+
+    public function getScrappedAt(): ?\DateTime
+    {
+        return $this->scrappedAt;
+    }
+
+    public function setScrappedAt(?\DateTime $scrappedAt): self
+    {
+        $this->scrappedAt = $scrappedAt;
+        return $this;
+    }
+
+
+    public function getResponseCode(): ?int
+    {
+        return $this->responseCode;
+    }
+
+
+    public function setResponseCode(?int $responseCode): self
+    {
+        $this->responseCode = $responseCode;
+        return $this;
+    }
+
+
 }

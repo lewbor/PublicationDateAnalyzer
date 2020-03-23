@@ -18,8 +18,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WosJournalJcrImpactUpdater extends Command
 {
-    protected $em;
-    protected $logger;
+    protected EntityManagerInterface $em;
+    protected LoggerInterface $logger;
 
     public function __construct(
         EntityManagerInterface $em,
@@ -40,13 +40,15 @@ class WosJournalJcrImpactUpdater extends Command
     {
         $this->clearImpacts();
 
-        foreach ($this->journalIterator() as $idx => $journal) {
-            $this->processJournal($journal);
+        $processedItems = 0;
+        foreach ($this->journalIterator() as $batch) {
+            foreach ($batch as $journal) {
+                $this->processJournal($journal);
+                $processedItems++;
+                $this->logger->info(sprintf('Processed %d', $processedItems));
+            }
             $this->em->clear();
 
-            if ($idx % 10 === 0) {
-                $this->logger->info(sprintf("Processed %d journals", $idx));
-            }
         }
     }
 
@@ -63,7 +65,7 @@ class WosJournalJcrImpactUpdater extends Command
 
     private function journalIterator(): iterable
     {
-        yield from DoctrineIterator::idIterator(
+        yield from DoctrineIterator::batchIdIterator(
             $this->em->createQueryBuilder()
                 ->select('entity')
                 ->from(Journal::class, 'entity')
@@ -95,15 +97,15 @@ class WosJournalJcrImpactUpdater extends Command
         }
 
         /** @var JournalJcrImpactSource $item */
-        foreach($result as $item) {
-            if(!empty($item->getImpactFactor())) {
+        foreach ($result as $item) {
+            if (!empty($item->getImpactFactor())) {
                 $journalItem = (new JournalJcr2Impact())
                     ->setJournal($journal)
                     ->setYear($item->getYear())
                     ->setValue($item->getImpactFactor());
                 $this->em->persist($journalItem);
             }
-            if(!empty($item->getImpactFactor5())) {
+            if (!empty($item->getImpactFactor5())) {
                 $journalItem = (new JournalJcr5Impact())
                     ->setJournal($journal)
                     ->setYear($item->getYear())

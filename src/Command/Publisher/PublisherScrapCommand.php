@@ -4,7 +4,7 @@
 namespace App\Command\Publisher;
 
 
-use App\Parser\Scrapper\PublisherScrapper;
+use App\Parser\Publisher\PublisherScrapper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,8 +15,8 @@ class PublisherScrapCommand  extends Command
 {
     const CMD_NAME = 'publisher.scrap';
 
-    protected $logger;
-    protected $scraper;
+    protected LoggerInterface $logger;
+    protected PublisherScrapper $scraper;
 
     public function __construct(
         LoggerInterface $logger,
@@ -34,8 +34,9 @@ class PublisherScrapCommand  extends Command
             ->addArgument('queueName', InputArgument::REQUIRED);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->scraper->run($input->getArgument('queueName'));
+        return 0;
     }
 }

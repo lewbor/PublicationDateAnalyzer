@@ -5,6 +5,7 @@ namespace App\Command\Wos\JournalCrawler;
 
 
 use App\Command\CrawlerSettings;
+use App\Command\SeleniumTrait;
 use App\Entity\Journal\Journal;
 use App\Lib\QueueManager;
 use App\Lib\Selenium\BrowserContext;
@@ -14,8 +15,6 @@ use App\Lib\Selenium\SeleniumFirefoxTrait;
 use App\Lib\Selenium\SeleniumWebdriverTrait;
 use App\Lib\Selenium\UrlWaiter;
 use App\Lib\Selenium\WosCommonActionsTrait;
-use App\Lib\TaskRunner\Logger\ConsoleLogger;
-use App\Lib\TaskRunner\Task\SeleniumTask;
 use App\Lib\Utils\PathUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Facebook\WebDriver\Exception\NoSuchElementException;
@@ -29,6 +28,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class WosJournalCrawlerCommand extends Command
 {
+    use SeleniumTrait;
     use SeleniumFirefoxTrait;
     use SeleniumWebdriverTrait;
     use WosCommonActionsTrait;
@@ -344,16 +344,5 @@ class WosJournalCrawlerCommand extends Command
         sleep(1);
     }
 
-    private function runEnv(DeferredContext $deferred)
-    {
-        $taskLogger = new ConsoleLogger();
-        $seleniumTask = (new SeleniumTask('/data/soft/selenium/selenium-server-standalone-3.8.1.jar',
-            '/data/soft/selenium/geckodriver-0.23.0'
-        ));
 
-        $seleniumTask->run($taskLogger);
-        $deferred->defer(function () use ($seleniumTask, $taskLogger) {
-            $seleniumTask->stop($taskLogger);
-        });
-    }
 }

@@ -14,10 +14,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UnpaywallFillFromFileDatabase extends Command
 {
-    private const BATCH_SIZE = 500;
+    private const BATCH_SIZE = 10000;
 
-    protected $em;
-    protected $logger;
+    protected EntityManagerInterface $em;
+    protected LoggerInterface $logger;
 
     public function __construct(
         EntityManagerInterface $em,
@@ -39,7 +39,7 @@ class UnpaywallFillFromFileDatabase extends Command
 
         $fileName = '/project/unpaywall_snapshot_2019-04-19T193256.jsonl.gz';
 
-        foreach ($this->batchIterator($fileName, 74634000, self::BATCH_SIZE) as $idx => $records) {
+        foreach ($this->batchIterator($fileName, 0, self::BATCH_SIZE) as $idx => $records) {
             /** @var Article[] $articles */
             $articles = $this->em->createQueryBuilder()
                 ->select('entity')
@@ -56,6 +56,8 @@ class UnpaywallFillFromFileDatabase extends Command
                 $dataEntity = (new ArticleUnpaywallData())
                     ->setArticle($article)
                     ->setData($unpaywallData)
+                    ->setResponseCode(200)
+                    ->setScrappedAt(new \DateTime())
                     ->setOpenAccess($unpaywallData['is_oa']);
                 $this->em->persist($dataEntity);
             }

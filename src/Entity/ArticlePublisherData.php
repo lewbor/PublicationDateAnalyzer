@@ -15,6 +15,7 @@ class ArticlePublisherData
     const SCRAP_RESULT_SUCCESS = 1;
     const SCRAP_RESULT_ERROR = 2;
     const SCRAP_RESULT_NO_DATA = 3;
+    const SCRAP_RESULT_PDF = 4;
 
     /**
      * @ORM\Column(type="integer")
@@ -29,6 +30,12 @@ class ArticlePublisherData
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $article;
+
+    /**
+     * @var ?\DateTime
+     * @ORM\Column(name="scrapped_at", type="datetime", nullable=true)
+     */
+    protected $scrappedAt;
 
     /**
      * @var int
@@ -147,6 +154,17 @@ class ArticlePublisherData
     public function setScrapResult(int $scrapResult): self
     {
         $this->scrapResult = $scrapResult;
+        return $this;
+    }
+
+    public function getScrappedAt(): ?\DateTime
+    {
+        return $this->scrappedAt;
+    }
+
+    public function setScrappedAt(?\DateTime $scrappedAt): self
+    {
+        $this->scrappedAt = $scrappedAt;
         return $this;
     }
 

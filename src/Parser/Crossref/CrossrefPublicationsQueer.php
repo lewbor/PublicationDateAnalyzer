@@ -13,9 +13,9 @@ class CrossrefPublicationsQueer
 {
     const QUEUE_NAME = 'crossref.publications';
 
-    protected $em;
-    protected $logger;
-    protected $queueManager;
+    protected EntityManagerInterface $em;
+    protected LoggerInterface $logger;
+    protected QueueManager $queueManager;
 
     public function __construct(
         EntityManagerInterface $em,
@@ -29,6 +29,8 @@ class CrossrefPublicationsQueer
 
     public function run()
     {
+        $truncatedRecords = $this->queueManager->truncate(self::QUEUE_NAME);
+        $this->logger->info(sprintf('Removed %d records from queue %s', $truncatedRecords, self::QUEUE_NAME));
 
         foreach ($this->journalIterator() as $idx => $journal) {
             $this->queueAJournal($journal);

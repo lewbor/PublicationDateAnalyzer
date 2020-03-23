@@ -5,6 +5,7 @@ namespace App\Command\Analytics;
 
 
 use App\Analytics\Analyzer\AcceptedPublishedAnalyzer;
+use App\Analytics\Analyzer\AnalyzerInterface;
 use App\Analytics\Analyzer\ReceivedAcceptedAnalyzer;
 use App\Analytics\Analyzer\ReceivedPublishedAnalyzer;
 use App\Analytics\JournalAnalyticsMaker;
@@ -20,9 +21,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class JournalAnalyticsCommand extends Command
 {
-    protected $em;
-    protected $logger;
-    protected $analyticsMaker;
+    protected EntityManagerInterface $em;
+    protected LoggerInterface $logger;
+    protected JournalAnalyticsMaker $analyticsMaker;
 
     public function __construct(
         EntityManagerInterface $em,
@@ -42,14 +43,13 @@ class JournalAnalyticsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var YearPeriod[] $yearPeriods */
         $yearPeriods = [
-            new YearPeriod(2000, 2009),
-            new YearPeriod(2000, 2009, true),
-            new YearPeriod(2010, 2019),
-            new YearPeriod(2010, 2019, true),
-            new YearPeriod(2018, 2019),
-            new YearPeriod(2018, 2019, true),
+//            new YearPeriod(2000, 2009, null),
+//            new YearPeriod(2000, 2009, true),
+//            new YearPeriod(2010, 2019, null),
+//            new YearPeriod(2010, 2019, true),
+            new YearPeriod(2018, 2019, null),
+//            new YearPeriod(2018, 2019, true),
         ];
         $dateAnalyzers = [
             new ReceivedAcceptedAnalyzer(),
@@ -62,12 +62,17 @@ class JournalAnalyticsCommand extends Command
             $this->clearStat($journal);
 
             foreach ($yearPeriods as $yearPeriod) {
-                $stat = $this->analyticsMaker->analyticsForJournal($journal, $yearPeriod, $dateAnalyzers);
-                $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
-                $this->saveStat($journal, $yearPeriod, $stat);
+                foreach ($dateAnalyzers as $analyzer) {
+                    $stat = $this->analyticsMaker->analyticsForJournal($journal, $yearPeriod, $analyzer);
+                    $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
+                    $this->saveStat($journal, $analyzer, $yearPeriod, $stat);
 
-                $this->em->clear();
-                $this->logger->info(sprintf('Processed journal %s with %s', $journal->getName(), json_encode($yearPeriod->toArray())));
+                    $this->em->clear();
+                    $this->logger->info(sprintf('Journal %s, analyzer %s, parameters %s',
+                        $journal->getName(),
+                        $analyzer->getName(),
+                        json_encode($yearPeriod->toArray())));
+                }
             }
         }
     }
@@ -90,11 +95,14 @@ class JournalAnalyticsCommand extends Command
             ->execute();
     }
 
-    private function saveStat(Journal $journal, YearPeriod $yearPeriod, array $stat): void
+    private function saveStat(Journal $journal, AnalyzerInterface $analyzer, YearPeriod $yearPeriod, array $stat): void
     {
         $entity = (new JournalAnalytics())
             ->setJournal($journal)
-            ->setOptions($yearPeriod->toArray())
+            ->setName($analyzer->getName())
+            ->setStartYear($yearPeriod->getStart())
+            ->setEndYear($yearPeriod->getEnd())
+            ->setOpenAccess($yearPeriod->isOpenAccess())
             ->setAnalytics($stat);
 
         $this->em->persist($entity);

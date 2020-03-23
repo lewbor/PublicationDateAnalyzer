@@ -14,7 +14,10 @@ class ArticleQueries
             ->leftJoin('entity.crossrefData', 'crossrefData')
             ->leftJoin('entity.publisherData', 'publisherData')
             ->leftJoin('entity.webOfScienceData', 'webOfScienceData')
-            ->addSelect('partial crossrefData.{id}', 'partial publisherData.{id}', 'partial webOfScienceData.{id}');
+            ->leftJoin('entity.unpaywallData', 'unpaywallData')
+            ->leftJoin('entity.url', 'url')
+            ->addSelect('partial crossrefData.{id}', 'partial publisherData.{id}',
+                'partial webOfScienceData.{id}', 'partial unpaywallData.{id}', 'partial url.{id}');
         return $qb;
     }
 }

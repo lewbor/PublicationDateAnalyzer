@@ -22,9 +22,9 @@ class CrossrefPublicationsScrapper
     private const TRY_COUNT = 10;
     private const INVALID_RESPONSE_DELAY = 5;
 
-    protected $em;
-    protected $logger;
-    protected $queueManager;
+    protected EntityManagerInterface $em;
+    protected LoggerInterface $logger;
+    protected QueueManager $queueManager;
 
     public function __construct(
         EntityManagerInterface $em,
@@ -91,6 +91,10 @@ class CrossrefPublicationsScrapper
             $journal = $this->em->getRepository(Journal::class)->find($journal->getId());
 
             $result = $this->fetchCrossrefData($issn, $journal->getScrappingDate(), $nextCursor);
+
+            if(empty($result)) {
+                break;
+            }
 
             if ($result['status'] != 'ok') {
                 $this->logger->error(sprintf('Error response: %s', json_encode($result)));
@@ -188,8 +192,12 @@ class CrossrefPublicationsScrapper
                     RequestOptions::READ_TIMEOUT => 10,
                 ]);
                 $body = $response->getBody()->getContents();
-                $result = \GuzzleHttp\json_decode($body, true);
-                return $result;
+                if($response->getStatusCode() !== 200) {
+                    $this->logger->error(sprintf('Journal %s - response code is %d, message - %s',
+                        $issn, $response->getStatusCode(), $body));
+                    return [];
+                }
+                return \GuzzleHttp\json_decode($body, true);
             } catch (Exception $e) {
                 $this->logger->error($e->getMessage());
                 $this->logger->info(sprintf('Will sleep %d seconds', self::INVALID_RESPONSE_DELAY));

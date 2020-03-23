@@ -26,26 +26,22 @@ abstract class AbstractMultiProxyCommand extends Command
     protected function configure()
     {
         $this
-            ->addOption('procCount', null, InputOption::VALUE_REQUIRED, '', 10)
-            ->addOption('proxy', null, InputOption::VALUE_REQUIRED, '', false);
+            ->addOption('procCount', null, InputOption::VALUE_REQUIRED, '', 10);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $procCount = (int)$input->getOption('procCount');
         if ($procCount < 0) {
             throw new \Exception(sprintf('Invalid procCount value: %s', $input->getOption('procCount')));
         }
-        if (!empty($input->getOption('proxy'))) {
-            $proxy = trim($input->getOption('proxy'));
-        } else {
-            $proxy = '';
-        }
 
+
+        /** @var Process[] $processes */
         $processes = [];
 
-        $this->runForProxy($proxy, $procCount, $input, $output, $processes);
-        $this->logger->info(sprintf('Will run %d processes for proxy %s', $procCount, $proxy));
+        $this->runProcesses($procCount, $input, $output, $processes);
+        $this->logger->info(sprintf('Will run %d processes', $procCount));
 
 
         while (count($processes) > 0) {
@@ -57,20 +53,14 @@ abstract class AbstractMultiProxyCommand extends Command
                 sleep(1);
             }
         }
+
+        return 0;
     }
 
-    private function runForProxy(string $proxyStr, int $procCount, InputInterface $input, OutputInterface $output, array &$processes): void
+    private function runProcesses(int $procCount, InputInterface $input, OutputInterface $output, array &$processes): void
     {
         foreach (range(1, $procCount) as $procNumber) {
-            $env = array_merge($_ENV, [
-                AbstractMultiProcessCommand::ENV_PROCESS_NUMBER => count($processes) + 1,
-            ]);
-            if (!empty($proxyStr)) {
-                $env = array_merge($env, [
-                    'HTTP_PROXY' => $proxyStr,
-                    'HTTPS_PROXY' => $proxyStr
-                ]);
-            }
+            $env = array_merge($_ENV, [AbstractMultiProcessCommand::ENV_PROCESS_NUMBER => count($processes) + 1,]);
             $process = $this->createProcess($input, $env);
             $process->start(function ($type, $buffer) use ($output) {
                 echo $buffer;
@@ -79,7 +69,8 @@ abstract class AbstractMultiProxyCommand extends Command
         }
     }
 
-    protected function createProcess(InputInterface $input, array $env): Process {
+    protected function createProcess(InputInterface $input, array $env): Process
+    {
         return new Process(['bin/console', $this->commandName()], null, $env);
     }
 }

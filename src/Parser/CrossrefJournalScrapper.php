@@ -11,8 +11,8 @@ use Psr\Log\LoggerInterface;
 
 class CrossrefJournalScrapper
 {
-    protected $em;
-    protected $logger;
+    protected EntityManagerInterface $em;
+    protected LoggerInterface $logger;
 
     public function __construct(
         EntityManagerInterface $em,

@@ -8,7 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="queue_item")
+ * @ORM\Table(name="queue_item", indexes={
+        @ORM\Index(name="take_idx", columns={"queue_name", "status"})
+ * })
  */
 class QueueItem
 {

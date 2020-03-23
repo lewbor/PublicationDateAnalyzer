@@ -11,7 +11,10 @@ use Exception;
 
 class QueueManager
 {
-    private $em;
+    public const ASKNOWLEDGE_MODE_DELETE = 1;
+    public const ASKNOWLEDGE_MODE_UPDATE = 2;
+
+    private EntityManagerInterface $em;
 
     public function __construct(EntityManagerInterface $em)
     {
@@ -78,10 +81,22 @@ class QueueManager
         return $queueItem;
     }
 
-    public function acknowledge(QueueItem $item): void
+    public function acknowledge(QueueItem $item, int $asknowledgeMode = self::ASKNOWLEDGE_MODE_DELETE): void
     {
-        $this->em->remove($item);
-        $this->em->flush();
+        switch ($asknowledgeMode) {
+            case self::ASKNOWLEDGE_MODE_DELETE:
+                $this->em->remove($item);
+                $this->em->flush();
+                break;
+            case self::ASKNOWLEDGE_MODE_UPDATE:
+                $item->setStatus(QueueItem::FINISHED);
+                $this->em->persist($item);
+                $this->em->flush();
+                break;
+            default:
+                throw new \LogicException();
+        }
+
     }
 
     public function cancel(QueueItem $item): void
