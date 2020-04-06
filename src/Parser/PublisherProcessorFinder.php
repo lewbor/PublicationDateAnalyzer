@@ -4,21 +4,19 @@
 namespace App\Parser;
 
 
-use App\Entity\Article;
 use App\Parser\Publisher\Impl\AscPublisherProcessor;
-use App\Parser\Publisher\Impl\TailorFrancisProcessor;
-use App\Parser\Publisher\PublisherProcessor;
 use App\Parser\Publisher\Impl\RscPublisherProcessor;
 use App\Parser\Publisher\Impl\ScienceDirectPublisherProcessor;
+use App\Parser\Publisher\Impl\ScitationProcessor;
 use App\Parser\Publisher\Impl\SpringerPublisherProcessor;
+use App\Parser\Publisher\Impl\TailorFrancisProcessor;
+use App\Parser\Publisher\PublisherProcessor;
 use Psr\Log\LoggerInterface;
 
 class PublisherProcessorFinder
 {
     protected LoggerInterface $logger;
-
-    /** @var PublisherProcessor[] */
-    protected array $processors;
+    protected array $processors = [];
 
     public function __construct(
         LoggerInterface $logger,
@@ -26,43 +24,26 @@ class PublisherProcessorFinder
         SpringerPublisherProcessor $springerPublisherProcessor,
         AscPublisherProcessor $ascPublisherProcessor,
         RscPublisherProcessor $rscPublisherProcessor,
-        TailorFrancisProcessor $tailorFrancisProcessor)
+        TailorFrancisProcessor $tailorFrancisProcessor,
+        ScitationProcessor $scitationProcessor)
     {
         $this->logger = $logger;
 
-        $this->processors = [
+        $processors = [
             $scienceDirectPublisherProcessor,
             $springerPublisherProcessor,
             $ascPublisherProcessor,
             $rscPublisherProcessor,
-            $tailorFrancisProcessor
+            $tailorFrancisProcessor,
+            $scitationProcessor
         ];
+        foreach($processors as $processor) {
+            $this->processors[get_class($processor)] = $processor;
+        }
     }
 
-
-    public function processorsForQueue(string $queueName): array
-    {
-        $processors = [];
-
-        foreach ($this->processors as $processor) {
-            if ($processor->queueName() === $queueName) {
-                $processors[] = $processor;
-            }
-        }
-
-        return $processors;
-    }
-
-    public function processorsForDomain(string $domain) : array {
-        $processors = [];
-
-        foreach ($this->processors as $processor) {
-            if (in_array($domain, $processor->scrappingDomains())) {
-                $processors[] = $processor;
-            }
-        }
-
-        return $processors;
+    public function processorForClass(string $processorClass): ?PublisherProcessor {
+        return $this->processors[$processorClass] ?? null;
     }
 
 }

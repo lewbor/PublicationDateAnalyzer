@@ -6,3 +6,5 @@
 /var/
 /vendor/
 /data/
+frontend/node_modules
+web/assets/

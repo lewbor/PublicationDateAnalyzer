@@ -9,12 +9,11 @@ use App\Entity\ArticleUrlDomain;
 use App\Lib\CsvWriter;
 use App\Lib\Iterator\DoctrineIterator;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DomainCrossrefDatesAnalyzer extends Command
+class DomainDatesAnalyzer extends Command
 {
     protected EntityManagerInterface $em;
 
@@ -26,7 +25,7 @@ class DomainCrossrefDatesAnalyzer extends Command
 
     protected function configure()
     {
-        $this->setName('domain.crossref_dates');
+        $this->setName('domain.dates');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -79,58 +78,11 @@ class DomainCrossrefDatesAnalyzer extends Command
             ->getQuery()
             ->getSingleScalarResult();
 
-
-        $queries = [
-            'crossref_records' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.hasCrossrefRecord = 1'),
-            'publisherRecords' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.hasPublisherRecord = 1'),
-            'has_print' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.crossrefPublishedPrint IS NOT NULL'),
-            'has_online' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.crossrefPublishedOnline IS NOT NULL')
-        ];
-
-        $articleModifiers = [
-            'all' => function (QueryBuilder $qb) {
-                $qb->andWhere("entity.year <= 2019");
-            },
-            '2000-2009' => function (QueryBuilder $qb) {
-                $qb->andWhere("entity.year >= 2000 AND entity.year <= 2009");
-            },
-            '2010-2019' => function (QueryBuilder $qb) {
-                $qb->andWhere("entity.year >= 2010 AND entity.year <= 2019");
-            },
-            '2018' => function (QueryBuilder $qb) {
-                $qb->andWhere("entity.year = 2018");
-            },
-            '2019' => function (QueryBuilder $qb) {
-                $qb->andWhere("entity.year = 2019");
-            },
-        ];
-
-        $openAccessModifiers = [
-            '' => function(QueryBuilder $qb){
-
-            },
-            '_oa' => function(QueryBuilder $qb){
-                $qb->andWhere('entity.openAccess = 1');
-            },
-        ];
-
-        foreach ($queries as $queryName => $qb) {
-            foreach ($articleModifiers as $modifierName => $articleModifier) {
-                foreach ($openAccessModifiers as $oaName => $oaModifier) {
-                    $currentQb = clone $qb;
-                    $articleModifier($currentQb);
+        foreach (Queries::$queries as $queryName => $qbBuilder) {
+            foreach (Queries::$yearModifiers as $modifierName => $yearModifier) {
+                foreach (Queries::$openAccessModifiers as $oaName => $oaModifier) {
+                    $currentQb = $qbBuilder($this->em);
+                    $yearModifier($currentQb);
                     $oaModifier($currentQb);
                     $currentQb
                         ->andWhere('entity.domain = :domain')

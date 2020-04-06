@@ -31,12 +31,12 @@ class PublisherScrapCommand  extends Command
     {
         $this
             ->setName(self::CMD_NAME)
-            ->addArgument('queueName', InputArgument::REQUIRED);
+            ->addArgument('scraper', InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->scraper->run($input->getArgument('queueName'));
+        $this->scraper->run($input->getArgument('scraper'));
         return 0;
     }
 }

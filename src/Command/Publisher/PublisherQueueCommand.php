@@ -24,12 +24,12 @@ class PublisherQueueCommand extends Command
     {
         $this
             ->setName('publisher.queue')
-            ->addArgument('domain', InputArgument::REQUIRED);
+            ->addArgument('scraper', InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->queer->run($input->getArgument('domain'));
+        $this->queer->run($input->getArgument('scraper'));
         return 0;
     }
 }

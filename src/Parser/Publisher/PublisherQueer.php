@@ -29,40 +29,46 @@ class PublisherQueer
         $this->processorFinder = $processorFinder;
     }
 
-    public function run(string $domainName): void
+    public function run(string $processorClass): void
     {
-        $domainEntity = $this->em->createQueryBuilder()
+        $processor = $this->processorFinder->processorForClass($processorClass);
+        if($processor === null) {
+            $this->logger->error(sprintf('No processor for class %s', $processorClass));
+            return;
+        }
+
+        $domainEntities = $this->em->createQueryBuilder()
             ->select('entity')
             ->from(ArticleUrlDomain::class, 'entity')
-            ->andWhere('entity.domain = :domain')
-            ->setParameter('domain', $domainName)
+            ->andWhere('entity.domain IN (:domain)')
+            ->setParameter('domain', $processor->scrappingDomains())
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
 
-        if ($domainEntity === null) {
-            $this->logger->error(sprintf('No domain entity found for domain %s', $domainName));
+        if (count($domainEntities) !== count($processor->scrappingDomains())) {
+            $entitiesStr = json_encode(array_map(
+                fn(ArticleUrlDomain $entity) => [$entity->getDomain()],
+                $domainEntities
+            ));
+            $this->logger->error(sprintf('domain entities count differ from processor domains: %s, %s',
+                $entitiesStr, json_encode($processor->scrappingDomains())));
             return;
         }
-
-        $processors = $this->processorFinder->processorsForDomain($domainName);
-        if (count($processors) !== 1) {
-            $this->logger->error(sprintf('Invalid processors count for domain %s', $domainName));
-            return;
-        }
-
-        /** @var PublisherProcessor $processor */
-        $processor = $processors[0];
 
         $conn = $this->em->getConnection();
 
+        $domainIds = array_map(
+            fn(ArticleUrlDomain $entity) => $entity->getId(),
+            $domainEntities
+        );
         $affectedRows = $conn->executeUpdate(sprintf("insert into queue_item(queue_name, status, data) 
 select '%s', 0, JSON_OBJECT('id', a.id) from article a
          join article_url au on a.id = au.article_id 
     left join article_publisher_data apd on a.id = apd.article_id
-where apd.article_id IS NULL AND  au.domain_id = %d 
+where apd.article_id IS NULL AND  au.domain_id IN (%s) 
 ORDER BY a.year DESC",
             $processor->queueName(),
-            $domainEntity->getId()));
+            implode(',', $domainIds)));
         $this->logger->info(sprintf('Inserted %d rows', $affectedRows));
 
 

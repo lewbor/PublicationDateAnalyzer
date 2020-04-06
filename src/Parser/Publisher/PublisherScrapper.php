@@ -6,7 +6,6 @@ namespace App\Parser\Publisher;
 
 use App\Entity\Article;
 use App\Entity\QueueItem;
-use App\Lib\AbstractMultiProcessCommand;
 use App\Lib\QueueManager;
 use App\Parser\PublisherProcessorFinder;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,16 +31,22 @@ class PublisherScrapper
         $this->processorFinder = $processorFinder;
     }
 
-    public function run(string $queueName)
+    public function run(string $processorClass): void
     {
+        $processor = $this->processorFinder->processorForClass($processorClass);
+        if ($processor === null) {
+            $this->logger->error(sprintf('Not found processor for class %s', $processorClass));
+            return;
+        }
+        $queueName = $processor->queueName();
         foreach ($this->queueManager->singleIterator($queueName) as $idx => $queueItem) {
-            $this->processItem($queueItem, $queueName);
+            $this->processItem($queueItem, $processor);
             $this->queueManager->acknowledge($queueItem);
             $this->em->clear();
         }
     }
 
-    private function processItem(QueueItem $queueItem, string $queueName): void
+    private function processItem(QueueItem $queueItem, PublisherProcessor $processor): void
     {
         $data = $queueItem->getData();
         /** @var Article $article */
@@ -50,15 +55,6 @@ class PublisherScrapper
             $this->logger->info("Article is null");
             return;
         }
-
-        $processors = $this->processorFinder->processorsForQueue($queueName);
-        if (count($processors) !== 1) {
-            $this->logger->error(sprintf('%d processors for queue %s', count($processors), $queueName));
-            return;
-        }
-
-        /** @var PublisherProcessor $processor */
-        $processor = $processors[0];
 
         $processor->process($article);
     }

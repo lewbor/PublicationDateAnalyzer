@@ -48,6 +48,7 @@ class JournalDatesAnalyzer extends Command
                 'name' => $journal->getName(),
             ], $journalData);
             $writer->write($row);
+            $this->em->clear();
         }
 
         $writer->close();
@@ -55,83 +56,6 @@ class JournalDatesAnalyzer extends Command
 
     private function journalData(Journal $journal): array
     {
-        $queries = [
-            'crossref_records' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.hasCrossrefRecord = 1'),
-            'publisher_records' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.hasPublisherRecord = 1'),
-            'crossref_print' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.crossrefPublishedPrint IS NOT NULL'),
-            'crossref_online' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.crossrefPublishedOnline IS NOT NULL'),
-            'publisher_accepted' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.publisherAccepted IS NOT NULL'),
-            'publisher_received' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.publisherReceived IS NOT NULL'),
-            'publisher_print' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.publisherAvailablePrint IS NOT NULL'),
-            'publisher_online' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.publisherAvailableOnline IS NOT NULL'),
-            'received_accepted' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.publisherReceived IS NOT NULL')
-                ->andWhere('entity.publisherAccepted IS NOT NULL'),
-            'received_published' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.publisherReceived IS NOT NULL')
-                ->andWhere('(entity.publisherAvailablePrint IS NOT NULL OR entity.publisherAvailableOnline IS NOT NULL)'),
-            'accepted_published' => $this->em->createQueryBuilder()
-                ->select('COUNT(entity.id)')
-                ->from(ArticleDatesOaAggregate::class, 'entity')
-                ->andWhere('entity.publisherAccepted IS NOT NULL')
-                ->andWhere('(entity.publisherAvailablePrint IS NOT NULL OR entity.publisherAvailableOnline IS NOT NULL)'),
-        ];
-
-        $yearModifiers = [
-            'all' => function (QueryBuilder $qb) {
-                $qb->andWhere('entity.year <= 2009');
-            },
-            '2000-2009' => function (QueryBuilder $qb) {
-                $qb->andWhere('entity.year >= 2000 AND entity.year <= 2009');
-            },
-            '2010-2019' => function (QueryBuilder $qb) {
-                $qb->andWhere('entity.year >= 2010 AND entity.year <= 2019');
-            },
-            '2018' => function (QueryBuilder $qb) {
-                $qb->andWhere('entity.year = 2018');
-            },
-            '2019' => function (QueryBuilder $qb) {
-                $qb->andWhere('entity.year = 2019');
-            },
-        ];
-
-        $openAccessModifiers = [
-            '' => function(QueryBuilder $qb){
-
-            },
-            '_oa' => function(QueryBuilder $qb){
-                $qb->andWhere('entity.openAccess = 1');
-            },
-        ];
-
         $result = [];
         $result['min_year'] = (int)$this->em->createQueryBuilder()
             ->select('MIN(entity.year)')
@@ -148,14 +72,14 @@ class JournalDatesAnalyzer extends Command
             ->getQuery()
             ->getSingleScalarResult();
 
-        foreach ($queries as $queryName => $qb) {
-            foreach ($yearModifiers as $modifierName => $modifier) {
-                foreach ($openAccessModifiers as $oaName => $openAccessModifier) {
+        foreach (Queries::$queries as $queryName => $qbBuilder) {
+            foreach (Queries::$yearModifiers as $modifierName => $modifier) {
+                foreach (Queries::$openAccessModifiers as $oaName => $openAccessModifier) {
                     /** @var QueryBuilder $currentQb */
-                    $currentQb = clone $qb;
+                    $currentQb = $qbBuilder($this->em);
                     $modifier($currentQb);
                     $openAccessModifier($currentQb);
-                    $recordsCount =  (int) $currentQb
+                    $recordsCount = (int)$currentQb
                         ->andWhere('entity.journal = :journal')
                         ->setParameter('journal', $journal)
                         ->getQuery()

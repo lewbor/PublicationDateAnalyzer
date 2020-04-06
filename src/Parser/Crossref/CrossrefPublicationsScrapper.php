@@ -181,7 +181,9 @@ class CrossrefPublicationsScrapper
                     'filter' =>$filter,
                     'mailto' => $this->randomEmail(),
                     'rows' => 500,
-                    'cursor' => $nextCursor
+                    'cursor' => $nextCursor,
+                    'sort' => 'deposited',
+                    'order' => 'desc'
                 ];
 
                 $client = new Client();
