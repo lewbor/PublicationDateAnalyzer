@@ -71,6 +71,11 @@ class Journal
      */
     protected $stat;
 
+    /**
+     * @ORM\OneToOne(targetEntity=JournalDoaj::class, mappedBy="journal")
+     */
+    protected ?JournalDoaj $doaj = null;
+
     public function __construct()
     {
         $this->wosCategories = new ArrayCollection();
@@ -161,6 +166,18 @@ class Journal
     public function setScrappingDate(?DateTime $scrappingDate): self
     {
         $this->scrappingDate = $scrappingDate;
+        return $this;
+    }
+
+
+    public function getDoaj(): ?JournalDoaj
+    {
+        return $this->doaj;
+    }
+
+    public function setDoaj(?JournalDoaj $doaj): self
+    {
+        $this->doaj = $doaj;
         return $this;
     }
 

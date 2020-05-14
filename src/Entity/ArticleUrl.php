@@ -29,11 +29,6 @@ class ArticleUrl
     protected $article;
 
     /**
-     * @ORM\Column(name="year", type="integer", nullable=false)
-     */
-    protected int $year;
-
-    /**
      * @var ?\DateTime
      * @ORM\Column(name="scrapped_at", type="datetime", nullable=false)
      */
@@ -57,11 +52,6 @@ class ArticleUrl
      * @ORM\JoinColumn(name="domain_id", referencedColumnName="id", nullable=true)
      */
     protected $domain;
-
-    public function getYear(): int
-    {
-        return $this->year;
-    }
 
     public function setYear(int $year): self
     {

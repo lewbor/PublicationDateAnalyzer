@@ -64,6 +64,7 @@
     "symfony/polyfill-php56": "*"
   },
   "scripts": {
+    "cache": "rm -rf var/cache/; bin/console cache:warmup --ansi",
     "auto-scripts": {
       "cache:clear": "symfony-cmd"
     },

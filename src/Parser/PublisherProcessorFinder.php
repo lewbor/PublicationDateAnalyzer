@@ -5,6 +5,9 @@ namespace App\Parser;
 
 
 use App\Parser\Publisher\Impl\AscPublisherProcessor;
+use App\Parser\Publisher\Impl\DegruterProcessor;
+use App\Parser\Publisher\Impl\JstageProcessor;
+use App\Parser\Publisher\Impl\MdpiProcessor;
 use App\Parser\Publisher\Impl\RscPublisherProcessor;
 use App\Parser\Publisher\Impl\ScienceDirectPublisherProcessor;
 use App\Parser\Publisher\Impl\ScitationProcessor;
@@ -25,7 +28,10 @@ class PublisherProcessorFinder
         AscPublisherProcessor $ascPublisherProcessor,
         RscPublisherProcessor $rscPublisherProcessor,
         TailorFrancisProcessor $tailorFrancisProcessor,
-        ScitationProcessor $scitationProcessor)
+        ScitationProcessor $scitationProcessor,
+        MdpiProcessor $mdpiProcessor,
+        DegruterProcessor $degruterProcessor,
+        JstageProcessor $jstageProcessor)
     {
         $this->logger = $logger;
 
@@ -35,14 +41,18 @@ class PublisherProcessorFinder
             $ascPublisherProcessor,
             $rscPublisherProcessor,
             $tailorFrancisProcessor,
-            $scitationProcessor
+            $scitationProcessor,
+            $mdpiProcessor,
+            $degruterProcessor,
+            $jstageProcessor
         ];
-        foreach($processors as $processor) {
+        foreach ($processors as $processor) {
             $this->processors[get_class($processor)] = $processor;
         }
     }
 
-    public function processorForClass(string $processorClass): ?PublisherProcessor {
+    public function processorForClass(string $processorClass): ?PublisherProcessor
+    {
         return $this->processors[$processorClass] ?? null;
     }
 

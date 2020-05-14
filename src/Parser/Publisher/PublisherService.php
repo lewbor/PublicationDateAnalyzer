@@ -10,6 +10,8 @@ use Campo\UserAgent;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\TransferStats;
 use Psr\Log\LoggerInterface;
 
 class PublisherService
@@ -32,6 +34,7 @@ class PublisherService
             'cookies' => true,
             'allow_redirects' => true,
             'verify' => false,
+            'connect_timeout' => 5,
             'headers' => [
                 'User-Agent' => UserAgent::random([
                     'os_type' => 'Windows',
@@ -58,13 +61,19 @@ class PublisherService
     public function getBody(Client $client, Article $article, string $url): ?array
     {
         try {
+            /** @var Uri $effectiveUrl */
+            $effectiveUrl = null;
             $startTime = microtime(true);
-            $response = $client->request('GET', $url);
+            $response = $client->request('GET', $url, [
+                'on_stats' => function (TransferStats $stats) use (&$effectiveUrl) {
+                    $effectiveUrl = $stats->getEffectiveUri();
+                }
+            ]);
             $duration = microtime(true) - $startTime;
 
             $body = $response->getBody()->getContents();
 
-            return [$body, $duration];
+            return [$body, $duration, $effectiveUrl === null ? null : $effectiveUrl->__toString()];
 
         }catch (RequestException $e) {
             $this->logger->error($e->getMessage());
@@ -99,7 +108,30 @@ class PublisherService
             $datesProcessed++;
         }
 
-        $this->logger->info(sprintf("%s, year=%d, update %d dates, duration=%.3f",
-            $publisherData->getArticle()->getDoi(), $publisherData->getArticle()->getYear(), $datesProcessed, $duration));
+        $this->logger->info(sprintf("%d, year=%d, dates=%d, dur=%.3f, %s",
+            $publisherData->getArticle()->getId(),
+            $publisherData->getArticle()->getYear(),
+            $datesProcessed,
+            $duration,
+            $this->datesToStr($publisherData)));
+    }
+
+    private function datesToStr(ArticlePublisherData $publisherData): string
+    {
+        $parts = [];
+
+        if($publisherData->getPublisherAccepted() !== null) {
+            $parts[] = sprintf('acc=%s', $publisherData->getPublisherAccepted()->format('Y-m-d'));
+        }
+        if($publisherData->getPublisherReceived() !== null) {
+            $parts[] = sprintf('rec=%s', $publisherData->getPublisherReceived()->format('Y-m-d'));
+        }
+        if($publisherData->getPublisherAvailablePrint() !== null) {
+            $parts[] = sprintf('print=%s', $publisherData->getPublisherAvailablePrint()->format('Y-m-d'));
+        }
+        if($publisherData->getPublisherAvailableOnline() !== null) {
+            $parts[] = sprintf('online=%s', $publisherData->getPublisherAvailableOnline()->format('Y-m-d'));
+        }
+        return implode(',', $parts);
     }
 }

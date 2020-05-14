@@ -1,0 +1,59 @@
+<?php
+
+
+namespace App\Command\Stuff\Article;
+
+
+use App\Entity\Agregate\ArticleDatesOaAggregate;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class Table11Command extends Command
+{
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        parent::__construct();
+        $this->em = $em;
+    }
+
+    protected function configure()
+    {
+        $this->setName('article.table11');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $publisherDates = [
+            'Received' => fn(QueryBuilder $qb) => $qb->andWhere('entity.publisherReceived IS NOT NULL'),
+            'Accepted' => fn(QueryBuilder $qb) => $qb->andWhere('entity.publisherAccepted IS NOT NULL'),
+            'Print' => fn(QueryBuilder $qb) => $qb->andWhere('entity.publisherAvailablePrint IS NOT NULL'),
+            'Online' => fn(QueryBuilder $qb) => $qb->andWhere('entity.publisherAvailableOnline IS NOT NULL'),
+            'Total' => fn(QueryBuilder $qb) => $qb->andWhere('entity.hasPublisherRecord = true'),
+        ];
+
+        $result = [];
+
+        foreach ($publisherDates as $columnName => $columnFunction) {
+            $row = [
+                'Date' => $columnName
+            ];
+
+            foreach (PeriodQuery::$PERIODS as $periodName => $periodFunction) {
+                $qb = $this->em->createQueryBuilder()
+                    ->select('entity')
+                    ->from(ArticleDatesOaAggregate::class, 'entity');
+                $columnFunction($qb);
+                $periodFunction($qb);
+                $articlesCount = $qb->getQuery()->getResult();
+                $row[$periodName] = $articlesCount;
+            }
+        }
+        Utils::saveData($result);
+    }
+
+}

@@ -23,11 +23,6 @@ class ArticleUrlDomain
      */
     protected string $domain = '';
 
-    /**
-     * @ORM\Column(name="reverse_domain", type="string", nullable=false, unique=true)
-     */
-    protected string $reverseDomain = '';
-
     public function getId(): ?int
     {
         return $this->id;
@@ -44,16 +39,6 @@ class ArticleUrlDomain
         $this->domain = $domain;
         $this->reverseDomain = $this->reverseDomain($domain);
         return $this;
-    }
-
-    public function getReverseDomain(): string
-    {
-        return $this->reverseDomain;
-    }
-
-    public function setReverseDomain(string $reverseDomain): void
-    {
-        $this->reverseDomain = $reverseDomain;
     }
 
     private function reverseDomain(string $domain): string
